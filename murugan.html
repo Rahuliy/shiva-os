@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA // MURUGAN</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --bg-raised: #111111;
+  --bg-hover:  #181818;
+  --border:    #222222;
+  --border-hi: #333333;
+  --text:      #c8c8c8;
+  --text-dim:  #555555;
+  --text-hi:   #efefef;
+  --accent:    #e8d5a3;
+  --green:     #7db88a;
+  --red:       #c47a6a;
+  --blue:      #6a8fa8;
+  --violet:    #8a6ab8;
+  --gold:      #c9973a;
+  --mono:      'IBM Plex Mono', monospace;
+  --r:         2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo span{color:var(--text-dim);font-weight:300;}
+.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back:hover{color:var(--accent);}
+.nav{display:flex;gap:2px;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
+.nav a.active{color:var(--accent);background:var(--bg-raised);}
+.topbar-right{font-size:11px;color:var(--text-dim);}
+#live-time{color:var(--text);}
+
+.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.card:hover{border-color:var(--border-hi);}
+.card+.card{margin-top:16px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
+.stat:hover{background:var(--bg-hover);}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-value.accent{color:var(--accent);}
+.stat-value.violet{color:var(--violet);}
+.stat-sub{font-size:11px;color:var(--text-dim);}
+.delta-up{color:var(--green);}
+.delta-dn{color:var(--red);}
+
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
+.col-stack{display:flex;flex-direction:column;gap:16px;}
+
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.green{background:var(--green);}
+.bar-fill.violet{background:var(--violet);}
+.bar-fill.blue{background:var(--blue);}
+.bar-fill.red{background:var(--red);}
+
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--bg-hover);}
+.data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
+
+.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag.flow{background:#1e1a2a;color:var(--violet);}
+.tag.deep{background:#181e28;color:var(--blue);}
+.tag.shallow{background:#2a2a1a;color:var(--accent);}
+.tag.broken{background:#2a1a18;color:var(--red);}
+
+/* ENERGY BARS */
+.energy-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;}
+.energy-row:last-child{border-bottom:none;}
+.energy-time{width:48px;color:var(--text-dim);font-size:10px;}
+.energy-bar-wrap{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.energy-bar{height:100%;border-radius:3px;}
+.energy-val{width:30px;text-align:right;color:var(--text-dim);font-size:10px;}
+
+/* SESSION CARD */
+.session-card{background:var(--bg-raised);border:1px solid var(--border);border-left:2px solid;border-radius:var(--r);padding:14px 16px;margin-bottom:8px;transition:border-color .15s;}
+.session-card:hover{background:var(--bg-hover);}
+.session-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.session-title{color:var(--text-hi);font-size:12px;font-weight:500;}
+.session-meta{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.session-meta em{color:var(--text);font-style:normal;}
+.session-footer{display:flex;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+
+/* RITUAL ROW */
+.ritual-row{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+.ritual-row:last-child{border-bottom:none;}
+.ritual-time{width:60px;font-size:10px;color:var(--text-dim);flex-shrink:0;padding-top:2px;}
+.ritual-body{flex:1;}
+.ritual-name{color:var(--text-hi);font-size:12px;margin-bottom:2px;}
+.ritual-desc{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.ritual-streak{font-size:10px;margin-left:auto;color:var(--green);white-space:nowrap;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.stat{animation:fadeUp .3s ease both;}
+.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
+.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
+.card,.session-card{animation:fadeUp .35s ease both;animation-delay:.1s;}
+
+@media(max-width:800px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back" href="index.html">← shiva os</a>
+    <div class="logo">MURUGAN <span>// energy · focus · flow state</span></div>
+    <nav class="nav">
+      <a class="active" data-view="overview">overview</a>
+      <a data-view="sessions">sessions</a>
+      <a data-view="rituals">rituals</a>
+      <a data-view="tracking">tracking</a>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span id="live-time"></span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- OVERVIEW -->
+  <div class="view active" id="view-overview">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Deep Work Today</div>
+        <div class="stat-value violet">3.5<span style="font-size:14px;color:var(--text-dim)">h</span></div>
+        <div class="stat-sub delta-up">↑ vs 2.1h avg</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Flow Sessions — Week</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">90+ min unbroken</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Focus Streak</div>
+        <div class="stat-value accent">4</div>
+        <div class="stat-sub">days w/ deep block</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Distraction Rate</div>
+        <div class="stat-value" style="font-size:18px;">2.1/h</div>
+        <div class="stat-sub delta-up">↓ vs 3.4 last week</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Daily Energy Profile — Today</div>
+          <div id="energy-profile"></div>
+          <div style="margin-top:10px;font-size:10px;color:var(--text-dim);">Subjective energy 1–10 · logged at each time block</div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Weekly Deep Work — Hours / Day</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:flex-end;height:72px;margin-bottom:8px;" id="focus-bars"></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Focus Quality — This Week</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:1;">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+              <span>Total deep work</span><span style="color:var(--text-hi)">16.4h</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+              <span>Flow sessions (90m+)</span><span style="color:var(--violet)">2</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+              <span>Avg session length</span><span style="color:var(--text)">52 min</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+              <span>Distraction interrupts</span><span style="color:var(--accent)">14</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+              <span>Phone pickups (est.)</span><span style="color:var(--red)">28</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;">
+              <span>Morning ritual complete</span><span style="color:var(--green)">5/5 workdays</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Flow State Conditions</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:1.9;">
+            <div style="color:var(--green);margin-bottom:4px;">Optimal conditions (personal)</div>
+            <div>— 6:30–9:30am block, post morning ritual</div>
+            <div>— PRS guitar instrumental (no vocals) as background</div>
+            <div>— Phone in another room · notifications off</div>
+            <div>— Coffee before, not during</div>
+            <div>— Clear single task defined night before</div>
+            <div style="color:var(--red);margin-top:10px;margin-bottom:4px;">Flow killers (personal)</div>
+            <div>— Slack / email before noon</div>
+            <div>— Unresolved routing decisions lingering</div>
+            <div>— Poor sleep previous night (below 6.5h)</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- SESSIONS -->
+  <div class="view" id="view-sessions">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Sessions — Feb</div>
+        <div class="stat-value accent">32</div>
+        <div class="stat-sub">focus blocks logged</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total Deep Work</div>
+        <div class="stat-value">48h</div>
+        <div class="stat-sub">Feb 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Avg Session</div>
+        <div class="stat-value">52<span style="font-size:14px;color:var(--text-dim)">min</span></div>
+        <div class="stat-sub">target: 60+</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Flow (90m+)</div>
+        <div class="stat-value violet">6</div>
+        <div class="stat-sub">sessions this month</div>
+      </div>
+    </div>
+
+    <div class="section-label">Recent Sessions</div>
+
+    <div class="session-card" style="border-left-color:var(--violet);">
+      <div class="session-header">
+        <div class="session-title">Shiva OS — Ganesha + Saraswati build</div>
+        <span class="tag flow">flow</span>
+      </div>
+      <div class="session-meta">
+        Feb 20 · 6:45am–9:20am · <em>2h 35min</em> · uninterrupted<br>
+        Mode: headphones, PRS instrumental, phone off<br>
+        Output: <em>2 full module wireframes complete</em>
+      </div>
+      <div class="session-footer">
+        <span style="font-size:10px;color:var(--text-dim)">Energy at start: 8/10</span>
+        <span style="font-size:10px;color:var(--text-dim);margin-left:auto">Interrupts: 0</span>
+      </div>
+    </div>
+
+    <div class="session-card" style="border-left-color:var(--blue);">
+      <div class="session-header">
+        <div class="session-title">MIT SCM research — program requirements</div>
+        <span class="tag deep">deep</span>
+      </div>
+      <div class="session-meta">
+        Feb 18 · 7:00am–8:15am · <em>75 min</em><br>
+        Output: <em>eligibility confirmed, prereqs mapped, application timeline drafted</em>
+      </div>
+      <div class="session-footer">
+        <span style="font-size:10px;color:var(--text-dim)">Energy at start: 7/10</span>
+        <span style="font-size:10px;color:var(--text-dim);margin-left:auto">Interrupts: 1</span>
+      </div>
+    </div>
+
+    <div class="session-card" style="border-left-color:var(--accent);">
+      <div class="session-header">
+        <div class="session-title">Supply Chain textbook — Ch. 6 & 7</div>
+        <span class="tag shallow">shallow</span>
+      </div>
+      <div class="session-meta">
+        Feb 17 · 9:00pm–10:00pm · <em>60 min</em><br>
+        Evening session — lower quality, post-dinner<br>
+        Interrupts: <em>phone 3x, started late</em>
+      </div>
+      <div class="session-footer">
+        <span style="font-size:10px;color:var(--text-dim)">Energy at start: 4/10</span>
+        <span style="font-size:10px;color:var(--text-dim);margin-left:auto">Interrupts: 3</span>
+      </div>
+    </div>
+
+    <div class="session-card" style="border-left-color:var(--violet);">
+      <div class="session-header">
+        <div class="session-title">Shiva OS — Lakshmi full build</div>
+        <span class="tag flow">flow</span>
+      </div>
+      <div class="session-meta">
+        Feb 14 · 7:00am–10:30am · <em>3h 30min</em> · uninterrupted<br>
+        Output: <em>Lakshmi module complete (5 views)</em>
+      </div>
+      <div class="session-footer">
+        <span style="font-size:10px;color:var(--text-dim)">Energy at start: 9/10</span>
+        <span style="font-size:10px;color:var(--text-dim);margin-left:auto">Interrupts: 0</span>
+      </div>
+    </div>
+
+    <div class="session-card" style="border-left-color:var(--red);opacity:0.65;">
+      <div class="session-header">
+        <div class="session-title">Work planning — attempted, abandoned</div>
+        <span class="tag broken">broken</span>
+      </div>
+      <div class="session-meta">
+        Feb 13 · 2:00pm–2:40pm · <em>40 min attempted</em><br>
+        Multiple Slack interrupts · context switching · gave up after 3 breaks<br>
+        <em>Afternoon slots don't work — stop trying</em>
+      </div>
+    </div>
+
+  </div><!-- /sessions -->
+
+
+  <!-- RITUALS -->
+  <div class="view" id="view-rituals">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Morning Ritual</div>
+        <div class="stat-value accent">6</div>
+        <div class="stat-sub">streak · days</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Evening Wind-down</div>
+        <div class="stat-value">3</div>
+        <div class="stat-sub">streak · days</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Pre-Work Block</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">streak · days</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Ritual Score</div>
+        <div class="stat-value" style="font-size:20px;">74%</div>
+        <div class="stat-sub">7-day compliance</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Morning Ritual — 6:15–7:00am</div>
+      <div class="ritual-row">
+        <div class="ritual-time">6:15</div>
+        <div class="ritual-body">
+          <div class="ritual-name">No phone</div>
+          <div class="ritual-desc">First 30 min no phone. Alarm on separate device.</div>
+        </div>
+        <div class="ritual-streak">6 day streak</div>
+      </div>
+      <div class="ritual-row">
+        <div class="ritual-time">6:15</div>
+        <div class="ritual-body">
+          <div class="ritual-name">Water + sunlight</div>
+          <div class="ritual-desc">500ml water · stand outside or by window for 5 min.</div>
+        </div>
+        <div class="ritual-streak">6 day streak</div>
+      </div>
+      <div class="ritual-row">
+        <div class="ritual-time">6:20</div>
+        <div class="ritual-body">
+          <div class="ritual-name">10 min mobility</div>
+          <div class="ritual-desc">Hip flexors, thoracic rotation, shoulder circles. Desk job corrective.</div>
+        </div>
+        <div class="ritual-streak" style="color:var(--accent)">4 day streak</div>
+      </div>
+      <div class="ritual-row">
+        <div class="ritual-time">6:30</div>
+        <div class="ritual-body">
+          <div class="ritual-name">Coffee + task definition</div>
+          <div class="ritual-desc">One coffee. Write the one thing that matters today. No email before this.</div>
+        </div>
+        <div class="ritual-streak">5 day streak</div>
+      </div>
+      <div class="ritual-row">
+        <div class="ritual-time">6:45</div>
+        <div class="ritual-body">
+          <div class="ritual-name">Deep work block begins</div>
+          <div class="ritual-desc">Phone in another room. PRS instrumental on. Minimum 60 min single task.</div>
+        </div>
+        <div class="ritual-streak" style="color:var(--accent)">4 day streak</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="section-label">Evening Wind-down — 10:00–11:00pm</div>
+      <div class="ritual-row">
+        <div class="ritual-time">10:00</div>
+        <div class="ritual-body">
+          <div class="ritual-name">Screens off</div>
+          <div class="ritual-desc">All screens off at 10pm. Hardest habit to hold.</div>
+        </div>
+        <div class="ritual-streak" style="color:var(--red)">2 day streak</div>
+      </div>
+      <div class="ritual-row">
+        <div class="ritual-time">10:00</div>
+        <div class="ritual-body">
+          <div class="ritual-name">Tomorrow prep</div>
+          <div class="ritual-desc">Write one task for morning session. Close open loops in head.</div>
+        </div>
+        <div class="ritual-streak">3 day streak</div>
+      </div>
+      <div class="ritual-row">
+        <div class="ritual-time">10:15</div>
+        <div class="ritual-body">
+          <div class="ritual-name">Reading</div>
+          <div class="ritual-desc">Physical book only. 20–30 min before sleep.</div>
+        </div>
+        <div class="ritual-streak" style="color:var(--accent)">4 day streak</div>
+      </div>
+      <div class="ritual-row">
+        <div class="ritual-time">11:00</div>
+        <div class="ritual-body">
+          <div class="ritual-name">Lights out</div>
+          <div class="ritual-desc">11pm target. Linked directly to sleep quality data in Dhanvantari.</div>
+        </div>
+        <div class="ritual-streak" style="color:var(--accent)">3 day streak</div>
+      </div>
+    </div>
+
+  </div><!-- /rituals -->
+
+
+  <!-- TRACKING -->
+  <div class="view" id="view-tracking">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Monthly Deep Work</div>
+        <div class="stat-value accent">48h</div>
+        <div class="stat-sub">Feb · target: 60h</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Peak Hours</div>
+        <div class="stat-value violet">6–9am</div>
+        <div class="stat-sub">confirmed by data</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Dead Zone</div>
+        <div class="stat-value" style="color:var(--red);font-size:18px;">2–4pm</div>
+        <div class="stat-sub">lowest quality work</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Best Day</div>
+        <div class="stat-value" style="font-size:18px;">Tuesday</div>
+        <div class="stat-sub">avg 4.2h deep work</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Deep Work by Time Block — Avg Quality</div>
+          <table class="data-table">
+            <thead><tr><th>Time Block</th><th class="num">Avg Hours</th><th class="num">Avg Quality</th><th>Assessment</th></tr></thead>
+            <tbody>
+              <tr><td>5:00–7:00am</td><td class="num">0.3h</td><td class="num" style="color:var(--text-dim)">7.2/10</td><td style="color:var(--text-dim);font-size:11px">Rarely used</td></tr>
+              <tr><td>7:00–9:00am</td><td class="num" style="color:var(--violet)">1.8h</td><td class="num" style="color:var(--violet)">9.1/10</td><td style="color:var(--violet);font-size:11px">Peak · protect</td></tr>
+              <tr><td>9:00–11:00am</td><td class="num" style="color:var(--green)">1.2h</td><td class="num" style="color:var(--green)">8.3/10</td><td style="color:var(--green);font-size:11px">High · use for flow continuation</td></tr>
+              <tr><td>11:00am–1:00pm</td><td class="num">0.8h</td><td class="num">6.8/10</td><td style="color:var(--text-dim);font-size:11px">Declining · meetings ok</td></tr>
+              <tr><td>1:00–3:00pm</td><td class="num">0.4h</td><td class="num">5.2/10</td><td style="color:var(--text-dim);font-size:11px">Admin / review tasks</td></tr>
+              <tr><td>3:00–5:00pm</td><td class="num" style="color:var(--red)">0.1h</td><td class="num" style="color:var(--red)">3.8/10</td><td style="color:var(--red);font-size:11px">Dead zone — don't schedule deep work</td></tr>
+              <tr><td>5:00–8:00pm</td><td class="num">0.3h</td><td class="num">5.5/10</td><td style="color:var(--text-dim);font-size:11px">Low priority tasks ok</td></tr>
+              <tr><td>8:00–10:00pm</td><td class="num">0.6h</td><td class="num">6.4/10</td><td style="color:var(--text-dim);font-size:11px">Reading only — no building</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Monthly Trend — Deep Work Hours</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:1.6;">
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Oct 2025</span><span style="color:var(--text)">28h</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Nov 2025</span><span style="color:var(--text)">32h</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Dec 2025</span><span style="color:var(--red)">22h</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Jan 2026</span><span style="color:var(--accent)">40h</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Feb 2026</span><span style="color:var(--violet)">48h (in progress)</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;">
+              <span style="color:var(--accent)">Target / month</span><span style="color:var(--accent)">60h</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-label">Distraction Analysis</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+            <div style="display:flex;justify-content:space-between;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--border);">
+              <span>Phone pickup</span><span style="color:var(--red)">42%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--border);">
+              <span>Slack / messaging</span><span style="color:var(--red)">28%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--border);">
+              <span>Tab switching / browser</span><span style="color:var(--accent)">18%</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span>Physical / environment</span><span>12%</span>
+            </div>
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);color:var(--text-dim);">
+              Primary lever: phone in another room. Single action eliminates 42% of distractions.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tracking -->
+
+</div>
+
+<script>
+document.querySelectorAll('.nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.view;
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById('view-' + target).classList.add('active');
+  });
+});
+
+// Energy profile
+(function() {
+  const slots = [
+    {t:'5am',v:3},{t:'6am',v:6},{t:'7am',v:9},{t:'8am',v:9},{t:'9am',v:8},
+    {t:'10am',v:7},{t:'11am',v:6},{t:'12pm',v:5},{t:'1pm',v:4},{t:'2pm',v:3},
+    {t:'3pm',v:3},{t:'4pm',v:4},{t:'5pm',v:5},{t:'6pm',v:5},{t:'7pm',v:6},
+    {t:'8pm',v:6},{t:'9pm',v:5},{t:'10pm',v:4},{t:'11pm',v:3}
+  ];
+  const el = document.getElementById('energy-profile');
+  if (!el) return;
+  el.innerHTML = slots.map(s => {
+    const pct = s.v / 10 * 100;
+    const col = s.v >= 8 ? 'var(--violet)' : s.v >= 6 ? 'var(--blue)' : s.v >= 4 ? 'var(--accent)' : 'var(--red)';
+    return `<div class="energy-row">
+      <div class="energy-time">${s.t}</div>
+      <div class="energy-bar-wrap"><div class="energy-bar" style="width:${pct}%;background:${col};"></div></div>
+      <div class="energy-val">${s.v}/10</div>
+    </div>`;
+  }).join('');
+})();
+
+// Focus bars
+(function() {
+  const data = [4.2, 2.1, 3.5, 1.8, 2.8, 0.5, 1.5];
+  const el = document.getElementById('focus-bars');
+  if (!el) return;
+  const max = Math.max(...data);
+  data.forEach((v, i) => {
+    const pct = v / max * 100;
+    const col = v >= 3 ? 'var(--violet)' : v >= 2 ? 'var(--blue)' : 'var(--border-hi)';
+    const d = document.createElement('div');
+    d.style.cssText = `display:flex;flex-direction:column;justify-content:flex-end;height:100%;`;
+    d.innerHTML = `<div style="width:100%;height:${pct}%;background:${col};border-radius:1px 1px 0 0;transition:height .5s ease;" title="${v}h"></div>`;
+    el.appendChild(d);
+  });
+})();
+
+function tick() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('live-time').textContent = d + ' ' + t;
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

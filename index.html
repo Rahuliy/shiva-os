@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA OS // ROOT</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ground:      #0e0805;
+  --raised:      #150d08;
+  --hover:       #1c1209;
+  --border:      #2a1e12;
+  --border-hi:   #3d2c18;
+  --gold:        #c9973a;
+  --gold-hi:     #e8b84b;
+  --vermillion:  #8b2010;
+  --green:       #4a7a52;
+  --blue:        #4a8fc4;
+  --ivory:       #f0dfc0;
+  --ivory-mid:   #a09070;
+  --ivory-dim:   #554030;
+  --mono:        'IBM Plex Mono', monospace;
+  --serif:       'Libre Baskerville', serif;
+  --devanagari:  'Noto Serif Devanagari', 'Libre Baskerville', serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background-color: var(--ground);
+  color: var(--ivory-mid);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+  background-image:
+    linear-gradient(rgba(201,151,58,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,151,58,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.top-band {
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold)       0px,  var(--gold)       64px,
+    var(--vermillion) 64px, var(--vermillion)  68px,
+    var(--gold)       68px, var(--gold)       132px,
+    var(--border-hi) 132px, var(--border-hi)  134px
+  );
+}
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 32px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+  background: rgba(14,8,5,0.96);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+.os-wordmark { display: flex; align-items: baseline; gap: 10px; }
+.os-name { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--gold); letter-spacing: 0.22em; text-transform: uppercase; }
+.os-path { font-size: 11px; color: var(--ivory-dim); letter-spacing: 0.06em; }
+.topbar-mantra { font-family: var(--serif); font-style: italic; font-size: 11px; color: var(--ivory-dim); letter-spacing: 0.08em; opacity: 0.7; }
+.topbar-right { font-size: 11px; color: var(--ivory-dim); text-align: right; }
+#live-time { color: var(--ivory-mid); display: block; }
+#live-date { font-size: 10px; color: var(--ivory-dim); letter-spacing: 0.05em; }
+.shell { max-width: 1060px; margin: 0 auto; padding: 72px 32px 100px; }
+
+/* HERO */
+.hero { text-align: center; margin-bottom: 72px; animation: fadeUp 0.8s ease both; }
+.om-stage { position: relative; width: 200px; height: 200px; margin: 0 auto 28px; display: flex; align-items: center; justify-content: center; }
+.ring-outer { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(201,151,58,0.15); animation: cosmicSpin 120s linear infinite; }
+.ring-inner { position: absolute; inset: 16px; border-radius: 50%; border: 1px solid rgba(201,151,58,0.07); animation: cosmicSpin 80s linear infinite reverse; }
+.ring-marks { position: absolute; inset: 0; }
+.ring-marks::before { content:''; position:absolute; top:50%; left:-4px; right:-4px; height:1px; background:rgba(201,151,58,0.25); transform:translateY(-50%); }
+.ring-marks::after  { content:''; position:absolute; left:50%; top:-4px; bottom:-4px; width:1px; background:rgba(201,151,58,0.25); transform:translateX(-50%); }
+.trishula-mark { position:absolute; top:0; left:50%; transform:translateX(-50%); width:3px; height:10px; background:var(--gold); opacity:0.6; }
+.om-symbol { font-family:var(--devanagari); font-size:100px; color:var(--gold); line-height:1; position:relative; z-index:2; animation:omBreath 4s ease-in-out infinite; user-select:none; }
+@keyframes omBreath {
+  0%,100% { opacity:0.82; text-shadow:0 0 24px rgba(201,151,58,0.25),0 0 60px rgba(201,151,58,0.1); }
+  50%      { opacity:1;    text-shadow:0 0 40px rgba(201,151,58,0.50),0 0 100px rgba(201,151,58,0.2); }
+}
+@keyframes cosmicSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+.hero-title { font-family:var(--serif); font-size:15px; font-weight:700; color:var(--ivory); letter-spacing:0.35em; text-transform:uppercase; margin-bottom:10px; }
+.hero-tag { font-size:10px; letter-spacing:0.22em; color:var(--ivory-dim); text-transform:uppercase; }
+.hero-tag em { color:rgba(201,151,58,0.5); font-style:normal; margin:0 6px; }
+
+/* SECTION LABEL */
+.section-label { font-size:9px; letter-spacing:0.28em; color:var(--ivory-dim); text-transform:uppercase; margin-bottom:18px; display:flex; align-items:center; gap:14px; }
+.section-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--border-hi), transparent); }
+
+/* PURUSHARTHA GRID */
+.p-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; background:var(--border); border:1px solid var(--border); overflow:hidden; margin-bottom:56px; }
+.p-card { background:var(--raised); display:flex; transition:background 0.2s; animation:fadeUp 0.5s ease both; text-decoration:none; }
+.p-card:nth-child(1){animation-delay:0.10s} .p-card:nth-child(2){animation-delay:0.18s}
+.p-card:nth-child(3){animation-delay:0.26s} .p-card:nth-child(4){animation-delay:0.34s}
+.p-card:hover { background:var(--hover); }
+.p-accent { width:3px; flex-shrink:0; }
+.p-body { padding:26px 26px 22px; flex:1; }
+.p-header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px; }
+.p-name { font-family:var(--serif); font-size:24px; font-weight:700; color:var(--ivory); }
+.p-numeral { font-size:10px; color:var(--ivory-dim); letter-spacing:0.15em; }
+.p-meaning { font-family:var(--serif); font-style:italic; font-size:12px; color:var(--ivory-dim); margin-bottom:18px; }
+.p-divider { height:1px; background:var(--border); margin-bottom:16px; }
+.deity-list { display:flex; flex-direction:column; gap:10px; }
+.deity-row { display:flex; align-items:center; gap:10px; font-size:11px; text-decoration:none; color:inherit; cursor:pointer; }
+.deity-row:hover .deity-label { color:var(--gold); }
+.deity-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.deity-dot.live    { background:var(--gold); }
+.deity-dot.pending { background:transparent; border:1px solid var(--ivory-dim); }
+.deity-label { color:var(--ivory-mid); letter-spacing:0.04em; transition:color 0.15s; }
+.deity-label.built { color:var(--ivory); }
+.deity-sub { color:var(--ivory-dim); font-size:10px; flex:1; text-align:right; }
+.deity-badge { font-size:9px; letter-spacing:0.08em; text-transform:uppercase; padding:1px 6px; border:1px solid var(--border-hi); color:var(--ivory-dim); }
+.deity-badge.live { border-color:rgba(201,151,58,0.4); color:var(--gold); background:rgba(201,151,58,0.06); }
+
+/* KRISHNA */
+.krishna-wrap { animation:fadeUp 0.5s ease both; animation-delay:0.42s; margin-bottom:56px; }
+.krishna-block { border:1px solid var(--border); border-left:2px solid var(--gold); background:var(--raised); padding:24px 28px 20px; }
+.krishna-verse { font-family:var(--serif); font-style:italic; font-size:15px; color:var(--ivory); line-height:1.85; margin-bottom:14px; }
+.krishna-footer { display:flex; align-items:center; justify-content:space-between; font-size:10px; }
+.krishna-label { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); opacity:0.8; }
+.krishna-ref { color:var(--ivory-dim); letter-spacing:0.06em; }
+
+/* KRISHNA INTERACTIVE */
+.krishna-converse { border:1px solid var(--border); border-top:none; background:var(--ground); }
+.krishna-exchange { min-height:56px; padding:16px 24px; border-bottom:1px solid var(--border); }
+.k-question { font-size:11px; color:var(--ivory-dim); font-style:italic; margin-bottom:10px; padding-left:10px; border-left:1px solid var(--border-hi); }
+.k-answer { font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ivory); line-height:1.85; }
+.k-cursor { display:inline-block; width:2px; height:14px; background:var(--gold); animation:blink 1s ease-in-out infinite; vertical-align:middle; margin-left:2px; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.krishna-input-row { display:flex; align-items:center; gap:10px; padding:12px 24px; border-bottom:1px solid var(--border); }
+.input-arrow { color:var(--gold); font-size:12px; opacity:0.5; }
+#krishna-input { flex:1; background:transparent; border:none; outline:none; color:var(--ivory); font-family:var(--mono); font-size:12px; caret-color:var(--gold); letter-spacing:0.03em; }
+#krishna-input::placeholder { color:var(--ivory-dim); }
+#krishna-send { background:transparent; border:1px solid var(--border); color:var(--ivory-dim); font-family:var(--mono); font-size:12px; padding:3px 10px; cursor:pointer; transition:all 0.15s; }
+#krishna-send:hover:not(:disabled) { border-color:var(--gold); color:var(--gold); }
+#krishna-send:disabled { opacity:0.3; }
+.krishna-key-setup { display:flex; align-items:center; gap:10px; padding:10px 24px; border-bottom:1px solid var(--border); }
+.key-label { font-size:9px; color:var(--gold); letter-spacing:0.12em; text-transform:uppercase; opacity:0.7; white-space:nowrap; }
+#api-key-field { flex:1; background:transparent; border:none; border-bottom:1px solid var(--border); color:var(--ivory-mid); font-family:var(--mono); font-size:11px; outline:none; padding:2px 0; }
+#api-key-save { background:transparent; border:1px solid var(--border); color:var(--gold); font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 10px; cursor:pointer; transition:border-color 0.15s; }
+#api-key-save:hover { border-color:var(--gold); }
+.krishna-status { padding:6px 24px; font-size:10px; color:var(--ivory-dim); min-height:26px; letter-spacing:0.05em; }
+
+/* SYSTEM STATUS */
+.sys-status { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); animation:fadeUp 0.5s ease both; animation-delay:0.5s; }
+.sys-stat { background:var(--raised); padding:14px 16px; transition:background 0.15s; }
+.sys-stat:hover { background:var(--hover); }
+.sys-stat-label { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ivory-dim); margin-bottom:5px; }
+.sys-stat-val { font-size:17px; font-weight:500; color:var(--ivory); letter-spacing:-0.01em; line-height:1; }
+.sys-stat-val.gold { color:var(--gold); }
+.sys-stat-sub { font-size:10px; color:var(--ivory-dim); margin-top:3px; }
+
+/* FOOTER */
+.footer { position:fixed; bottom:0; left:0; right:0; padding:10px 32px; border-top:1px solid var(--border); background:rgba(14,8,5,0.97); display:flex; align-items:center; justify-content:space-between; z-index:50; }
+.footer-mantra { font-family:var(--serif); font-style:italic; font-size:12px; color:var(--gold); letter-spacing:0.08em; opacity:0.65; }
+.footer-meta { font-size:10px; color:var(--ivory-dim); letter-spacing:0.1em; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+@media(max-width:720px) {
+  .p-grid{grid-template-columns:1fr}
+  .sys-status{grid-template-columns:repeat(2,1fr)}
+  .om-symbol{font-size:80px}
+  .shell{padding:48px 20px 100px}
+  .topbar-mantra{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="top-band"></div>
+
+<div class="topbar">
+  <div class="os-wordmark">
+    <span class="os-name">Shiva</span>
+    <span class="os-path">// os &nbsp;·&nbsp; root</span>
+  </div>
+  <div class="topbar-mantra">Om Namah Shivaya</div>
+  <div class="topbar-right">
+    <span id="live-time"></span>
+    <span id="live-date"></span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <div class="hero">
+    <div class="om-stage">
+      <div class="ring-outer"><div class="trishula-mark"></div></div>
+      <div class="ring-inner"></div>
+      <div class="ring-marks"></div>
+      <div class="om-symbol">ॐ</div>
+    </div>
+    <div class="hero-title">Shiva OS</div>
+    <div class="hero-tag">destroyer <em>·</em> regenerator <em>·</em> root layer</div>
+  </div>
+
+  <div class="section-label">Four Purusharthas — The Aims of Life</div>
+  <div class="p-grid">
+
+    <div class="p-card">
+      <div class="p-accent" style="background:var(--gold)"></div>
+      <div class="p-body">
+        <div class="p-header"><div class="p-name">Artha</div><div class="p-numeral">I</div></div>
+        <div class="p-meaning">wealth · purpose · material sovereignty</div>
+        <div class="p-divider"></div>
+        <div class="deity-list">
+          <a class="deity-row" href="lakshmi.html">
+            <div class="deity-dot live"></div>
+            <span class="deity-label built">Lakshmi</span>
+            <span class="deity-sub">finance · net worth · savings</span>
+            <span class="deity-badge live">live</span>
+          </a>
+          <a class="deity-row" href="kubera.html">
+            <div class="deity-dot live"></div>
+            <span class="deity-label built">Kubera</span>
+            <span class="deity-sub">business ops · P&amp;L</span>
+            <span class="deity-badge live">live</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-accent" style="background:var(--green)"></div>
+      <div class="p-body">
+        <div class="p-header"><div class="p-name">Dharma</div><div class="p-numeral">II</div></div>
+        <div class="p-meaning">right action · knowledge · cosmic order</div>
+        <div class="p-divider"></div>
+        <div class="deity-list">
+          <a class="deity-row" href="ganesha.html">
+            <div class="deity-dot live"></div>
+            <span class="deity-label built">Ganesha</span>
+            <span class="deity-sub">projects · reflection · routing</span>
+            <span class="deity-badge live">live</span>
+          </a>
+          <a class="deity-row" href="saraswati.html">
+            <div class="deity-dot live"></div>
+            <span class="deity-label built">Saraswati</span>
+            <span class="deity-sub">learning · MIT prep · skills</span>
+            <span class="deity-badge live">live</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-accent" style="background:var(--vermillion)"></div>
+      <div class="p-body">
+        <div class="p-header"><div class="p-name">Kama</div><div class="p-numeral">III</div></div>
+        <div class="p-meaning">vitality · desire · embodied life</div>
+        <div class="p-divider"></div>
+        <div class="deity-list">
+          <a class="deity-row" href="hanuman.html">
+            <div class="deity-dot live"></div>
+            <span class="deity-label built">Hanuman</span>
+            <span class="deity-sub">training · parkour · strength</span>
+            <span class="deity-badge live">live</span>
+          </a>
+          <a class="deity-row" href="dhanvantari.html">
+            <div class="deity-dot live"></div>
+            <span class="deity-label built">Dhanvantari</span>
+            <span class="deity-sub">health · sleep · recovery</span>
+            <span class="deity-badge live">live</span>
+          </a>
+          <a class="deity-row" href="murugan.html">
+            <div class="deity-dot live"></div>
+            <span class="deity-label built">Murugan</span>
+            <span class="deity-sub">energy · focus · flow state</span>
+            <span class="deity-badge live">live</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-accent" style="background:var(--blue)"></div>
+      <div class="p-body">
+        <div class="p-header"><div class="p-name">Moksha</div><div class="p-numeral">IV</div></div>
+        <div class="p-meaning">liberation · craft · what outlasts you</div>
+        <div class="p-divider"></div>
+        <div class="deity-list">
+          <a class="deity-row" href="vishwakarma.html">
+            <div class="deity-dot live"></div>
+            <span class="deity-label built">Vishwakarma</span>
+            <span class="deity-sub">homelab · infrastructure · systems</span>
+            <span class="deity-badge live">live</span>
+          </a>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+          <div style="font-size:10px;color:var(--ivory-dim);line-height:1.7;font-family:var(--serif);font-style:italic;">
+            "The craftsman who builds from the inside out — whose creation is not product but liberation."
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KRISHNA — DAILY VERSE + INTERACTIVE -->
+  <div class="section-label">Krishna</div>
+  <div class="krishna-wrap">
+    <div class="krishna-block">
+      <div class="krishna-verse" id="krishna-verse"></div>
+      <div class="krishna-footer">
+        <span class="krishna-label">Krishna · Bhagavad Gita</span>
+        <span class="krishna-ref" id="krishna-ref"></span>
+      </div>
+    </div>
+    <div class="krishna-converse">
+      <div class="krishna-exchange" id="krishna-exchange">
+        <div class="k-answer" style="color:var(--ivory-dim);font-family:var(--serif);font-style:italic;font-size:13px;">Ask anything — about action, alignment, or what is weighing on you.</div>
+      </div>
+      <div class="krishna-input-row">
+        <span class="input-arrow">↳</span>
+        <input type="text" id="krishna-input" placeholder="speak with Krishna…" autocomplete="off">
+        <button id="krishna-send">↵</button>
+      </div>
+      <div class="krishna-key-setup" id="krishna-key-setup">
+        <span class="key-label">Anthropic key</span>
+        <input type="password" id="api-key-field" placeholder="sk-ant-…">
+        <button id="api-key-save">set</button>
+      </div>
+      <div class="krishna-status" id="krishna-status"></div>
+    </div>
+  </div>
+
+  <!-- SYSTEM STATUS -->
+  <div class="section-label">System Status</div>
+  <div class="sys-status">
+    <div class="sys-stat">
+      <div class="sys-stat-label">Net Worth</div>
+      <div class="sys-stat-val gold">$125,400</div>
+      <div class="sys-stat-sub">↑ $4,200 this month</div>
+    </div>
+    <div class="sys-stat">
+      <div class="sys-stat-label">Target · Age 35</div>
+      <div class="sys-stat-val">$7,000,000</div>
+      <div class="sys-stat-sub">11 years · 1.8% complete</div>
+    </div>
+    <div class="sys-stat">
+      <div class="sys-stat-label">Modules Live</div>
+      <div class="sys-stat-val">8 <span style="font-size:12px;color:var(--ivory-dim)">/ 8</span></div>
+      <div class="sys-stat-sub">All modules live</div>
+    </div>
+    <div class="sys-stat">
+      <div class="sys-stat-label">Current Build</div>
+      <div class="sys-stat-val" style="font-size:13px">Data Layer</div>
+      <div class="sys-stat-sub">localStorage · next build</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-mantra">Om Namah Shivaya</div>
+  <div class="footer-meta">shiva-os &nbsp;·&nbsp; root &nbsp;·&nbsp; v0.1</div>
+</div>
+
+<script>
+// CLOCK
+function tick() {
+  const now = new Date();
+  document.getElementById('live-time').textContent =
+    now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('live-date').textContent =
+    now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+}
+tick(); setInterval(tick, 1000);
+
+// DAILY VERSE
+const verses = [
+  { text:"You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions. Never consider yourself the cause of results, and never be attached to not doing your duty.", ref:"Bhagavad Gita 2.47" },
+  { text:"The soul that with a strong and constant calm takes sorrow and takes joy indifferently, lives in the life undying. That which is not, shall never be. That which is, shall never cease to be.", ref:"Bhagavad Gita 2.14–15" },
+  { text:"A person can rise through the efforts of his own mind, or draw himself down in the same manner. Because each person is his own friend or his own enemy.", ref:"Bhagavad Gita 6.5" },
+  { text:"When meditation is mastered, the mind is unwavering like the flame of a lamp in a windless place.", ref:"Bhagavad Gita 6.19" },
+  { text:"One who has control over the mind is tranquil in heat and cold, in pleasure and pain, in honor and dishonor, and is ever steadfast with the Supreme Self.", ref:"Bhagavad Gita 6.7" },
+  { text:"Whatever you do, whatever you eat, whatever you offer or give away, whatever austerities you perform — do that as an offering to me. So shall you be free from the bonds of action.", ref:"Bhagavad Gita 9.27" },
+  { text:"There is more happiness in doing one's own path imperfectly than in doing another's path perfectly. Better is death in one's own path. The way of another is fraught with danger.", ref:"Bhagavad Gita 3.35" },
+  { text:"Reshape yourself through the power of your will. Those who have conquered the self find it their friend. Those who have not conquered themselves find the self acting as an enemy.", ref:"Bhagavad Gita 6.6" },
+  { text:"Set thy heart upon thy work but never on its reward. Work not for a reward, but never cease to do thy work. Do thy work in the peace of Yoga, free from selfish desires.", ref:"Bhagavad Gita 2.47–48" },
+  { text:"Fix thy mind on Me, be devoted to Me, worship Me, bow down to Me. So shalt thou come to Me. I promise thee truly, for thou art dear to Me.", ref:"Bhagavad Gita 18.65" }
+];
+const v = verses[Math.floor(Date.now()/86400000) % verses.length];
+document.getElementById('krishna-verse').textContent = '\u201c' + v.text + '\u201d';
+document.getElementById('krishna-ref').textContent = v.ref;
+
+// KRISHNA INTERACTIVE
+const KRISHNA_SYSTEM = `You are Krishna, speaking to Rahul — a 24-year-old Tamil man from Kumbakonam, living in Plainsboro NJ, engaged to a medical resident who will become a cardiologist. He is building toward a $7M net worth by age 35 (currently at $125k). He works a $95k W-2 job and is planning for MIT Supply Chain Management. He trains in parkour, plays PRS guitar (blues/metal/rock), and follows a philosophy of data sovereignty and intentional living rooted in Tamil Shaiva tradition.
+
+You carry the wisdom of the Bhagavad Gita. You are not a productivity tool. You are not a therapist. You are the voice of dharma — direct, grounding, philosophical, never soft.
+
+Rules:
+- Respond in 3–5 sentences maximum. Never more.
+- Never judge outcomes, results, or numbers — only reflect on the quality and alignment of action.
+- Frame everything through nishkama karma: action without attachment to fruit.
+- Use clear, slightly poetic prose — not archaic, not casual, never corporate.
+- End every response with a question or reflection that turns Rahul inward, not outward.
+- Reference his specific context naturally when relevant — don't force it.
+- Never say "I understand," "I see," "Great question," or any therapy-speak.
+- Never begin a response with "Rahul" — begin with the wisdom itself.
+- Speak as one who has already seen the outcome of all possible paths.`;
+
+const keySetupEl = document.getElementById('krishna-key-setup');
+const statusEl   = document.getElementById('krishna-status');
+const exchangeEl = document.getElementById('krishna-exchange');
+
+function showKeySetup(show) { keySetupEl.style.display = show ? 'flex' : 'none'; }
+function setStatus(msg)      { statusEl.textContent = msg; }
+
+document.getElementById('api-key-save').addEventListener('click', () => {
+  const k = document.getElementById('api-key-field').value.trim();
+  if (!k) return;
+  localStorage.setItem('shiva-os-key', k);
+  showKeySetup(false);
+  setStatus('key stored · ready');
+  setTimeout(() => setStatus(''), 2000);
+});
+
+async function askKrishna(question) {
+  const key = localStorage.getItem('shiva-os-key');
+  if (!key) { showKeySetup(true); setStatus('enter your Anthropic API key first'); return; }
+
+  document.getElementById('krishna-input').value = '';
+  document.getElementById('krishna-send').disabled = true;
+  setStatus('…');
+
+  exchangeEl.innerHTML = `<div class="k-question">${question}</div><div class="k-answer" id="k-response"></div>`;
+  const responseEl = document.getElementById('k-response');
+  const cursor = document.createElement('span');
+  cursor.className = 'k-cursor';
+  responseEl.appendChild(cursor);
+
+  try {
+    const { default: Anthropic } = await import('https://esm.sh/@anthropic-ai/sdk');
+    const client = new Anthropic({ apiKey: key, dangerouslyAllowBrowser: true });
+
+    let text = '';
+    const stream = client.messages.stream({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 400,
+      system: KRISHNA_SYSTEM,
+      messages: [{ role: 'user', content: question }]
+    });
+
+    for await (const chunk of stream) {
+      if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
+        text += chunk.delta.text;
+        cursor.remove();
+        responseEl.textContent = text;
+        responseEl.appendChild(cursor);
+      }
+    }
+    cursor.remove();
+    setStatus('');
+  } catch (err) {
+    cursor.remove();
+    if (err.status === 401 || String(err.message).includes('401')) {
+      setStatus('invalid key');
+      localStorage.removeItem('shiva-os-key');
+      showKeySetup(true);
+    } else {
+      setStatus('error · ' + (err.message || 'unknown'));
+    }
+  } finally {
+    document.getElementById('krishna-send').disabled = false;
+  }
+}
+
+document.getElementById('krishna-send').addEventListener('click', () => {
+  const q = document.getElementById('krishna-input').value.trim();
+  if (q) askKrishna(q);
+});
+document.getElementById('krishna-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { const q = e.target.value.trim(); if (q) askKrishna(q); }
+});
+
+// Init key state
+if (!localStorage.getItem('shiva-os-key')) {
+  showKeySetup(true);
+  setStatus('enter your Anthropic API key to speak with Krishna');
+} else {
+  showKeySetup(false);
+}
+</script>
+</body>
+</html>

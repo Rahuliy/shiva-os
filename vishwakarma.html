@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA // VISHWAKARMA</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --bg-raised: #111111;
+  --bg-hover:  #181818;
+  --border:    #222222;
+  --border-hi: #333333;
+  --text:      #c8c8c8;
+  --text-dim:  #555555;
+  --text-hi:   #efefef;
+  --accent:    #e8d5a3;
+  --green:     #7db88a;
+  --red:       #c47a6a;
+  --blue:      #6a8fa8;
+  --cyan:      #5ab8b8;
+  --gold:      #c9973a;
+  --mono:      'IBM Plex Mono', monospace;
+  --r:         2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo span{color:var(--text-dim);font-weight:300;}
+.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back:hover{color:var(--accent);}
+.nav{display:flex;gap:2px;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
+.nav a.active{color:var(--accent);background:var(--bg-raised);}
+.topbar-right{font-size:11px;color:var(--text-dim);}
+#live-time{color:var(--text);}
+
+.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.card:hover{border-color:var(--border-hi);}
+.card+.card{margin-top:16px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
+.stat:hover{background:var(--bg-hover);}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-value.accent{color:var(--accent);}
+.stat-value.cyan{color:var(--cyan);}
+.stat-sub{font-size:11px;color:var(--text-dim);}
+.delta-up{color:var(--green);}
+.delta-dn{color:var(--red);}
+
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
+.col-stack{display:flex;flex-direction:column;gap:16px;}
+
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.green{background:var(--green);}
+.bar-fill.cyan{background:var(--cyan);}
+.bar-fill.blue{background:var(--blue);}
+.bar-fill.red{background:var(--red);}
+
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--bg-hover);}
+.data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
+
+.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag.up{background:#0d1e1a;color:var(--cyan);}
+.tag.down{background:#2a1a18;color:var(--red);}
+.tag.planned{background:#1e1e2a;color:var(--blue);}
+.tag.building{background:#2a2a1a;color:var(--accent);}
+.tag.blocked{background:#2a1a18;color:var(--red);}
+.tag.done{background:#1a2e1e;color:var(--green);opacity:0.7;}
+
+/* SERVICE ROW */
+.service-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.service-row:last-child{border-bottom:none;}
+.service-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.service-dot.up{background:var(--cyan);}
+.service-dot.down{background:var(--red);}
+.service-dot.planned{background:transparent;border:1px solid var(--text-dim);}
+.service-name{flex:1;color:var(--text);}
+.service-host{font-size:10px;color:var(--text-dim);width:100px;}
+.service-uptime{font-size:11px;width:60px;text-align:right;}
+.service-uptime.up{color:var(--cyan);}
+
+/* DEVICE ROW */
+.device-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.device-row:last-child{border-bottom:none;}
+.device-icon{width:32px;height:32px;border:1px solid var(--border-hi);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:var(--accent);}
+.device-body{flex:1;}
+.device-name{color:var(--text-hi);font-size:12px;font-weight:500;margin-bottom:2px;}
+.device-meta{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.device-meta em{color:var(--text);font-style:normal;}
+
+/* BUILD LOG */
+.build-row{padding:12px 0;border-bottom:1px solid var(--border);}
+.build-row:last-child{border-bottom:none;}
+.build-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
+.build-title{color:var(--text-hi);font-size:12px;}
+.build-meta{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.build-meta em{color:var(--text);font-style:normal;}
+
+/* NETWORK TOPOLOGY */
+.topo{font-family:var(--mono);font-size:11px;color:var(--text-dim);line-height:2.2;padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);}
+.topo .node{color:var(--cyan);}
+.topo .edge{color:var(--text-dim);}
+.topo .label{color:var(--text);}
+.topo .pending{color:var(--border-hi);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.stat{animation:fadeUp .3s ease both;}
+.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
+.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
+.card{animation:fadeUp .35s ease both;animation-delay:.1s;}
+
+@media(max-width:800px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back" href="index.html">← shiva os</a>
+    <div class="logo">VISHWAKARMA <span>// homelab · infrastructure · systems</span></div>
+    <nav class="nav">
+      <a class="active" data-view="overview">overview</a>
+      <a data-view="homelab">homelab</a>
+      <a data-view="systems">systems</a>
+      <a data-view="builds">builds</a>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span id="live-time"></span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- OVERVIEW -->
+  <div class="view active" id="view-overview">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Services Live</div>
+        <div class="stat-value cyan">3</div>
+        <div class="stat-sub">of 8 planned</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Uptime — All</div>
+        <div class="stat-value">99.1%</div>
+        <div class="stat-sub">30-day rolling</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Homelab Status</div>
+        <div class="stat-value" style="font-size:17px;">Blocked</div>
+        <div class="stat-sub">needs physical space</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Active Builds</div>
+        <div class="stat-value accent">2</div>
+        <div class="stat-sub">in progress</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Service Status</div>
+          <div class="service-row">
+            <div class="service-dot up"></div>
+            <div class="service-name">Shiva OS (static)</div>
+            <div class="service-host">GitHub Pages</div>
+            <div class="service-uptime up">100%</div>
+            <span class="tag up">up</span>
+          </div>
+          <div class="service-row">
+            <div class="service-dot up"></div>
+            <div class="service-name">Domain — shiva.local</div>
+            <div class="service-host">Namecheap</div>
+            <div class="service-uptime up">100%</div>
+            <span class="tag up">up</span>
+          </div>
+          <div class="service-row">
+            <div class="service-dot up"></div>
+            <div class="service-name">API proxy (Krishna)</div>
+            <div class="service-host">Cloudflare Worker</div>
+            <div class="service-uptime up">99.3%</div>
+            <span class="tag up">up</span>
+          </div>
+          <div class="service-row">
+            <div class="service-dot planned"></div>
+            <div class="service-name">Self-hosted Gitea</div>
+            <div class="service-host">homelab (future)</div>
+            <div class="service-uptime" style="color:var(--text-dim)">—</div>
+            <span class="tag planned">planned</span>
+          </div>
+          <div class="service-row">
+            <div class="service-dot planned"></div>
+            <div class="service-name">Nextcloud (personal)</div>
+            <div class="service-host">homelab (future)</div>
+            <div class="service-uptime" style="color:var(--text-dim)">—</div>
+            <span class="tag planned">planned</span>
+          </div>
+          <div class="service-row">
+            <div class="service-dot planned"></div>
+            <div class="service-name">Syncthing (sync)</div>
+            <div class="service-host">homelab (future)</div>
+            <div class="service-uptime" style="color:var(--text-dim)">—</div>
+            <span class="tag planned">planned</span>
+          </div>
+          <div class="service-row">
+            <div class="service-dot planned"></div>
+            <div class="service-name">Shiva OS backend (DB)</div>
+            <div class="service-host">homelab (future)</div>
+            <div class="service-uptime" style="color:var(--text-dim)">—</div>
+            <span class="tag planned">planned</span>
+          </div>
+          <div class="service-row">
+            <div class="service-dot planned"></div>
+            <div class="service-name">Plex / media</div>
+            <div class="service-host">homelab (future)</div>
+            <div class="service-uptime" style="color:var(--text-dim)">—</div>
+            <span class="tag blocked">blocked</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Infrastructure Tiers</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:1.9;">
+            <div style="padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border);">
+              <div style="color:var(--cyan);margin-bottom:4px;">Tier 1 — Cloud (active)</div>
+              GitHub Pages · Cloudflare Workers · Namecheap DNS<br>
+              Cost: <span style="color:var(--text)">~$12/mo</span> · Low maintenance
+            </div>
+            <div style="padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border);">
+              <div style="color:var(--accent);margin-bottom:4px;">Tier 2 — Homelab (planned)</div>
+              Mini PC rack · self-hosted services · LAN<br>
+              Status: <span style="color:var(--red)">Blocked — apartment too small</span><br>
+              Revisit: 2027 housing change
+            </div>
+            <div>
+              <div style="color:var(--text-dim);margin-bottom:4px;">Tier 3 — Edge (future)</div>
+              Raspberry Pi nodes · remote monitoring<br>
+              Depends on: <span style="color:var(--text)">Tier 2 established first</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Data Sovereignty — Principles</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+            <div>— No personal data in proprietary cloud if avoidable</div>
+            <div>— Shiva OS runs entirely on local files (now)</div>
+            <div>— Future: all modules backed by self-hosted DB</div>
+            <div>— Anthropic API calls: OK (inference only, no data stored)</div>
+            <div>— Google / Apple: minimize · audit annually</div>
+            <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);color:var(--text-dim);">
+              Data sovereignty is a design constraint, not a goal. Build around it quietly.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- HOMELAB -->
+  <div class="view" id="view-homelab">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Homelab Status</div>
+        <div class="stat-value" style="font-size:17px;color:var(--red)">Blocked</div>
+        <div class="stat-sub">physical space · 2027</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Current Hardware</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">personal devices</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Planned Services</div>
+        <div class="stat-value">5</div>
+        <div class="stat-sub">waiting on rack</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Budget (homelab)</div>
+        <div class="stat-value accent" style="font-size:20px;">$800</div>
+        <div class="stat-sub">when unblocked · 1-time</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Current Devices</div>
+          <div class="device-row">
+            <div class="device-icon">⬛</div>
+            <div class="device-body">
+              <div class="device-name">Primary Workstation (Windows 11)</div>
+              <div class="device-meta">
+                Used for: <em>all development, Shiva OS</em><br>
+                Storage: <em>1TB NVMe</em> · RAM: <em>32GB</em><br>
+                Role: primary build machine
+              </div>
+            </div>
+          </div>
+          <div class="device-row">
+            <div class="device-icon">📱</div>
+            <div class="device-body">
+              <div class="device-name">iPhone (current)</div>
+              <div class="device-meta">
+                Minimize data leakage · Screen Time limits active<br>
+                iCloud: <em>2TB (photos, backups)</em> — acceptable trade-off<br>
+                Goal: reduce dependency gradually
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Planned Homelab — Hardware</div>
+          <table class="data-table">
+            <thead><tr><th>Device</th><th>Purpose</th><th class="num">Est. Cost</th><th>Priority</th></tr></thead>
+            <tbody>
+              <tr><td>Mini PC (N100 / Beelink)</td><td style="color:var(--text-dim)">Primary server</td><td class="num">$180</td><td><span class="tag planned">1st</span></td></tr>
+              <tr><td>Raspberry Pi 4 (4GB)</td><td style="color:var(--text-dim)">DNS / PiHole</td><td class="num">$65</td><td><span class="tag planned">2nd</span></td></tr>
+              <tr><td>4-bay NAS (Synology)</td><td style="color:var(--text-dim)">Storage / backup</td><td class="num">$300</td><td><span class="tag planned">3rd</span></td></tr>
+              <tr><td>2TB HDDs × 2</td><td style="color:var(--text-dim)">NAS drives</td><td class="num">$120</td><td><span class="tag planned">3rd</span></td></tr>
+              <tr><td>UPS (CyberPower)</td><td style="color:var(--text-dim)">Power backup</td><td class="num">$80</td><td><span class="tag planned">4th</span></td></tr>
+              <tr><td>Network switch (8-port)</td><td style="color:var(--text-dim)">LAN</td><td class="num">$30</td><td><span class="tag planned">1st</span></td></tr>
+              <tr style="font-weight:500;"><td>Total estimate</td><td></td><td class="num" style="color:var(--accent)">$775</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Planned Network Topology</div>
+          <div class="topo">
+<span class="edge">ISP modem</span>
+<br>&nbsp;&nbsp;└─ <span class="node">Router (pfSense or stock)</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="label">LAN — wired</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─ <span class="node">Mini PC server</span> <span class="edge">· Gitea, Nextcloud, Shiva API</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├─ <span class="node">NAS</span> <span class="edge">· 4TB storage · Syncthing</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└─ <span class="node">Workstation</span> <span class="edge">· dev machine</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="label">WiFi</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="node">Raspberry Pi</span> <span class="edge">· PiHole DNS</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="pending">IoT VLAN (future)</span>
+          </div>
+          <div style="margin-top:10px;font-size:10px;color:var(--text-dim);">
+            Blocked until 2027 housing change. Diagrammed for clarity when the time comes.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Software Stack (planned)</div>
+          <table class="data-table">
+            <thead><tr><th>Software</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td>Proxmox</td><td style="color:var(--text-dim)">Hypervisor — run VMs</td></tr>
+              <tr><td>Gitea</td><td style="color:var(--text-dim)">Self-hosted git</td></tr>
+              <tr><td>Nextcloud</td><td style="color:var(--text-dim)">Files / calendar / contacts</td></tr>
+              <tr><td>Syncthing</td><td style="color:var(--text-dim)">Device sync (no cloud)</td></tr>
+              <tr><td>PiHole</td><td style="color:var(--text-dim)">Network-level ad/tracker block</td></tr>
+              <tr><td>Nginx Proxy Manager</td><td style="color:var(--text-dim)">Reverse proxy for services</td></tr>
+              <tr><td>Uptime Kuma</td><td style="color:var(--text-dim)">Service monitoring</td></tr>
+              <tr><td>PostgreSQL</td><td style="color:var(--text-dim)">Shiva OS data backend</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /homelab -->
+
+
+  <!-- SYSTEMS -->
+  <div class="view" id="view-systems">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Dev Tools</div>
+        <div class="stat-value cyan">Active</div>
+        <div class="stat-sub">Windows + WSL2</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Backups</div>
+        <div class="stat-value" style="color:var(--accent)">Partial</div>
+        <div class="stat-sub">iCloud + local · no NAS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Security</div>
+        <div class="stat-value" style="font-size:17px;">Basic</div>
+        <div class="stat-sub">1PW · 2FA on critical</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Automation</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">active scripts/crons</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Dev Environment</div>
+          <table class="data-table">
+            <thead><tr><th>Tool</th><th>Role</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>VS Code</td><td style="color:var(--text-dim)">Primary editor</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>WSL2 (Ubuntu)</td><td style="color:var(--text-dim)">Linux shell on Windows</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>Git + GitHub</td><td style="color:var(--text-dim)">Version control</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>Python 3.11</td><td style="color:var(--text-dim)">Scripts / data</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>Node.js (LTS)</td><td style="color:var(--text-dim)">JS runtime</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>Docker Desktop</td><td style="color:var(--text-dim)">Container dev</td><td><span class="tag building">learning</span></td></tr>
+              <tr><td>Neovim</td><td style="color:var(--text-dim)">Terminal editor</td><td><span class="tag planned">planned</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="section-label">Backup Strategy</div>
+          <table class="data-table">
+            <thead><tr><th>Data</th><th>Location</th><th>Frequency</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Photos</td><td style="color:var(--text-dim)">iCloud 2TB</td><td style="color:var(--text-dim)">Continuous</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>Code (Shiva OS)</td><td style="color:var(--text-dim)">GitHub</td><td style="color:var(--text-dim)">On commit</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>Documents</td><td style="color:var(--text-dim)">Local only</td><td style="color:var(--text-dim)">Manual</td><td><span class="tag blocked">risk</span></td></tr>
+              <tr><td>Financial data</td><td style="color:var(--text-dim)">Local HTML files</td><td style="color:var(--text-dim)">Manual</td><td><span class="tag blocked">risk</span></td></tr>
+              <tr><td>Everything (NAS)</td><td style="color:var(--text-dim)">Homelab (future)</td><td style="color:var(--text-dim)">Daily auto</td><td><span class="tag planned">planned</span></td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;font-size:11px;color:var(--red);">
+            Risk: local documents and Shiva OS data have no automated backup currently. Fix before homelab — use USB drive rotation minimum.
+          </div>
+        </div>
+      </div>
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Security Posture</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+              <span>Password manager</span><span style="color:var(--cyan)">1Password ✓</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+              <span>2FA — critical accounts</span><span style="color:var(--cyan)">Active ✓</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+              <span>2FA — all accounts</span><span style="color:var(--accent)">Partial</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+              <span>VPN</span><span style="color:var(--text-dim)">Not using</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+              <span>DNS-level blocking</span><span style="color:var(--text-dim)">PiHole (planned)</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;">
+              <span>Encrypted local storage</span><span style="color:var(--text-dim)">BitLocker (Windows)</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-label">Active Automations</div>
+          <table class="data-table">
+            <thead><tr><th>Script</th><th>Schedule</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>VTSAX auto-transfer (Marcus)</td><td style="color:var(--text-dim)">Monthly · auto</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>MIT savings transfer</td><td style="color:var(--text-dim)">Monthly · auto</td><td><span class="tag up">active</span></td></tr>
+              <tr><td>Local backup script</td><td style="color:var(--text-dim)">—</td><td><span class="tag blocked">not built</span></td></tr>
+              <tr><td>Shiva OS data export</td><td style="color:var(--text-dim)">—</td><td><span class="tag planned">planned</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /systems -->
+
+
+  <!-- BUILDS -->
+  <div class="view" id="view-builds">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Active Builds</div>
+        <div class="stat-value accent">2</div>
+        <div class="stat-sub">in progress</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Completed 2026</div>
+        <div class="stat-value">1</div>
+        <div class="stat-sub">Shiva OS static</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Queue</div>
+        <div class="stat-value">6</div>
+        <div class="stat-sub">planned builds</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Blocked</div>
+        <div class="stat-value" style="color:var(--red)">3</div>
+        <div class="stat-sub">homelab dependent</div>
+      </div>
+    </div>
+
+    <div class="section-label">Active</div>
+
+    <div class="card" style="border-left:2px solid var(--accent);">
+      <div class="build-header" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div style="color:var(--text-hi);font-size:13px;font-weight:500;">Shiva OS — All Modules</div>
+        <span class="tag building">building</span>
+      </div>
+      <div class="build-meta">
+        Static HTML/CSS/JS · local-first · no framework<br>
+        Modules: <em>Lakshmi complete · Kubera, Ganesha, Saraswati, Hanuman, Dhanvantari, Murugan, Vishwakarma — wireframing</em><br>
+        Next: replace static data with localStorage or JSON · then DB backend
+      </div>
+      <div style="margin-top:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-dim)">Module completion</span><span style="color:var(--accent)">12%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:12%"></div></div>
+      </div>
+    </div>
+
+    <div class="card" style="border-left:2px solid var(--blue);margin-top:8px;">
+      <div class="build-header" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div style="color:var(--text-hi);font-size:13px;font-weight:500;">Shiva OS — Data Persistence</div>
+        <span class="tag building">planning</span>
+      </div>
+      <div class="build-meta">
+        Currently: all data hardcoded in HTML<br>
+        Phase 1: <em>localStorage for editable fields (Feb–Mar 2026)</em><br>
+        Phase 2: <em>JSON flat-file export/import (Q2 2026)</em><br>
+        Phase 3: <em>Self-hosted PostgreSQL backend (2027, requires homelab)</em>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">Queue</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="data-table">
+        <thead><tr><th>Build</th><th>Depends On</th><th>Target</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>LocalStorage data layer</td><td style="color:var(--text-dim)">—</td><td style="color:var(--text-dim)">Mar 2026</td><td><span class="tag planned">next</span></td></tr>
+          <tr><td>Shiva OS mobile-responsive pass</td><td style="color:var(--text-dim)">Modules done</td><td style="color:var(--text-dim)">Q2 2026</td><td><span class="tag planned">planned</span></td></tr>
+          <tr><td>PiHole DNS setup</td><td style="color:var(--text-dim)">Raspberry Pi</td><td style="color:var(--text-dim)">2027</td><td><span class="tag blocked">blocked</span></td></tr>
+          <tr><td>Homelab rack — Phase 1</td><td style="color:var(--text-dim)">Physical space</td><td style="color:var(--text-dim)">2027</td><td><span class="tag blocked">blocked</span></td></tr>
+          <tr><td>Nextcloud self-host</td><td style="color:var(--text-dim)">Homelab P1</td><td style="color:var(--text-dim)">2027</td><td><span class="tag blocked">blocked</span></td></tr>
+          <tr><td>Shiva OS DB backend</td><td style="color:var(--text-dim)">Homelab + PostgreSQL</td><td style="color:var(--text-dim)">2027–28</td><td><span class="tag planned">planned</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">Completed</div>
+    <div class="card">
+      <div class="build-row">
+        <div class="build-header"><span class="build-title">Shiva OS — Static site + Lakshmi module</span><span class="tag done">done</span></div>
+        <div class="build-meta">Feb 2026 · HTML/CSS/JS · no build tools · local-first<br>Output: <em>index.html + lakshmi.html — fully functional</em></div>
+      </div>
+      <div class="build-row">
+        <div class="build-header"><span class="build-title">Cloudflare Worker — API proxy for Krishna</span><span class="tag done">done</span></div>
+        <div class="build-meta">Feb 2026 · Proxies Anthropic API calls from browser<br>Output: <em>CORS handling, key stored in localStorage</em></div>
+      </div>
+    </div>
+
+  </div><!-- /builds -->
+
+</div>
+
+<script>
+document.querySelectorAll('.nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.view;
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById('view-' + target).classList.add('active');
+  });
+});
+function tick() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('live-time').textContent = d + ' ' + t;
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

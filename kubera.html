@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA // KUBERA</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --bg-raised: #111111;
+  --bg-hover:  #181818;
+  --border:    #222222;
+  --border-hi: #333333;
+  --text:      #c8c8c8;
+  --text-dim:  #555555;
+  --text-hi:   #efefef;
+  --accent:    #e8d5a3;
+  --green:     #7db88a;
+  --red:       #c47a6a;
+  --blue:      #6a8fa8;
+  --gold:      #c9973a;
+  --mono:      'IBM Plex Mono', monospace;
+  --r:         2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo span{color:var(--text-dim);font-weight:300;}
+.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back:hover{color:var(--accent);}
+.nav{display:flex;gap:2px;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
+.nav a.active{color:var(--accent);background:var(--bg-raised);}
+.topbar-right{font-size:11px;color:var(--text-dim);}
+#live-time{color:var(--text);}
+
+.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.card:hover{border-color:var(--border-hi);}
+.card+.card{margin-top:16px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
+.stat:hover{background:var(--bg-hover);}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-value.accent{color:var(--accent);}
+.stat-value.green{color:var(--green);}
+.stat-value.red{color:var(--red);}
+.stat-sub{font-size:11px;color:var(--text-dim);}
+.delta-up{color:var(--green);}
+.delta-dn{color:var(--red);}
+
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
+.col-stack{display:flex;flex-direction:column;gap:16px;}
+
+.progress-block{margin-bottom:14px;}
+.progress-block:last-child{margin-bottom:0;}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.progress-name{color:var(--text);}
+.progress-vals{color:var(--text-dim);}
+.progress-vals em{color:var(--text);font-style:normal;}
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.green{background:var(--green);}
+.bar-fill.blue{background:var(--blue);}
+.bar-fill.red{background:var(--red);}
+.bar-fill.gold{background:var(--gold);}
+
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--bg-hover);}
+.data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
+.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag.revenue{background:#1a2e1e;color:var(--green);}
+.tag.cogs{background:#2a1a18;color:var(--red);}
+.tag.opex{background:#1e1e2a;color:var(--blue);}
+.tag.invest{background:#181e28;color:var(--blue);}
+
+.divider-row{border-top:1px solid var(--border-hi);}
+.divider-row td{color:var(--text-hi)!important;font-weight:500;padding-top:12px!important;}
+.total-row td{color:var(--accent)!important;font-weight:600;border-top:1px solid var(--border-hi)!important;}
+
+/* P&L STATEMENT */
+.pl-section{margin-bottom:20px;}
+.pl-section-title{font-size:9px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
+.pl-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;}
+.pl-row:hover{background:var(--bg-hover);}
+.pl-row.indent{padding-left:28px;color:var(--text-dim);}
+.pl-row.subtotal{background:rgba(255,255,255,0.02);font-weight:500;color:var(--text-hi);}
+.pl-row.total{background:rgba(201,151,58,0.05);font-weight:600;color:var(--accent);border-top:1px solid var(--border-hi);}
+.pl-row.negative{color:var(--red);}
+
+/* PROJECTION CHART */
+.proj-row{display:grid;grid-template-columns:80px 1fr 80px;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;}
+.proj-row:last-child{border-bottom:none;}
+.proj-label{color:var(--text-dim);font-size:10px;letter-spacing:0.05em;}
+.proj-val{color:var(--text-hi);text-align:right;}
+
+/* STREAM CARDS */
+.stream-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:8px;transition:border-color .15s;}
+.stream-card:hover{border-color:var(--border-hi);}
+.stream-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.stream-name{color:var(--text-hi);font-size:13px;font-weight:500;}
+.stream-status{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+.stream-status.active{background:#1a2e1e;color:var(--green);}
+.stream-status.building{background:#181e28;color:var(--blue);}
+.stream-status.planned{background:var(--border);color:var(--text-dim);}
+.stream-meta{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.stream-meta em{color:var(--text);font-style:normal;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.stat{animation:fadeUp .3s ease both;}
+.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
+.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
+.card{animation:fadeUp .35s ease both;animation-delay:.1s;}
+
+@media(max-width:800px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back" href="index.html">← shiva os</a>
+    <div class="logo">KUBERA <span>// business ops</span></div>
+    <nav class="nav">
+      <a class="active" data-view="overview">overview</a>
+      <a data-view="revenue">revenue</a>
+      <a data-view="expenses">expenses</a>
+      <a data-view="pl">p&amp;l</a>
+      <a data-view="projections">projections</a>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span id="live-time"></span> &nbsp;·&nbsp; FY 2026
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- OVERVIEW -->
+  <div class="view active" id="view-overview">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Gross Revenue</div>
+        <div class="stat-value accent">$0</div>
+        <div class="stat-sub">no active business yet</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Net Profit</div>
+        <div class="stat-value">$0</div>
+        <div class="stat-sub">post COGS + opex</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Margin</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">gross margin %</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Revenue Streams</div>
+        <div class="stat-value">0 <span style="font-size:13px;color:var(--text-dim)">/ 3 planned</span></div>
+        <div class="stat-sub">active · planned</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Revenue Streams — Planned</div>
+          <div class="stream-card">
+            <div class="stream-header">
+              <div class="stream-name">Supply Chain Consulting</div>
+              <div class="stream-status planned">planned</div>
+            </div>
+            <div class="stream-meta">
+              Post-MIT SCM degree · target: <em>2028</em><br>
+              Est. rate: <em>$150–250/hr</em> · 10–15 hrs/mo<br>
+              Est. annual: <em>$24,000–$45,000</em>
+            </div>
+          </div>
+          <div class="stream-card">
+            <div class="stream-header">
+              <div class="stream-name">Digital Products / Tools</div>
+              <div class="stream-status building">building</div>
+            </div>
+            <div class="stream-meta">
+              Shiva OS and similar systems · target: <em>2026–27</em><br>
+              Model: one-time + subscription<br>
+              Est. annual: <em>$5,000–$20,000</em>
+            </div>
+          </div>
+          <div class="stream-card">
+            <div class="stream-header">
+              <div class="stream-name">Content / Writing</div>
+              <div class="stream-status planned">planned</div>
+            </div>
+            <div class="stream-meta">
+              Technical writing · Tamil Shaiva tradition · finance<br>
+              Platform: Substack or equivalent<br>
+              Est. annual: <em>$3,000–$10,000</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Business Readiness</div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">MIT SCM Credential</span><span class="progress-vals"><em>34%</em> funded</span></div>
+            <div class="bar-track"><div class="bar-fill blue" style="width:34%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Shiva OS — MVP</span><span class="progress-vals"><em>12%</em> complete</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:12%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">LLC Formation</span><span class="progress-vals"><em>0%</em> · not started</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:0%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Emergency Runway (6mo)</span><span class="progress-vals"><em>40%</em></span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:40%"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Income Breakdown</div>
+          <div style="padding:12px 0;text-align:center;color:var(--text-dim);font-size:11px;line-height:2.2;">
+            No business revenue yet.<br>
+            <span style="color:var(--accent)">W-2</span> remains sole active income.<br>
+            <br>
+            First stream target:<br>
+            <span style="color:var(--text)">Digital Products · Q4 2026</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Key Milestones</div>
+          <table class="data-table">
+            <thead><tr><th>Milestone</th><th>Target</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Shiva OS public release</td><td style="color:var(--text-dim)">Q4 2026</td><td><span class="tag building">in build</span></td></tr>
+              <tr><td>First $1 online</td><td style="color:var(--text-dim)">2026</td><td><span class="tag">pending</span></td></tr>
+              <tr><td>LLC / sole prop setup</td><td style="color:var(--text-dim)">2027</td><td><span class="tag">pending</span></td></tr>
+              <tr><td>MIT SCM complete</td><td style="color:var(--text-dim)">2027</td><td><span class="tag building">in progress</span></td></tr>
+              <tr><td>First consulting client</td><td style="color:var(--text-dim)">2028</td><td><span class="tag">planned</span></td></tr>
+              <tr><td>$1k/mo passive biz</td><td style="color:var(--text-dim)">2028</td><td><span class="tag">planned</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- REVENUE -->
+  <div class="view" id="view-revenue">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">YTD Revenue</div>
+        <div class="stat-value accent">$0</div>
+        <div class="stat-sub">Jan–Feb 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Run Rate</div>
+        <div class="stat-value">$0</div>
+        <div class="stat-sub">annualized</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Active Streams</div>
+        <div class="stat-value">0</div>
+        <div class="stat-sub">of 3 planned</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Target MRR (2028)</div>
+        <div class="stat-value" style="font-size:20px;">$3,000</div>
+        <div class="stat-sub">monthly recurring</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Revenue Log</div>
+      <div style="padding:24px;text-align:center;color:var(--text-dim);font-size:11px;line-height:2.2;border:1px dashed var(--border);border-radius:var(--r);">
+        No revenue recorded yet.<br>
+        Transactions will appear here once business income is active.<br>
+        <span style="color:var(--text-dim);font-size:10px;margin-top:8px;display:block;">First entry expected: Q4 2026</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div class="card">
+        <div class="section-label">Revenue Targets by Year</div>
+        <table class="data-table">
+          <thead><tr><th>Year</th><th>Stream</th><th class="num">Target</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>2026</td><td>Digital Products</td><td class="num" style="color:var(--text-dim)">$2,000–5,000</td><td style="color:var(--text-dim);font-size:11px">Shiva OS initial release</td></tr>
+            <tr><td>2027</td><td>Digital + Content</td><td class="num" style="color:var(--text-dim)">$8,000–15,000</td><td style="color:var(--text-dim);font-size:11px">Post-MIT, subscription model</td></tr>
+            <tr><td>2028</td><td>All streams</td><td class="num" style="color:var(--accent)">$30,000–50,000</td><td style="color:var(--text-dim);font-size:11px">Consulting active</td></tr>
+            <tr><td>2030</td><td>All streams</td><td class="num" style="color:var(--accent)">$80,000–120,000</td><td style="color:var(--text-dim);font-size:11px">Scaling phase</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /revenue -->
+
+
+  <!-- EXPENSES -->
+  <div class="view" id="view-expenses">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Biz Expenses</div>
+        <div class="stat-value accent">$95</div>
+        <div class="stat-sub">monthly · tools only</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Annual Tools</div>
+        <div class="stat-value">$1,140</div>
+        <div class="stat-sub">software stack</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">COGS</div>
+        <div class="stat-value">$0</div>
+        <div class="stat-sub">no product revenue yet</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Biz % of Income</div>
+        <div class="stat-value">1.1%</div>
+        <div class="stat-sub">tools vs total income</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Business Tool Stack</div>
+          <table class="data-table">
+            <thead><tr><th>Tool</th><th>Purpose</th><th class="num">$/mo</th><th>Category</th></tr></thead>
+            <tbody>
+              <tr><td>GitHub Pro</td><td style="color:var(--text-dim)">Code hosting</td><td class="num">$4</td><td><span class="tag opex">opex</span></td></tr>
+              <tr><td>ChatGPT Plus</td><td style="color:var(--text-dim)">AI tooling</td><td class="num">$20</td><td><span class="tag opex">opex</span></td></tr>
+              <tr><td>Claude API credits</td><td style="color:var(--text-dim)">Shiva OS AI</td><td class="num">$15</td><td><span class="tag opex">opex</span></td></tr>
+              <tr><td>Domain + hosting</td><td style="color:var(--text-dim)">Web infra</td><td class="num">$12</td><td><span class="tag opex">opex</span></td></tr>
+              <tr><td>Figma (free tier)</td><td style="color:var(--text-dim)">Design</td><td class="num">$0</td><td><span class="tag">free</span></td></tr>
+              <tr><td>Notion (free tier)</td><td style="color:var(--text-dim)">Docs</td><td class="num">$0</td><td><span class="tag">free</span></td></tr>
+              <tr class="divider-row"><td>Total</td><td></td><td class="num">$51</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Expense Allocation</div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">AI / API</span><span class="progress-vals"><em>$35</em> / mo</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:68%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Infrastructure</span><span class="progress-vals"><em>$12</em> / mo</span></div>
+            <div class="bar-track"><div class="bar-fill blue" style="width:24%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Dev Tools</span><span class="progress-vals"><em>$4</em> / mo</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:8%"></div></div>
+          </div>
+          <div style="padding-top:12px;margin-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);">
+            Business tools are lean — all expense growth should be tied to revenue growth.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /expenses -->
+
+
+  <!-- P&L -->
+  <div class="view" id="view-pl">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value accent">$0</div>
+        <div class="stat-sub">FY 2026 YTD</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Gross Profit</div>
+        <div class="stat-value">$0</div>
+        <div class="stat-sub">after COGS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Operating Expense</div>
+        <div class="stat-value red">−$102</div>
+        <div class="stat-sub">tools + overhead</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Net Income</div>
+        <div class="stat-value red">−$102</div>
+        <div class="stat-sub">pre-tax</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="pl-section-title">INCOME STATEMENT — FEB 2026</div>
+
+      <div class="pl-section">
+        <div class="pl-section-title">Revenue</div>
+        <div class="pl-row indent"><span>Digital Products</span><span style="color:var(--text-dim)">$0</span></div>
+        <div class="pl-row indent"><span>Consulting</span><span style="color:var(--text-dim)">$0</span></div>
+        <div class="pl-row indent"><span>Content</span><span style="color:var(--text-dim)">$0</span></div>
+        <div class="pl-row subtotal"><span>Total Revenue</span><span>$0</span></div>
+      </div>
+
+      <div class="pl-section">
+        <div class="pl-section-title">Cost of Goods Sold</div>
+        <div class="pl-row indent"><span>API costs (revenue-linked)</span><span style="color:var(--text-dim)">$0</span></div>
+        <div class="pl-row subtotal"><span>Gross Profit</span><span>$0</span></div>
+        <div class="pl-row indent" style="font-size:10px;color:var(--text-dim);padding-top:4px;padding-bottom:4px;"><span>Gross Margin</span><span>—</span></div>
+      </div>
+
+      <div class="pl-section">
+        <div class="pl-section-title">Operating Expenses</div>
+        <div class="pl-row indent"><span>AI / API subscriptions</span><span style="color:var(--red)">−$35</span></div>
+        <div class="pl-row indent"><span>Infrastructure / hosting</span><span style="color:var(--red)">−$12</span></div>
+        <div class="pl-row indent"><span>Dev tools</span><span style="color:var(--red)">−$4</span></div>
+        <div class="pl-row indent"><span>Misc / admin</span><span style="color:var(--red)">−$51</span></div>
+        <div class="pl-row subtotal"><span>Total OpEx</span><span style="color:var(--red)">−$102</span></div>
+      </div>
+
+      <div class="pl-row total"><span>NET INCOME</span><span style="color:var(--red)">−$102</span></div>
+    </div>
+
+    <div style="margin-top:16px;padding:12px 16px;background:var(--bg-raised);border:1px solid var(--border);font-size:11px;color:var(--text-dim);line-height:1.9;border-radius:var(--r);">
+      Note: Business is pre-revenue. All current costs are absorbed by W-2 income and classified under personal subscriptions in Lakshmi. This P&L will activate once first business revenue is recorded.
+    </div>
+
+  </div><!-- /pl -->
+
+
+  <!-- PROJECTIONS -->
+  <div class="view" id="view-projections">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">2026 Target</div>
+        <div class="stat-value accent" style="font-size:20px;">$5,000</div>
+        <div class="stat-sub">digital products</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">2027 Target</div>
+        <div class="stat-value" style="font-size:20px;">$15,000</div>
+        <div class="stat-sub">products + content</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">2028 Target</div>
+        <div class="stat-value" style="font-size:20px;">$50,000</div>
+        <div class="stat-sub">consulting active</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">2030 Target</div>
+        <div class="stat-value" style="font-size:20px;">$120,000</div>
+        <div class="stat-sub">scaling phase</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Revenue Projection — 5 Year</div>
+          <table class="data-table">
+            <thead><tr><th>Year</th><th class="num">Digital</th><th class="num">Consulting</th><th class="num">Content</th><th class="num">Total</th></tr></thead>
+            <tbody>
+              <tr><td>2026</td><td class="num" style="color:var(--text-dim)">$5k</td><td class="num" style="color:var(--text-dim)">$0</td><td class="num" style="color:var(--text-dim)">$0</td><td class="num" style="color:var(--accent)">$5k</td></tr>
+              <tr><td>2027</td><td class="num" style="color:var(--text-dim)">$10k</td><td class="num" style="color:var(--text-dim)">$0</td><td class="num" style="color:var(--text-dim)">$5k</td><td class="num" style="color:var(--accent)">$15k</td></tr>
+              <tr><td>2028</td><td class="num" style="color:var(--text-dim)">$15k</td><td class="num" style="color:var(--text-dim)">$30k</td><td class="num" style="color:var(--text-dim)">$5k</td><td class="num" style="color:var(--accent)">$50k</td></tr>
+              <tr><td>2029</td><td class="num" style="color:var(--text-dim)">$20k</td><td class="num" style="color:var(--text-dim)">$55k</td><td class="num" style="color:var(--text-dim)">$10k</td><td class="num" style="color:var(--accent)">$85k</td></tr>
+              <tr><td>2030</td><td class="num" style="color:var(--text-dim)">$25k</td><td class="num" style="color:var(--text-dim)">$85k</td><td class="num" style="color:var(--text-dim)">$10k</td><td class="num" style="color:var(--accent)">$120k</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="section-label">Net Worth Impact — Business Income</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;padding:4px 0;">
+            <div class="proj-row">
+              <span class="proj-label">Scenario</span>
+              <span style="color:var(--text-dim);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;">W-2 Only</span>
+              <span class="proj-val" style="font-size:10px;color:var(--text-dim)">+ Biz</span>
+            </div>
+            <div class="proj-row">
+              <span class="proj-label">2027 NW</span>
+              <div class="bar-track" style="height:4px"><div class="bar-fill" style="width:35%"></div></div>
+              <span class="proj-val" style="color:var(--text)">$215k</span>
+            </div>
+            <div class="proj-row">
+              <span class="proj-label">2028 NW</span>
+              <div class="bar-track" style="height:4px"><div class="bar-fill green" style="width:52%"></div></div>
+              <span class="proj-val" style="color:var(--green)">$310k</span>
+            </div>
+            <div class="proj-row">
+              <span class="proj-label">2030 NW</span>
+              <div class="bar-track" style="height:4px"><div class="bar-fill gold" style="width:78%"></div></div>
+              <span class="proj-val" style="color:var(--gold)">$580k</span>
+            </div>
+            <div class="proj-row">
+              <span class="proj-label">2035 NW</span>
+              <div class="bar-track" style="height:4px"><div class="bar-fill" style="width:100%;background:var(--accent)"></div></div>
+              <span class="proj-val" style="color:var(--accent)">$2.1M+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Path to $7M</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;padding:4px 0;">
+            <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+              <div style="color:var(--text-hi);margin-bottom:4px;">W-2 only projection</div>
+              At current savings rate + 7% CAGR:<br>
+              <span style="color:var(--accent)">~$2.1M by age 35</span><br>
+              <span style="color:var(--red);font-size:10px;">Gap: $4.9M</span>
+            </div>
+            <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+              <div style="color:var(--text-hi);margin-bottom:4px;">W-2 + Business projection</div>
+              W-2 + $120k/yr biz by 2030:<br>
+              <span style="color:var(--green)">~$3.8M by age 35</span><br>
+              <span style="color:var(--blue);font-size:10px;">Closer · still needs income scaling</span>
+            </div>
+            <div>
+              <div style="color:var(--text-hi);margin-bottom:4px;">The real lever</div>
+              W-2 growth + business + investments:<br>
+              Income needs to reach<br>
+              <span style="color:var(--accent)">$250k–300k/yr by 2030</span><br>
+              to make $7M realistic.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /projections -->
+
+</div>
+
+<script>
+document.querySelectorAll('.nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.view;
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById('view-' + target).classList.add('active');
+  });
+});
+function tick() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('live-time').textContent = d + ' ' + t;
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

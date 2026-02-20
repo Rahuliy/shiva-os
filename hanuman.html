@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA // HANUMAN</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --bg-raised: #111111;
+  --bg-hover:  #181818;
+  --border:    #222222;
+  --border-hi: #333333;
+  --text:      #c8c8c8;
+  --text-dim:  #555555;
+  --text-hi:   #efefef;
+  --accent:    #e8d5a3;
+  --green:     #7db88a;
+  --red:       #c47a6a;
+  --blue:      #6a8fa8;
+  --orange:    #c47a3a;
+  --gold:      #c9973a;
+  --mono:      'IBM Plex Mono', monospace;
+  --r:         2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo span{color:var(--text-dim);font-weight:300;}
+.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back:hover{color:var(--accent);}
+.nav{display:flex;gap:2px;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
+.nav a.active{color:var(--accent);background:var(--bg-raised);}
+.topbar-right{font-size:11px;color:var(--text-dim);}
+#live-time{color:var(--text);}
+
+.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.card:hover{border-color:var(--border-hi);}
+.card+.card{margin-top:16px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
+.stat:hover{background:var(--bg-hover);}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-value.accent{color:var(--accent);}
+.stat-sub{font-size:11px;color:var(--text-dim);}
+.delta-up{color:var(--green);}
+.delta-dn{color:var(--red);}
+
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
+.col-stack{display:flex;flex-direction:column;gap:16px;}
+
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.green{background:var(--green);}
+.bar-fill.blue{background:var(--blue);}
+.bar-fill.orange{background:var(--orange);}
+
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--bg-hover);}
+.data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
+.divider-row td{color:var(--text-hi)!important;font-weight:500;border-top:1px solid var(--border-hi)!important;padding-top:12px!important;}
+
+.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag.solid{background:#1a2e1e;color:var(--green);}
+.tag.practicing{background:#181e28;color:var(--blue);}
+.tag.learning{background:#2a2a1a;color:var(--accent);}
+.tag.sharp{background:#0d1e0d;color:var(--green);font-weight:600;}
+.tag.pr{background:#1e2a1e;color:var(--green);}
+
+/* TRAINING HEATMAP */
+.heatmap{display:grid;grid-template-columns:repeat(26,1fr);gap:3px;margin-bottom:8px;}
+.hm-cell{aspect-ratio:1;border-radius:1px;background:var(--border);}
+.hm-cell.l1{background:rgba(125,184,138,0.25);}
+.hm-cell.l2{background:rgba(125,184,138,0.55);}
+.hm-cell.l3{background:rgba(125,184,138,0.85);}
+.hm-cell.l4{background:var(--green);}
+.heatmap-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text-dim);}
+
+/* MOVEMENT SKILL */
+.movement-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.movement-row:last-child{border-bottom:none;}
+.movement-name{flex:1;color:var(--text);}
+.movement-category{font-size:10px;color:var(--text-dim);width:80px;}
+.movement-notes{font-size:10px;color:var(--text-dim);flex:1;text-align:right;}
+
+/* STRENGTH RECORD */
+.lift-row{display:grid;grid-template-columns:1fr 80px 80px 80px;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;}
+.lift-row:last-child{border-bottom:none;}
+.lift-row:hover{background:var(--bg-hover);}
+.lift-name{color:var(--text);}
+.lift-val{text-align:right;color:var(--text-hi);font-variant-numeric:tabular-nums;}
+.lift-val.pr{color:var(--green);}
+.lift-val.dim{color:var(--text-dim);}
+
+/* SESSION LOG */
+.session-row{padding:12px 0;border-bottom:1px solid var(--border);}
+.session-row:last-child{border-bottom:none;}
+.session-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.session-date{font-size:11px;color:var(--text-dim);}
+.session-type{font-size:11px;color:var(--text);}
+.session-notes{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.session-notes em{color:var(--text);font-style:normal;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.stat{animation:fadeUp .3s ease both;}
+.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
+.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
+.card{animation:fadeUp .35s ease both;animation-delay:.1s;}
+
+@media(max-width:800px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back" href="index.html">← shiva os</a>
+    <div class="logo">HANUMAN <span>// training · parkour · strength</span></div>
+    <nav class="nav">
+      <a class="active" data-view="overview">overview</a>
+      <a data-view="parkour">parkour</a>
+      <a data-view="strength">strength</a>
+      <a data-view="log">log</a>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span id="live-time"></span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- OVERVIEW -->
+  <div class="view active" id="view-overview">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Training Days</div>
+        <div class="stat-value accent">18</div>
+        <div class="stat-sub">Feb · 3 sessions/week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Current Streak</div>
+        <div class="stat-value">6 <span style="font-size:14px;color:var(--text-dim)">days</span></div>
+        <div class="stat-sub delta-up">best: 14 days</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Parkour Skills</div>
+        <div class="stat-value">7</div>
+        <div class="stat-sub">solid or sharp</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Latest PR</div>
+        <div class="stat-value" style="font-size:17px;">Pull-up</div>
+        <div class="stat-sub delta-up">14 reps · Feb 14</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Training Activity — 6 Months</div>
+          <div class="heatmap" id="heatmap"></div>
+          <div class="heatmap-labels">
+            <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:10px;font-size:10px;color:var(--text-dim);align-items:center;">
+            <span>Less</span>
+            <div style="display:flex;gap:2px;">
+              <div style="width:10px;height:10px;background:var(--border);border-radius:1px;"></div>
+              <div style="width:10px;height:10px;background:rgba(125,184,138,0.25);border-radius:1px;"></div>
+              <div style="width:10px;height:10px;background:rgba(125,184,138,0.55);border-radius:1px;"></div>
+              <div style="width:10px;height:10px;background:var(--green);border-radius:1px;"></div>
+            </div>
+            <span>More</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Weekly Volume — Last 8 Weeks</div>
+          <table class="data-table">
+            <thead><tr><th>Week</th><th>Type</th><th class="num">Sessions</th><th class="num">Duration</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--text-dim);font-size:11px">Feb 17</td><td><span class="tag practicing">Parkour</span></td><td class="num">2</td><td class="num">90 min</td><td style="color:var(--text-dim);font-size:11px">Precision work</td></tr>
+              <tr><td style="color:var(--text-dim);font-size:11px">Feb 10</td><td><span class="tag solid">Mixed</span></td><td class="num">3</td><td class="num">140 min</td><td style="color:var(--text-dim);font-size:11px">PR on pull-ups</td></tr>
+              <tr><td style="color:var(--text-dim);font-size:11px">Feb 3</td><td><span class="tag practicing">Parkour</span></td><td class="num">2</td><td class="num">80 min</td><td style="color:var(--text-dim);font-size:11px">Vault combos</td></tr>
+              <tr><td style="color:var(--text-dim);font-size:11px">Jan 27</td><td><span class="tag solid">Strength</span></td><td class="num">3</td><td class="num">120 min</td><td style="color:var(--text-dim);font-size:11px">Calisthenics block</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Current Focus</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border);">
+              <div>
+                <div style="color:var(--text-hi);font-size:12px;margin-bottom:2px;">Parkour — Precision</div>
+                <div>Landing accuracy on narrow surfaces</div>
+                <div>3× / week · outdoor</div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border);">
+              <div>
+                <div style="color:var(--text-hi);font-size:12px;margin-bottom:2px;">Calisthenics — Pull strength</div>
+                <div>Pull-up progression → muscle-up prep</div>
+                <div>2× / week · bodyweight</div>
+              </div>
+            </div>
+            <div>
+              <div style="color:var(--text-hi);font-size:12px;margin-bottom:2px;">Mobility — Hip flexors</div>
+              <div>Daily 10 min · desk job corrective</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Capability Snapshot</div>
+          <div style="font-size:11px;line-height:1;">
+            <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text-dim)">Pull-ups (max)</span><span style="color:var(--green)">14 reps ↑</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text-dim)">Push-ups (max)</span><span style="color:var(--text)">38 reps</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text-dim)">Dip (max)</span><span style="color:var(--text)">22 reps</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text-dim)">L-sit hold</span><span style="color:var(--text)">12 sec</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:9px 0;">
+              <span style="color:var(--text-dim)">Precision jump</span><span style="color:var(--accent)">~1.8m reliable</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- PARKOUR -->
+  <div class="view" id="view-parkour">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Skills Tracked</div>
+        <div class="stat-value accent">14</div>
+        <div class="stat-sub">across movement types</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Sharp</div>
+        <div class="stat-value" style="color:var(--green)">3</div>
+        <div class="stat-sub">automatic, reliable</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Solid</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">consistent, low miss rate</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Learning</div>
+        <div class="stat-value">7</div>
+        <div class="stat-sub">active development</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Movement Library</div>
+
+      <div style="font-size:10px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;display:grid;grid-template-columns:1fr 80px 100px 1fr;gap:12px;">
+        <span>Movement</span><span>Category</span><span>Level</span><span>Notes</span>
+      </div>
+
+      <!-- Vaults -->
+      <div style="font-size:9px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:4px;">Vaults</div>
+      <div class="movement-row">
+        <div class="movement-name">Speed vault</div>
+        <div class="movement-category">Vault</div>
+        <div><span class="tag sharp">sharp</span></div>
+        <div class="movement-notes">Automatic — use as flow connector</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Kong vault</div>
+        <div class="movement-category">Vault</div>
+        <div><span class="tag solid">solid</span></div>
+        <div class="movement-notes">Good at mid-height · still thinking at full speed</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Lazy vault</div>
+        <div class="movement-category">Vault</div>
+        <div><span class="tag sharp">sharp</span></div>
+        <div class="movement-notes">Reliable · use for low obstacles</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Dash vault</div>
+        <div class="movement-category">Vault</div>
+        <div><span class="tag practicing">practicing</span></div>
+        <div class="movement-notes">Hip clearance inconsistent at speed</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Reverse vault</div>
+        <div class="movement-category">Vault</div>
+        <div><span class="tag learning">learning</span></div>
+        <div class="movement-notes">New — drill weekly</div>
+      </div>
+
+      <!-- Jumps -->
+      <div style="font-size:9px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-top:8px;margin-bottom:4px;">Jumps</div>
+      <div class="movement-row">
+        <div class="movement-name">Precision jump</div>
+        <div class="movement-category">Jump</div>
+        <div><span class="tag sharp">sharp</span></div>
+        <div class="movement-notes">~1.8m reliable · 2.2m possible</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Running precision</div>
+        <div class="movement-category">Jump</div>
+        <div><span class="tag solid">solid</span></div>
+        <div class="movement-notes">Approach footwork still varies</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Gap jump</div>
+        <div class="movement-category">Jump</div>
+        <div><span class="tag practicing">practicing</span></div>
+        <div class="movement-notes">Confidence building — doing small gaps</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Cat jump (to wall)</div>
+        <div class="movement-category">Jump</div>
+        <div><span class="tag solid">solid</span></div>
+        <div class="movement-notes">Consistent foot placement</div>
+      </div>
+
+      <!-- Climbs -->
+      <div style="font-size:9px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-top:8px;margin-bottom:4px;">Climbs &amp; Balance</div>
+      <div class="movement-row">
+        <div class="movement-name">Wall run (pop)</div>
+        <div class="movement-category">Climb</div>
+        <div><span class="tag practicing">practicing</span></div>
+        <div class="movement-notes">Getting 2–3 steps reliably</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Tic-tac</div>
+        <div class="movement-category">Technique</div>
+        <div><span class="tag learning">learning</span></div>
+        <div class="movement-notes">Early stage — angle and timing off</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Rail balance</div>
+        <div class="movement-category">Balance</div>
+        <div><span class="tag solid">solid</span></div>
+        <div class="movement-notes">Static good · dynamic walking improving</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Cat balance (quadrupedal)</div>
+        <div class="movement-category">Balance</div>
+        <div><span class="tag practicing">practicing</span></div>
+        <div class="movement-notes">Speed still limited</div>
+      </div>
+      <div class="movement-row">
+        <div class="movement-name">Muscle-up</div>
+        <div class="movement-category">Strength</div>
+        <div><span class="tag learning">learning</span></div>
+        <div class="movement-notes">14 pull-ups → targeting 18 before attempting</div>
+      </div>
+    </div>
+
+  </div><!-- /parkour -->
+
+
+  <!-- STRENGTH -->
+  <div class="view" id="view-strength">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Pull-up PR</div>
+        <div class="stat-value accent">14</div>
+        <div class="stat-sub delta-up">↑ 2 vs last month</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Push-up PR</div>
+        <div class="stat-value">38</div>
+        <div class="stat-sub">set Jan 28</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Dip PR</div>
+        <div class="stat-value">22</div>
+        <div class="stat-sub">set Feb 3</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Muscle-up Target</div>
+        <div class="stat-value" style="font-size:17px;">18 pull-ups</div>
+        <div class="stat-sub">prerequisite strength</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div style="padding:12px 20px 8px;font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);">Personal Records — Calisthenics</div>
+          <div style="display:grid;grid-template-columns:1fr 80px 80px 80px;gap:0;padding:8px 12px;font-size:10px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);">
+            <span>Exercise</span><span style="text-align:right">Current</span><span style="text-align:right">PR</span><span style="text-align:right">Target</span>
+          </div>
+          <div class="lift-row"><span class="lift-name">Pull-up (max reps)</span><span class="lift-val">14</span><span class="lift-val pr">14 ↑</span><span class="lift-val dim">18</span></div>
+          <div class="lift-row"><span class="lift-name">Push-up (max reps)</span><span class="lift-val">36</span><span class="lift-val pr">38</span><span class="lift-val dim">50</span></div>
+          <div class="lift-row"><span class="lift-name">Dip (max reps)</span><span class="lift-val">20</span><span class="lift-val pr">22</span><span class="lift-val dim">30</span></div>
+          <div class="lift-row"><span class="lift-name">Pike push-up</span><span class="lift-val">12</span><span class="lift-val">15</span><span class="lift-val dim">20</span></div>
+          <div class="lift-row"><span class="lift-name">L-sit hold (sec)</span><span class="lift-val">12s</span><span class="lift-val">12s</span><span class="lift-val dim">30s</span></div>
+          <div class="lift-row"><span class="lift-name">Planche lean (sec)</span><span class="lift-val">8s</span><span class="lift-val">8s</span><span class="lift-val dim">20s</span></div>
+          <div class="lift-row"><span class="lift-name">Dead hang (sec)</span><span class="lift-val">52s</span><span class="lift-val pr">62s</span><span class="lift-val dim">90s</span></div>
+          <div class="lift-row"><span class="lift-name">Hollow hold (sec)</span><span class="lift-val">30s</span><span class="lift-val">30s</span><span class="lift-val dim">60s</span></div>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Pull-up Progression</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:1.6;">
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Oct 2025</span><span style="color:var(--text)">8 reps</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Nov 2025</span><span style="color:var(--text)">10 reps</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Dec 2025</span><span style="color:var(--text)">10 reps</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Jan 2026</span><span style="color:var(--text)">12 reps</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+              <span>Feb 2026</span><span style="color:var(--green);font-weight:500">14 reps ↑ PR</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:7px 0;">
+              <span style="color:var(--accent)">Target</span><span style="color:var(--accent)">18 reps</span>
+            </div>
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);">
+            At +2/mo pace → 18 in ~2 months. Muscle-up attempt: April 2026.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Current Program</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+            <div style="color:var(--text-hi);margin-bottom:6px;">3-day split</div>
+            <div style="padding:6px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text)">Day A</span> — Pull (pull-ups, rows, dead hang)
+            </div>
+            <div style="padding:6px 0;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text)">Day B</span> — Push (dips, push-ups, pike)
+            </div>
+            <div style="padding:6px 0;">
+              <span style="color:var(--text)">Day C</span> — Parkour session (movement + skill work)
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /strength -->
+
+
+  <!-- LOG -->
+  <div class="view" id="view-log">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Sessions — Feb</div>
+        <div class="stat-value accent">7</div>
+        <div class="stat-sub">of ~12 planned</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total Time</div>
+        <div class="stat-value">310 <span style="font-size:14px;color:var(--text-dim)">min</span></div>
+        <div class="stat-sub">Feb 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">PRs This Month</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">pull-up · dead hang</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Rest Days</div>
+        <div class="stat-value">13</div>
+        <div class="stat-sub">Feb · recovery on track</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Session Log</div>
+      <div class="session-row">
+        <div class="session-header"><span class="session-date">Feb 19 · Wed</span><span class="tag practicing">Parkour</span></div>
+        <div class="session-type">60 min · outdoor · NJ</div>
+        <div class="session-notes">Precision jumps on low rails · worked <em>dash vault</em> approach angles for 20 min · 3 good reps at end.</div>
+      </div>
+      <div class="session-row">
+        <div class="session-header"><span class="session-date">Feb 17 · Mon</span><span class="tag solid">Pull day</span></div>
+        <div class="session-type">40 min · outdoor bar</div>
+        <div class="session-notes">4×5 pull-ups · 3×8 rows · dead hang 52s × 3. Felt strong.</div>
+      </div>
+      <div class="session-row">
+        <div class="session-header"><span class="session-date">Feb 14 · Fri</span><span class="tag pr">PR Day</span></div>
+        <div class="session-type">50 min · pull focus</div>
+        <div class="session-notes"><em>14 pull-up PR</em> on the last set. New max. Dead hang 62s — also a PR. Good week.</div>
+      </div>
+      <div class="session-row">
+        <div class="session-header"><span class="session-date">Feb 12 · Wed</span><span class="tag practicing">Parkour</span></div>
+        <div class="session-type">70 min · outdoor</div>
+        <div class="session-notes">Vault combos: speed → kong → precision. <em>Kong</em> getting more automatic at moderate speed. Worked wall run pop — getting 3 steps consistently now.</div>
+      </div>
+      <div class="session-row">
+        <div class="session-header"><span class="session-date">Feb 10 · Mon</span><span class="tag solid">Push day</span></div>
+        <div class="session-type">35 min</div>
+        <div class="session-notes">4×8 dips · 3×12 push-ups · 3×10 pike. Shoulder felt slightly tight — stopped early.</div>
+      </div>
+      <div class="session-row">
+        <div class="session-header"><span class="session-date">Feb 6 · Thu</span><span class="tag practicing">Parkour</span></div>
+        <div class="session-type">55 min · outdoor</div>
+        <div class="session-notes">Precision work on narrow rails. Rail balance improving — <em>walking dynamically</em> without stopping. Tried tic-tac for the first time — timing is very off, angle learning needed.</div>
+      </div>
+    </div>
+
+  </div><!-- /log -->
+
+</div>
+
+<script>
+document.querySelectorAll('.nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.view;
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById('view-' + target).classList.add('active');
+  });
+});
+
+// Heatmap
+(function() {
+  const el = document.getElementById('heatmap');
+  const levels = [0,0,1,0,2,1,0, 0,1,2,0,1,0,3, 1,0,2,1,0,1,0, 0,2,1,3,0,0,1,
+                  2,0,1,0,2,1,0, 0,1,0,2,1,0,1, 0,2,3,0,1,2,0, 1,0,2,1,0,2,1,
+                  0,1,0,3,1,0,2, 0,1,2,0,2,1,0, 1,0,1,2,0,1,3, 0,2,1,0,1,2,0,
+                  1,0,3,1,2,0,1, 0,1,0,2,1,3,0, 1,2,0,1,0,2,1, 0,1,3,0,1,2,0,
+                  0,1,2,1,0,3,1, 0,2,1,0,2,0,1, 2,0,1,3,0,1,0, 0,2,1,0,1,0,0];
+  const clsMap = ['', 'l1', 'l2', 'l3', 'l4'];
+  levels.slice(0, 182).forEach(v => {
+    const d = document.createElement('div');
+    d.className = 'hm-cell' + (v ? ' ' + clsMap[v] : '');
+    el.appendChild(d);
+  });
+})();
+
+function tick() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('live-time').textContent = d + ' ' + t;
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

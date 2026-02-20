@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA // DHANVANTARI</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --bg-raised: #111111;
+  --bg-hover:  #181818;
+  --border:    #222222;
+  --border-hi: #333333;
+  --text:      #c8c8c8;
+  --text-dim:  #555555;
+  --text-hi:   #efefef;
+  --accent:    #e8d5a3;
+  --green:     #7db88a;
+  --red:       #c47a6a;
+  --blue:      #6a8fa8;
+  --teal:      #5aab9a;
+  --gold:      #c9973a;
+  --mono:      'IBM Plex Mono', monospace;
+  --r:         2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo span{color:var(--text-dim);font-weight:300;}
+.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back:hover{color:var(--accent);}
+.nav{display:flex;gap:2px;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
+.nav a.active{color:var(--accent);background:var(--bg-raised);}
+.topbar-right{font-size:11px;color:var(--text-dim);}
+#live-time{color:var(--text);}
+
+.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.card:hover{border-color:var(--border-hi);}
+.card+.card{margin-top:16px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
+.stat:hover{background:var(--bg-hover);}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-value.accent{color:var(--accent);}
+.stat-value.teal{color:var(--teal);}
+.stat-sub{font-size:11px;color:var(--text-dim);}
+.delta-up{color:var(--green);}
+.delta-dn{color:var(--red);}
+
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
+.col-stack{display:flex;flex-direction:column;gap:16px;}
+
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.green{background:var(--green);}
+.bar-fill.teal{background:var(--teal);}
+.bar-fill.blue{background:var(--blue);}
+.bar-fill.red{background:var(--red);}
+
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--bg-hover);}
+.data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
+
+.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag.good{background:#0d1e1a;color:var(--teal);}
+.tag.ok{background:#2a2a1a;color:var(--accent);}
+.tag.low{background:#2a1a18;color:var(--red);}
+
+/* SLEEP BARS */
+.sleep-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;}
+.sleep-row:last-child{border-bottom:none;}
+.sleep-date{width:50px;color:var(--text-dim);font-size:10px;}
+.sleep-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.sleep-bar{height:100%;border-radius:3px;transition:width .5s ease;}
+.sleep-hours{width:38px;text-align:right;color:var(--text);}
+.sleep-quality{width:50px;text-align:right;}
+
+/* METRIC ROW */
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.metric-row:last-child{border-bottom:none;}
+.metric-label{color:var(--text-dim);}
+.metric-val{color:var(--text-hi);}
+.metric-val.good{color:var(--teal);}
+.metric-val.ok{color:var(--accent);}
+.metric-val.low{color:var(--red);}
+
+/* HABIT GRID */
+.habit-grid{display:grid;grid-template-columns:160px repeat(7,1fr);gap:2px;font-size:10px;}
+.habit-grid-header{display:contents;}
+.habit-label{color:var(--text-dim);padding:4px 0;display:flex;align-items:center;}
+.habit-day{text-align:center;padding:4px 2px;color:var(--text-dim);}
+.habit-cell{aspect-ratio:1;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.habit-cell.done{background:var(--teal);color:var(--bg);}
+.habit-cell.miss{background:var(--border);color:var(--text-dim);}
+.habit-cell.partial{background:rgba(90,171,154,0.3);color:var(--teal);}
+.habit-cell.na{background:transparent;color:var(--text-dim);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.stat{animation:fadeUp .3s ease both;}
+.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
+.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
+.card{animation:fadeUp .35s ease both;animation-delay:.1s;}
+
+@media(max-width:800px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back" href="index.html">← shiva os</a>
+    <div class="logo">DHANVANTARI <span>// health · sleep · recovery</span></div>
+    <nav class="nav">
+      <a class="active" data-view="overview">overview</a>
+      <a data-view="sleep">sleep</a>
+      <a data-view="habits">habits</a>
+      <a data-view="markers">markers</a>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span id="live-time"></span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- OVERVIEW -->
+  <div class="view active" id="view-overview">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Avg Sleep</div>
+        <div class="stat-value teal">7.1<span style="font-size:14px;color:var(--text-dim)">h</span></div>
+        <div class="stat-sub">7-day rolling</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Sleep Score</div>
+        <div class="stat-value">78</div>
+        <div class="stat-sub delta-up">↑ 4pts vs last week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Habit Streak</div>
+        <div class="stat-value accent">5</div>
+        <div class="stat-sub">days full protocol</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Desk Hours</div>
+        <div class="stat-value">9.2</div>
+        <div class="stat-sub delta-dn">↑ · flag for mobility</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Sleep — Last 14 Days</div>
+          <div id="sleep-chart"></div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Health Protocols</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:1;">
+            <div style="margin-bottom:14px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;"><span style="color:var(--text)">Morning</span><span style="color:var(--teal)">Active</span></div>
+              <div style="padding-left:12px;line-height:2;">
+                No phone first 30 min · sunlight exposure<br>
+                Cold water face · water + electrolytes<br>
+                10 min mobility work
+              </div>
+            </div>
+            <div style="margin-bottom:14px;padding-top:12px;border-top:1px solid var(--border);">
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;"><span style="color:var(--text)">Evening Wind-down</span><span style="color:var(--teal)">Active</span></div>
+              <div style="padding-left:12px;line-height:2;">
+                No screens after 10pm · dim lights after 9pm<br>
+                Reading before sleep · consistent 11pm bedtime target
+              </div>
+            </div>
+            <div style="padding-top:12px;border-top:1px solid var(--border);">
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;"><span style="color:var(--text)">Nutrition</span><span style="color:var(--accent)">Partial</span></div>
+              <div style="padding-left:12px;line-height:2;">
+                Vegetarian base · minimize ultra-processed<br>
+                Lentils, rice, vegetables as staples<br>
+                <span style="color:var(--text-dim);font-size:10px;">Not tracking macros — not the priority</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Key Metrics — This Week</div>
+          <div class="metric-row"><span class="metric-label">Avg sleep duration</span><span class="metric-val good">7.1h</span></div>
+          <div class="metric-row"><span class="metric-label">Bedtime consistency</span><span class="metric-val ok">±42 min</span></div>
+          <div class="metric-row"><span class="metric-label">Morning protocol adherence</span><span class="metric-val good">6/7 days</span></div>
+          <div class="metric-row"><span class="metric-label">Mobility work</span><span class="metric-val ok">4/7 days</span></div>
+          <div class="metric-row"><span class="metric-label">Caffeine after 2pm</span><span class="metric-val low">3 days</span></div>
+          <div class="metric-row"><span class="metric-label">Screen before bed</span><span class="metric-val low">4 nights</span></div>
+          <div class="metric-row"><span class="metric-label">Training sessions</span><span class="metric-val good">3</span></div>
+          <div class="metric-row"><span class="metric-label">Vegetarian adherence</span><span class="metric-val good">7/7 days</span></div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Recovery Notes</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+            <div style="color:var(--red);margin-bottom:6px;">Flags this week:</div>
+            <div style="padding-left:8px;margin-bottom:10px;">
+              — Caffeine after 2pm on 3 days<br>
+              — Screens before bed most nights<br>
+              — Desk posture flagged: shoulders tight
+            </div>
+            <div style="color:var(--teal);margin-bottom:6px;">Positives:</div>
+            <div style="padding-left:8px;">
+              — Sleep average above 7h<br>
+              — Morning protocol holding<br>
+              — No alcohol (ongoing)
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- SLEEP -->
+  <div class="view" id="view-sleep">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">7-Day Avg</div>
+        <div class="stat-value teal">7.1h</div>
+        <div class="stat-sub delta-up">↑ 0.3h vs prior 7</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Best Night</div>
+        <div class="stat-value">8.2h</div>
+        <div class="stat-sub">Feb 16 · Sun</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Worst Night</div>
+        <div class="stat-value" style="color:var(--red)">5.8h</div>
+        <div class="stat-sub">Feb 12 · late night</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Bedtime Target</div>
+        <div class="stat-value" style="font-size:18px;">11:00 pm</div>
+        <div class="stat-sub">hit 4/7 nights</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Nightly Log — Feb 2026</div>
+      <div id="sleep-detail-chart"></div>
+      <div style="margin-top:8px;font-size:10px;color:var(--text-dim);">Target: 7.5–8.5h &nbsp;·&nbsp; below 6.5h is flagged red</div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div class="card">
+        <div class="section-label">Sleep Factors — Correlation Notes</div>
+        <table class="data-table">
+          <thead><tr><th>Factor</th><th>Effect on Sleep</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>Caffeine after 2pm</td><td style="color:var(--red)">−0.6h avg sleep</td><td style="color:var(--text-dim);font-size:11px">Cut to 12pm deadline</td></tr>
+            <tr><td>Screens before bed</td><td style="color:var(--red)">Later sleep onset</td><td style="color:var(--text-dim);font-size:11px">10pm screen cutoff</td></tr>
+            <tr><td>Morning sunlight</td><td style="color:var(--teal)">+0.4h deeper sleep</td><td style="color:var(--text-dim);font-size:11px">Keep — already doing</td></tr>
+            <tr><td>Training day</td><td style="color:var(--teal)">+0.5h quality</td><td style="color:var(--text-dim);font-size:11px">Consistent exercise helps</td></tr>
+            <tr><td>Consistent bedtime</td><td style="color:var(--teal)">Biggest lever</td><td style="color:var(--text-dim);font-size:11px">11pm hard target</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /sleep -->
+
+
+  <!-- HABITS -->
+  <div class="view" id="view-habits">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Full Protocol</div>
+        <div class="stat-value accent">5</div>
+        <div class="stat-sub">days this week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Morning Streak</div>
+        <div class="stat-value teal">6</div>
+        <div class="stat-sub delta-up">days consecutive</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Weekly Compliance</div>
+        <div class="stat-value">74%</div>
+        <div class="stat-sub">across all habits</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Longest Habit Streak</div>
+        <div class="stat-value" style="font-size:17px;">No alcohol</div>
+        <div class="stat-sub">ongoing · 90+ days</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Weekly Habit Tracker — Feb 17–23</div>
+      <div class="habit-grid">
+        <!-- Header -->
+        <div class="habit-label" style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;">Habit</div>
+        <div class="habit-day">M</div><div class="habit-day">T</div><div class="habit-day">W</div>
+        <div class="habit-day">T</div><div class="habit-day">F</div><div class="habit-day">S</div><div class="habit-day">S</div>
+
+        <!-- Habits -->
+        <div class="habit-label">Morning protocol</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell miss">·</div><div class="habit-cell done">✓</div>
+
+        <div class="habit-label">10m mobility</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell miss">·</div><div class="habit-cell done">✓</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell miss">·</div><div class="habit-cell miss">·</div><div class="habit-cell done">✓</div>
+
+        <div class="habit-label">No caffeine after 2pm</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell miss">·</div><div class="habit-cell done">✓</div>
+        <div class="habit-cell miss">·</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell miss">·</div>
+
+        <div class="habit-label">No screens 10pm</div>
+        <div class="habit-cell miss">·</div><div class="habit-cell done">✓</div><div class="habit-cell miss">·</div>
+        <div class="habit-cell miss">·</div><div class="habit-cell miss">·</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div>
+
+        <div class="habit-label">Bed by 11pm</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell miss">·</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell miss">·</div><div class="habit-cell na">—</div><div class="habit-cell done">✓</div>
+
+        <div class="habit-label">Vegetarian</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div>
+
+        <div class="habit-label">Training</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell miss">·</div><div class="habit-cell done">✓</div>
+        <div class="habit-cell miss">·</div><div class="habit-cell done">✓</div><div class="habit-cell miss">·</div><div class="habit-cell miss">·</div>
+
+        <div class="habit-label">No alcohol</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div>
+        <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:16px;font-size:10px;color:var(--text-dim);">
+        <span><span style="color:var(--teal)">✓</span> Done</span>
+        <span><span style="color:var(--text-dim)">·</span> Missed</span>
+        <span><span style="color:var(--text-dim)">—</span> N/A</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div class="card">
+        <div class="section-label">Habit Compliance — Last 4 Weeks</div>
+        <table class="data-table">
+          <thead><tr><th>Habit</th><th class="num">Feb 17</th><th class="num">Feb 10</th><th class="num">Feb 3</th><th class="num">Jan 27</th><th class="num">Avg</th></tr></thead>
+          <tbody>
+            <tr><td>Morning protocol</td><td class="num" style="color:var(--teal)">6/7</td><td class="num">5/7</td><td class="num" style="color:var(--teal)">7/7</td><td class="num">6/7</td><td class="num" style="color:var(--teal)">86%</td></tr>
+            <tr><td>No caffeine after 2pm</td><td class="num">4/7</td><td class="num">3/7</td><td class="num">5/7</td><td class="num">4/7</td><td class="num" style="color:var(--accent)">57%</td></tr>
+            <tr><td>No screens 10pm</td><td class="num">3/7</td><td class="num">3/7</td><td class="num">2/7</td><td class="num">3/7</td><td class="num" style="color:var(--red)">39%</td></tr>
+            <tr><td>Bed by 11pm</td><td class="num">4/6</td><td class="num">4/7</td><td class="num">5/7</td><td class="num">4/7</td><td class="num" style="color:var(--accent)">62%</td></tr>
+            <tr><td>Vegetarian</td><td class="num" style="color:var(--teal)">7/7</td><td class="num" style="color:var(--teal)">7/7</td><td class="num" style="color:var(--teal)">7/7</td><td class="num" style="color:var(--teal)">7/7</td><td class="num" style="color:var(--teal)">100%</td></tr>
+            <tr><td>No alcohol</td><td class="num" style="color:var(--teal)">7/7</td><td class="num" style="color:var(--teal)">7/7</td><td class="num" style="color:var(--teal)">7/7</td><td class="num" style="color:var(--teal)">7/7</td><td class="num" style="color:var(--teal)">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /habits -->
+
+
+  <!-- MARKERS -->
+  <div class="view" id="view-markers">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Last Bloodwork</div>
+        <div class="stat-value" style="font-size:17px;">Nov 2025</div>
+        <div class="stat-sub">annual physical</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Next Check</div>
+        <div class="stat-value" style="font-size:17px;">Nov 2026</div>
+        <div class="stat-sub">annual · schedule</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Eye Exam</div>
+        <div class="stat-value" style="font-size:17px;">Due</div>
+        <div class="stat-sub">last: 2023</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Dental</div>
+        <div class="stat-value" style="font-size:17px;">Jul 2026</div>
+        <div class="stat-sub">6-month scheduled</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Bloodwork — Nov 2025</div>
+          <table class="data-table">
+            <thead><tr><th>Marker</th><th class="num">Value</th><th class="num">Range</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Vitamin D (25-OH)</td><td class="num">38 ng/mL</td><td class="num" style="color:var(--text-dim)">30–80</td><td><span class="tag good">good</span></td></tr>
+              <tr><td>Ferritin</td><td class="num">62 ng/mL</td><td class="num" style="color:var(--text-dim)">12–300</td><td><span class="tag good">good</span></td></tr>
+              <tr><td>B12</td><td class="num">310 pg/mL</td><td class="num" style="color:var(--text-dim)">200–900</td><td><span class="tag ok">low-normal</span></td></tr>
+              <tr><td>Fasting glucose</td><td class="num">88 mg/dL</td><td class="num" style="color:var(--text-dim)">&lt;100</td><td><span class="tag good">good</span></td></tr>
+              <tr><td>Total cholesterol</td><td class="num">172 mg/dL</td><td class="num" style="color:var(--text-dim)">&lt;200</td><td><span class="tag good">good</span></td></tr>
+              <tr><td>HDL</td><td class="num">54 mg/dL</td><td class="num" style="color:var(--text-dim)">&gt;40</td><td><span class="tag good">good</span></td></tr>
+              <tr><td>LDL</td><td class="num">98 mg/dL</td><td class="num" style="color:var(--text-dim)">&lt;130</td><td><span class="tag good">good</span></td></tr>
+              <tr><td>Triglycerides</td><td class="num">82 mg/dL</td><td class="num" style="color:var(--text-dim)">&lt;150</td><td><span class="tag good">good</span></td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;font-size:11px;color:var(--text-dim);">
+            Action: B12 supplement (vegetarian diet) · recheck Nov 2026
+          </div>
+        </div>
+      </div>
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Preventive Schedule</div>
+          <table class="data-table">
+            <thead><tr><th>Check</th><th>Frequency</th><th>Next Due</th></tr></thead>
+            <tbody>
+              <tr><td>Annual physical + bloodwork</td><td style="color:var(--text-dim)">Annual</td><td>Nov 2026</td></tr>
+              <tr><td>Dental cleaning</td><td style="color:var(--text-dim)">6 months</td><td>Jul 2026</td></tr>
+              <tr><td>Eye exam</td><td style="color:var(--text-dim)">2 years</td><td><span style="color:var(--red)">Overdue</span></td></tr>
+              <tr><td>Skin check (moles)</td><td style="color:var(--text-dim)">Annual</td><td>Nov 2026</td></tr>
+              <tr><td>Hearing (baseline)</td><td style="color:var(--text-dim)">Baseline</td><td>Not done</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="section-label">Supplements — Active</div>
+          <table class="data-table">
+            <thead><tr><th>Supplement</th><th>Dose</th><th>Reason</th></tr></thead>
+            <tbody>
+              <tr><td>Vitamin B12</td><td style="color:var(--text-dim)">1000 mcg / day</td><td style="color:var(--text-dim);font-size:11px">Vegetarian diet</td></tr>
+              <tr><td>Vitamin D3</td><td style="color:var(--text-dim)">2000 IU / day</td><td style="color:var(--text-dim);font-size:11px">NJ winter, desk job</td></tr>
+              <tr><td>Magnesium glycinate</td><td style="color:var(--text-dim)">300 mg · night</td><td style="color:var(--text-dim);font-size:11px">Sleep quality</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /markers -->
+
+</div>
+
+<script>
+document.querySelectorAll('.nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.view;
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById('view-' + target).classList.add('active');
+  });
+});
+
+// Sleep chart
+(function() {
+  const data = [
+    {d:'Feb 7',h:7.2,q:'good'},{d:'Feb 8',h:6.8,q:'ok'},{d:'Feb 9',h:7.5,q:'good'},
+    {d:'Feb 10',h:8.1,q:'good'},{d:'Feb 11',h:7.0,q:'ok'},{d:'Feb 12',h:5.8,q:'low'},
+    {d:'Feb 13',h:7.8,q:'good'},{d:'Feb 14',h:7.2,q:'good'},{d:'Feb 15',h:6.5,q:'ok'},
+    {d:'Feb 16',h:8.2,q:'good'},{d:'Feb 17',h:7.0,q:'ok'},{d:'Feb 18',h:7.3,q:'good'},
+    {d:'Feb 19',h:7.1,q:'good'},{d:'Feb 20',h:6.9,q:'ok'}
+  ];
+  function renderChart(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const max = 9;
+    el.innerHTML = data.map(r => {
+      const pct = (r.h / max * 100).toFixed(1);
+      const col = r.h >= 7.5 ? 'var(--teal)' : r.h >= 6.5 ? 'var(--accent)' : 'var(--red)';
+      return `<div class="sleep-row">
+        <div class="sleep-date">${r.d}</div>
+        <div class="sleep-bar-wrap"><div class="sleep-bar" style="width:${pct}%;background:${col};"></div></div>
+        <div class="sleep-hours">${r.h}h</div>
+        <div class="sleep-quality"><span class="tag ${r.q}">${r.q}</span></div>
+      </div>`;
+    }).join('');
+  }
+  renderChart('sleep-chart');
+  renderChart('sleep-detail-chart');
+})();
+
+function tick() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('live-time').textContent = d + ' ' + t;
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

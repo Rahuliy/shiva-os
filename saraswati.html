@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA // SARASWATI</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --bg-raised: #111111;
+  --bg-hover:  #181818;
+  --border:    #222222;
+  --border-hi: #333333;
+  --text:      #c8c8c8;
+  --text-dim:  #555555;
+  --text-hi:   #efefef;
+  --accent:    #e8d5a3;
+  --green:     #7db88a;
+  --red:       #c47a6a;
+  --blue:      #6a8fa8;
+  --gold:      #c9973a;
+  --mono:      'IBM Plex Mono', monospace;
+  --serif:     'Libre Baskerville', serif;
+  --r:         2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo span{color:var(--text-dim);font-weight:300;}
+.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back:hover{color:var(--accent);}
+.nav{display:flex;gap:2px;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
+.nav a.active{color:var(--accent);background:var(--bg-raised);}
+.topbar-right{font-size:11px;color:var(--text-dim);}
+#live-time{color:var(--text);}
+
+.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.card:hover{border-color:var(--border-hi);}
+.card+.card{margin-top:16px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
+.stat:hover{background:var(--bg-hover);}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-value.accent{color:var(--accent);}
+.stat-sub{font-size:11px;color:var(--text-dim);}
+.delta-up{color:var(--green);}
+
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
+.col-stack{display:flex;flex-direction:column;gap:16px;}
+
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.green{background:var(--green);}
+.bar-fill.blue{background:var(--blue);}
+.bar-fill.red{background:var(--red);}
+
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--bg-hover);}
+.data-table .num{text-align:right;}
+.divider-row td{color:var(--text-hi)!important;font-weight:500;border-top:1px solid var(--border-hi)!important;padding-top:12px!important;}
+
+.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag.active{background:#1a2e1e;color:var(--green);}
+.tag.complete{background:#1a2e1e;color:var(--green);opacity:0.6;}
+.tag.reading{background:#181e28;color:var(--blue);}
+.tag.queued{background:var(--border);color:var(--text-dim);}
+.tag.core{background:#2a2a1a;color:var(--accent);}
+.tag.applied{background:#1e2a1a;color:var(--green);}
+
+/* SKILL ROWS */
+.skill-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.skill-row:last-child{border-bottom:none;}
+.skill-name{width:180px;font-size:12px;color:var(--text);}
+.skill-domain{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);width:80px;}
+.skill-bar-wrap{flex:1;}
+.skill-level{width:48px;text-align:right;font-size:12px;color:var(--text-dim);}
+.skill-pips{display:flex;gap:3px;}
+.pip{width:14px;height:4px;border-radius:1px;background:var(--border);}
+.pip.filled{background:var(--accent);}
+.pip.filled.green{background:var(--green);}
+.pip.filled.blue{background:var(--blue);}
+
+/* BOOK CARD */
+.book-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.book-row:last-child{border-bottom:none;}
+.book-spine{width:3px;border-radius:2px;flex-shrink:0;align-self:stretch;}
+.book-body{flex:1;}
+.book-title{color:var(--text-hi);font-size:12px;font-weight:500;margin-bottom:2px;}
+.book-author{font-size:11px;color:var(--text-dim);margin-bottom:5px;}
+.book-note{font-family:var(--serif);font-style:italic;font-size:11px;color:var(--text);line-height:1.7;}
+.book-footer{display:flex;gap:8px;margin-top:6px;align-items:center;}
+
+/* MIT TIMELINE */
+.timeline-row{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.timeline-row:last-child{border-bottom:none;}
+.timeline-marker{display:flex;flex-direction:column;align-items:center;gap:4px;width:56px;flex-shrink:0;}
+.timeline-date{font-size:10px;letter-spacing:0.08em;color:var(--text-dim);text-align:center;}
+.timeline-dot{width:8px;height:8px;border-radius:50%;background:var(--border-hi);flex-shrink:0;}
+.timeline-dot.done{background:var(--green);}
+.timeline-dot.active{background:var(--accent);}
+.timeline-dot.future{background:transparent;border:1px solid var(--border-hi);}
+.timeline-content{flex:1;}
+.timeline-title{color:var(--text-hi);font-size:12px;font-weight:500;margin-bottom:3px;}
+.timeline-desc{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.timeline-desc em{color:var(--text);font-style:normal;}
+
+/* STUDY LOG */
+.study-week{margin-bottom:16px;}
+.study-week-label{font-size:9px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px;}
+.study-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.study-day{aspect-ratio:1;border-radius:2px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-dim);}
+.study-day.light{background:rgba(106,143,168,0.3);color:var(--blue);}
+.study-day.medium{background:rgba(106,143,168,0.6);color:var(--blue);}
+.study-day.deep{background:var(--blue);color:var(--bg);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.stat{animation:fadeUp .3s ease both;}
+.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
+.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
+.card{animation:fadeUp .35s ease both;animation-delay:.1s;}
+
+@media(max-width:800px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+  .skill-domain{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back" href="index.html">← shiva os</a>
+    <div class="logo">SARASWATI <span>// learning · mit prep · skills</span></div>
+    <nav class="nav">
+      <a class="active" data-view="overview">overview</a>
+      <a data-view="mit">mit prep</a>
+      <a data-view="skills">skills</a>
+      <a data-view="reading">reading</a>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span id="live-time"></span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- OVERVIEW -->
+  <div class="view active" id="view-overview">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Study Hrs / Week</div>
+        <div class="stat-value accent">8.5</div>
+        <div class="stat-sub delta-up">↑ 1.5 vs last week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Books in Progress</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">reading concurrently</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Skills Tracked</div>
+        <div class="stat-value">9</div>
+        <div class="stat-sub">across 3 domains</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">MIT Fund</div>
+        <div class="stat-value" style="font-size:20px;">$17k</div>
+        <div class="stat-sub delta-up">34% · on track</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Weekly Learning Budget</div>
+          <div style="margin-bottom:4px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;"><span style="color:var(--text-dim)">Supply Chain / MIT Prep</span><span><em style="color:var(--blue)">3h</em> / 4h target</span></div>
+            <div class="bar-track"><div class="bar-fill blue" style="width:75%"></div></div>
+          </div>
+          <div style="margin-bottom:4px;margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;"><span style="color:var(--text-dim)">Technical / Engineering</span><span><em style="color:var(--accent)">2.5h</em> / 2h target</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+          </div>
+          <div style="margin-bottom:4px;margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;"><span style="color:var(--text-dim)">Finance / Economics</span><span><em style="color:var(--green)">2h</em> / 2h target</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div>
+          </div>
+          <div style="margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;"><span style="color:var(--text-dim)">Philosophy / Tamil Studies</span><span><em style="color:var(--text-dim)">1h</em> / 2h target</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--text-dim)"></div></div>
+          </div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;">
+            <span style="color:var(--text-dim)">Total this week</span>
+            <span style="color:var(--text-hi)">8.5h <span style="color:var(--text-dim)">/ 10h target</span></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Study Activity — Last 4 Weeks</div>
+          <div class="study-week">
+            <div class="study-week-label">Feb 17 – Feb 23</div>
+            <div class="study-days">
+              <div class="study-day">M</div>
+              <div class="study-day medium">T</div>
+              <div class="study-day deep">W</div>
+              <div class="study-day light">T</div>
+              <div class="study-day medium">F</div>
+              <div class="study-day">S</div>
+              <div class="study-day light">S</div>
+            </div>
+          </div>
+          <div class="study-week">
+            <div class="study-week-label">Feb 10 – Feb 16</div>
+            <div class="study-days">
+              <div class="study-day medium">M</div>
+              <div class="study-day light">T</div>
+              <div class="study-day">W</div>
+              <div class="study-day deep">T</div>
+              <div class="study-day light">F</div>
+              <div class="study-day medium">S</div>
+              <div class="study-day">S</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;margin-top:10px;font-size:10px;color:var(--text-dim);">
+            <span><span class="pip filled blue" style="display:inline-block;width:10px;height:4px;border-radius:1px;vertical-align:middle;margin-right:4px;"></span>1–2h</span>
+            <span><span class="pip filled" style="display:inline-block;width:10px;height:4px;border-radius:1px;vertical-align:middle;margin-right:4px;background:var(--blue);opacity:0.6;"></span>2–3h</span>
+            <span><span class="pip" style="display:inline-block;width:10px;height:4px;border-radius:1px;vertical-align:middle;margin-right:4px;background:var(--blue);"></span>3h+</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Top Skills — Current Level</div>
+          <div class="skill-row">
+            <div class="skill-name">Python</div>
+            <div class="skill-domain">Technical</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level" style="color:var(--blue)">4/5</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name">Supply Chain Mgmt</div>
+            <div class="skill-domain">Domain</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled"></div><div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level">3/5</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name">Personal Finance</div>
+            <div class="skill-domain">Finance</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled green"></div><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level" style="color:var(--green)">4/5</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name">Guitar (PRS)</div>
+            <div class="skill-domain">Creative</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled"></div><div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level">3/5</div>
+          </div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--text-dim);">
+            <a href="#" data-view="skills" class="nav-link" style="color:var(--accent);text-decoration:none;">View all 9 skills →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">MIT Prep — Status</div>
+          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span>Fund saved</span><span style="color:var(--blue)">$17,000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span>Fund target</span><span style="color:var(--text)">$50,000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span>Monthly saving</span><span style="color:var(--text)">$1,500</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+              <span>Months to target</span><span style="color:var(--accent)">22</span>
+            </div>
+            <div class="bar-track" style="height:4px;margin-bottom:8px;"><div class="bar-fill blue" style="width:34%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;">
+              <span>$17k saved</span><span style="color:var(--blue)">34%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- MIT PREP -->
+  <div class="view" id="view-mit">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">MIT SCM Fund</div>
+        <div class="stat-value accent">$17,000</div>
+        <div class="stat-sub">of $50,000 target</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Monthly Saving</div>
+        <div class="stat-value">$1,500</div>
+        <div class="stat-sub delta-up">auto-transfer active</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Funded In</div>
+        <div class="stat-value" style="font-size:20px;">22 mo</div>
+        <div class="stat-sub">Dec 2027</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Application</div>
+        <div class="stat-value" style="font-size:17px;">2026–27</div>
+        <div class="stat-sub">researching now</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Application Timeline</div>
+
+          <div class="timeline-row">
+            <div class="timeline-marker">
+              <div class="timeline-date">Now</div>
+              <div class="timeline-dot active"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Research & Eligibility</div>
+              <div class="timeline-desc">Confirm program requirements · verify GRE/GMAT waiver eligibility · identify recommenders · understand work-experience requirements.<br>Status: <em>In progress — Feb 2026</em></div>
+            </div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-marker">
+              <div class="timeline-date">Q3 26</div>
+              <div class="timeline-dot future"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Application Prep</div>
+              <div class="timeline-desc">Draft essays · request recommendations · compile work portfolio · finalize statement of purpose.</div>
+            </div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-marker">
+              <div class="timeline-date">Q4 26</div>
+              <div class="timeline-dot future"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Submit Application</div>
+              <div class="timeline-desc">Target: <em>Fall 2027</em> intake · rolling admissions or defined deadline TBD.</div>
+            </div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-marker">
+              <div class="timeline-date">2027</div>
+              <div class="timeline-dot future"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Admission Decision</div>
+              <div class="timeline-desc">Fund will be fully ready by Dec 2027 regardless of intake cycle.</div>
+            </div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-marker">
+              <div class="timeline-date">2027–28</div>
+              <div class="timeline-dot future"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Program Start</div>
+              <div class="timeline-desc">SCM blended/online format · continue W-2 employment during program.<br>Target completion: <em>2028–29</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-stack">
+        <div class="card">
+          <div class="section-label">Prerequisite Skills — MIT SCM</div>
+          <div class="skill-row">
+            <div class="skill-name" style="width:160px;">Statistics / Probability</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled"></div><div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level">3/5</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name" style="width:160px;">Linear Programming</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level">2/5</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name" style="width:160px;">Supply Chain Mgmt</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled"></div><div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level">3/5</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name" style="width:160px;">Data Analysis (Python)</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level" style="color:var(--blue)">4/5</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name" style="width:160px;">Business Writing</div>
+            <div class="skill-bar-wrap">
+              <div class="skill-pips">
+                <div class="pip filled green"></div><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip"></div>
+              </div>
+            </div>
+            <div class="skill-level" style="color:var(--green)">4/5</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Prep Resources</div>
+          <table class="data-table">
+            <thead><tr><th>Resource</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>MIT OCW 15.769 SCM</td><td><span class="tag active">active</span></td></tr>
+              <tr><td>Supply Chain Mgmt — Chopra</td><td><span class="tag reading">reading</span></td></tr>
+              <tr><td>Statistics for MBAs — edX</td><td><span class="tag queued">queued</span></td></tr>
+              <tr><td>Linear Programming — Coursera</td><td><span class="tag queued">queued</span></td></tr>
+              <tr><td>GRE Quant review</td><td><span class="tag queued">queued</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /mit -->
+
+
+  <!-- SKILLS -->
+  <div class="view" id="view-skills">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Skills Tracked</div>
+        <div class="stat-value accent">9</div>
+        <div class="stat-sub">across 3 domains</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Avg Level</div>
+        <div class="stat-value">3.1 <span style="font-size:14px;color:var(--text-dim)">/ 5</span></div>
+        <div class="stat-sub">across all skills</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Improving</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">active focus</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Target by 2028</div>
+        <div class="stat-value">4.0 <span style="font-size:14px;color:var(--text-dim)">/ 5</span></div>
+        <div class="stat-sub">avg across all</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Technical</div>
+      <div class="skill-row">
+        <div class="skill-name">Python</div>
+        <div class="skill-domain">Engineering</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip"></div></div></div>
+        <div class="skill-level" style="color:var(--blue)">4/5</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name">HTML / CSS / JS</div>
+        <div class="skill-domain">Engineering</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip"></div></div></div>
+        <div class="skill-level" style="color:var(--blue)">4/5</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name">Linux / Shell</div>
+        <div class="skill-domain">Systems</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip filled blue"></div><div class="pip"></div><div class="pip"></div></div></div>
+        <div class="skill-level" style="color:var(--blue)">3/5</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Domain Knowledge</div>
+      <div class="skill-row">
+        <div class="skill-name">Supply Chain Mgmt</div>
+        <div class="skill-domain">MIT Target</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled"></div><div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div></div></div>
+        <div class="skill-level">3/5</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name">Personal Finance</div>
+        <div class="skill-domain">Finance</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip"></div></div></div>
+        <div class="skill-level" style="color:var(--green)">4/5</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name">Statistics</div>
+        <div class="skill-domain">Quantitative</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled"></div><div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div></div></div>
+        <div class="skill-level">3/5</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name">Tamil / Shaiva Philosophy</div>
+        <div class="skill-domain">Heritage</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip filled green"></div><div class="pip"></div><div class="pip"></div></div></div>
+        <div class="skill-level" style="color:var(--green)">3/5</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Creative / Physical</div>
+      <div class="skill-row">
+        <div class="skill-name">Guitar — PRS (blues/metal)</div>
+        <div class="skill-domain">Creative</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled"></div><div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div></div></div>
+        <div class="skill-level">3/5</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name">Parkour / Movement</div>
+        <div class="skill-domain">Physical</div>
+        <div class="skill-bar-wrap"><div class="skill-pips"><div class="pip filled"></div><div class="pip filled"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div></div>
+        <div class="skill-level">2/5</div>
+      </div>
+    </div>
+
+  </div><!-- /skills -->
+
+
+  <!-- READING -->
+  <div class="view" id="view-reading">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Reading Now</div>
+        <div class="stat-value accent">2</div>
+        <div class="stat-sub">active books</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Completed 2026</div>
+        <div class="stat-value">1</div>
+        <div class="stat-sub">Jan–Feb</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Queue</div>
+        <div class="stat-value">8</div>
+        <div class="stat-sub">waiting to read</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Avg / Year</div>
+        <div class="stat-value">14</div>
+        <div class="stat-sub">trailing 2 years</div>
+      </div>
+    </div>
+
+    <div class="section-label">Currently Reading</div>
+
+    <div class="card">
+      <div class="book-row">
+        <div class="book-spine" style="background:var(--blue)"></div>
+        <div class="book-body">
+          <div class="book-title">Supply Chain Management — Strategy, Planning, and Operation</div>
+          <div class="book-author">Sunil Chopra &amp; Peter Meindl · 7th ed.</div>
+          <div class="book-note">"The demand uncertainty chapter reframes how I think about inventory targets. Applying it directly to the MIT prep reading list."</div>
+          <div class="book-footer"><span class="tag reading">reading</span><span class="tag core">mit prep</span><span style="color:var(--text-dim);font-size:10px;margin-left:auto">Ch. 7 of 18 · ~40%</span></div>
+        </div>
+      </div>
+      <div class="book-row">
+        <div class="book-spine" style="background:var(--accent)"></div>
+        <div class="book-body">
+          <div class="book-title">The Almanack of Naval Ravikant</div>
+          <div class="book-author">Eric Jorgenson</div>
+          <div class="book-note">"Re-reading. The specific knowledge chapter keeps resonating — the intersection of supply chain, Tamil Shaiva systems thinking, and data sovereignty is mine to develop."</div>
+          <div class="book-footer"><span class="tag reading">reading</span><span style="color:var(--text-dim);font-size:10px;margin-left:auto">Re-read · 60%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">Completed</div>
+
+    <div class="card">
+      <div class="book-row">
+        <div class="book-spine" style="background:var(--green)"></div>
+        <div class="book-body">
+          <div class="book-title">Die With Zero</div>
+          <div class="book-author">Bill Perkins</div>
+          <div class="book-note">"Useful tension with the $7M-by-35 goal. Not changing the target — but it's a good forcing function on experiences now vs deferred living."</div>
+          <div class="book-footer"><span class="tag complete">done</span><span style="color:var(--text-dim);font-size:10px;margin-left:auto">Jan 2026</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">Queue</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Title</th><th>Author</th><th>Domain</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--text-dim)">1</td><td>Thinking in Systems</td><td style="color:var(--text-dim)">Donella Meadows</td><td><span class="tag core">MIT prep</span></td></tr>
+          <tr><td style="color:var(--text-dim)">2</td><td>The Goal</td><td style="color:var(--text-dim)">Eliyahu Goldratt</td><td><span class="tag core">MIT prep</span></td></tr>
+          <tr><td style="color:var(--text-dim)">3</td><td>Skin in the Game</td><td style="color:var(--text-dim)">Nassim Taleb</td><td><span class="tag">Philosophy</span></td></tr>
+          <tr><td style="color:var(--text-dim)">4</td><td>Zero to One</td><td style="color:var(--text-dim)">Peter Thiel</td><td><span class="tag">Business</span></td></tr>
+          <tr><td style="color:var(--text-dim)">5</td><td>Deep Work</td><td style="color:var(--text-dim)">Cal Newport</td><td><span class="tag">Productivity</span></td></tr>
+          <tr><td style="color:var(--text-dim)">6</td><td>Tiruvasagam (Tamil)</td><td style="color:var(--text-dim)">Manikkavasagar</td><td><span class="tag applied">Heritage</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /reading -->
+
+</div>
+
+<script>
+document.querySelectorAll('.nav a, a.nav-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.view;
+    if (!target) return;
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelector(`.nav a[data-view="${target}"]`)?.classList.add('active');
+    document.getElementById('view-' + target)?.classList.add('active');
+  });
+});
+function tick() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('live-time').textContent = d + ' ' + t;
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

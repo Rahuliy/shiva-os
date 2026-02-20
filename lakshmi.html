@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA // FINANCE</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --bg-raised: #111111;
+  --bg-hover:  #181818;
+  --border:    #222222;
+  --border-hi: #333333;
+  --text:      #c8c8c8;
+  --text-dim:  #555555;
+  --text-hi:   #efefef;
+  --accent:    #e8d5a3;
+  --green:     #7db88a;
+  --red:       #c47a6a;
+  --blue:      #6a8fa8;
+  --mono:      'IBM Plex Mono', monospace;
+  --r:         2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo span{color:var(--text-dim);font-weight:300;}
+.nav{display:flex;gap:2px;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
+.nav a.active{color:var(--accent);background:var(--bg-raised);}
+.topbar-right{font-size:11px;color:var(--text-dim);}
+#live-time{color:var(--text);}
+
+/* LAYOUT */
+.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.view{display:none;}
+.view.active{display:block;}
+
+/* SECTION LABEL */
+.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* CARD */
+.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.card:hover{border-color:var(--border-hi);}
+.card+.card{margin-top:16px;}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;cursor:default;}
+.stat:hover{background:var(--bg-hover);}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-value.accent{color:var(--accent);}
+.stat-sub{font-size:11px;color:var(--text-dim);}
+.delta-up{color:var(--green);}
+.delta-dn{color:var(--red);}
+
+/* TWO-COL */
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
+.col-stack{display:flex;flex-direction:column;gap:16px;}
+
+/* PROGRESS BAR */
+.progress-block{margin-bottom:14px;}
+.progress-block:last-child{margin-bottom:0;}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.progress-name{color:var(--text);}
+.progress-vals{color:var(--text-dim);}
+.progress-vals em{color:var(--text);font-style:normal;}
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.green{background:var(--green);}
+.bar-fill.blue{background:var(--blue);}
+.bar-fill.red{background:var(--red);}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--bg-hover);}
+.data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
+.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag.income{background:#1a2e1e;color:var(--green);}
+.tag.expense{background:#2a1a18;color:var(--red);}
+.tag.invest{background:#181e28;color:var(--blue);}
+.tag.passive{background:#1e1e2a;color:var(--blue);}
+.badge{display:inline-block;font-size:9px;padding:1px 5px;border-radius:2px;letter-spacing:0.08em;text-transform:uppercase;background:var(--border);color:var(--text-dim);vertical-align:middle;margin-left:6px;}
+
+/* SPARKLINE */
+.sparkline{display:flex;align-items:flex-end;gap:3px;height:52px;padding:4px 0;}
+.spark-bar{flex:1;background:var(--border-hi);border-radius:1px;transition:background .15s;cursor:default;}
+.spark-bar:hover{background:var(--accent);}
+.spark-bar.current{background:var(--accent);opacity:.85;}
+.spark-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--text-dim);}
+
+/* GOAL ITEM */
+.goal-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.goal-item:last-child{border-bottom:none;}
+.goal-icon{width:28px;height:28px;border:1px solid var(--border-hi);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:var(--accent);}
+.goal-info{flex:1;}
+.goal-name{color:var(--text-hi);margin-bottom:2px;font-size:12px;}
+.goal-meta{color:var(--text-dim);font-size:11px;margin-bottom:5px;}
+.goal-pct{font-size:13px;font-weight:500;min-width:40px;text-align:right;}
+
+/* GOAL CARD (goals page) */
+.goal-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px;transition:border-color .15s;}
+.goal-card:hover{border-color:var(--border-hi);}
+.goal-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.goal-card-title{color:var(--text-hi);font-size:14px;font-weight:500;}
+.goal-card-status{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:2px;background:var(--border);color:var(--text-dim);}
+.goal-card-status.on-track{background:#1a2e1e;color:var(--green);}
+.goal-card-status.early{background:#181e28;color:var(--blue);}
+.goal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:14px;}
+.goal-stat-label{font-size:10px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:4px;}
+.goal-stat-val{font-size:15px;color:var(--text-hi);}
+.goal-projection{font-size:11px;color:var(--text-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.goal-projection em{color:var(--accent);font-style:normal;}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:2px;margin-bottom:16px;}
+.filter-tab{font-size:11px;letter-spacing:0.08em;padding:5px 12px;border-radius:var(--r);border:1px solid var(--border);color:var(--text-dim);cursor:pointer;transition:all .15s;background:transparent;}
+.filter-tab:hover{color:var(--text);border-color:var(--border-hi);}
+.filter-tab.active{color:var(--accent);border-color:var(--accent);background:rgba(232,213,163,0.05);}
+
+/* MONTH BAR CHART */
+.month-bars{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:flex-end;height:80px;margin-top:8px;}
+.month-col{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;}
+.month-bar-wrap{flex:1;width:100%;display:flex;align-items:flex-end;}
+.month-bar{width:100%;border-radius:1px 1px 0 0;transition:opacity .15s;}
+.month-bar:hover{opacity:.7;}
+.month-name{font-size:9px;color:var(--text-dim);letter-spacing:0.05em;}
+
+/* DIVIDER ROW */
+.divider-row{border-top:1px solid var(--border-hi);margin-top:2px;}
+.divider-row td{color:var(--text-hi)!important;font-weight:500;padding-top:12px!important;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.stat{animation:fadeUp .3s ease both;}
+.stat:nth-child(1){animation-delay:.05s;}
+.stat:nth-child(2){animation-delay:.10s;}
+.stat:nth-child(3){animation-delay:.15s;}
+.stat:nth-child(4){animation-delay:.20s;}
+.card{animation:fadeUp .35s ease both;animation-delay:.1s;}
+.goal-card{animation:fadeUp .3s ease both;}
+
+/* RESPONSIVE */
+@media(max-width:800px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+  .goal-stats{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){
+  .stat-value{font-size:20px;}
+  .shell{padding:16px 16px 60px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">SHIVA <span>// finance</span></div>
+    <nav class="nav">
+      <a class="active" data-view="overview">overview</a>
+      <a data-view="income">income</a>
+      <a data-view="expenses">expenses</a>
+      <a data-view="goals">goals</a>
+      <a data-view="log">log</a>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span id="live-time"></span> &nbsp;·&nbsp; FY 2026
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- ═══════════════════════════════════════════════ OVERVIEW -->
+  <div class="view active" id="view-overview">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Net Worth</div>
+        <div class="stat-value accent">$125,400</div>
+        <div class="stat-sub delta-up">↑ $4,200 this month</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Monthly Income</div>
+        <div class="stat-value">$8,833</div>
+        <div class="stat-sub">W2 · interest · misc</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Monthly Expenses</div>
+        <div class="stat-value">$2,140</div>
+        <div class="stat-sub delta-dn">↓ $320 vs last month</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Savings Rate</div>
+        <div class="stat-value">75.8%</div>
+        <div class="stat-sub delta-up">↑ 0.9pts vs last month</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Net Worth — 12 Month</div>
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:11px;color:var(--text-dim)">Mar 25 → Feb 26</span>
+            <span style="font-size:11px;color:var(--green)">+$42,400 (+51.1%)</span>
+          </div>
+          <div class="sparkline" id="ov-sparkline"></div>
+          <div class="spark-labels"><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span><span>Feb</span></div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Income Streams</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Source</th><th>Type</th><th class="num">Monthly</th><th class="num">Annual</th><th class="num">%</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>W-2 Salary <span class="badge">post-tax est.</span></td>
+                <td><span class="tag income">active</span></td>
+                <td class="num">$7,917</td>
+                <td class="num">$95,000</td>
+                <td class="num">89.6%</td>
+              </tr>
+              <tr>
+                <td>Interest / Savings</td>
+                <td><span class="tag passive">passive</span></td>
+                <td class="num">$520</td>
+                <td class="num">$6,240</td>
+                <td class="num">5.9%</td>
+              </tr>
+              <tr>
+                <td>Misc / Other</td>
+                <td><span class="tag">other</span></td>
+                <td class="num">$396</td>
+                <td class="num">$4,752</td>
+                <td class="num">4.5%</td>
+              </tr>
+              <tr class="divider-row">
+                <td>Total</td><td></td>
+                <td class="num">$8,833</td>
+                <td class="num">$105,992</td>
+                <td class="num" style="color:var(--accent)">100%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Goals</div>
+          <div class="goal-item">
+            <div class="goal-icon">◎</div>
+            <div class="goal-info">
+              <div class="goal-name">$7M by 35</div>
+              <div class="goal-meta">$125.4k of $7,000,000 · 11 yrs</div>
+              <div class="bar-track"><div class="bar-fill" style="width:1.8%"></div></div>
+            </div>
+            <div class="goal-pct" style="color:var(--text-dim)">1.8%</div>
+          </div>
+          <div class="goal-item">
+            <div class="goal-icon">◈</div>
+            <div class="goal-info">
+              <div class="goal-name">MIT SCM Degree</div>
+              <div class="goal-meta">$1,500/mo · target 2027</div>
+              <div class="bar-track"><div class="bar-fill blue" style="width:34%"></div></div>
+            </div>
+            <div class="goal-pct" style="color:var(--blue)">34%</div>
+          </div>
+          <div class="goal-item">
+            <div class="goal-icon">⬡</div>
+            <div class="goal-info">
+              <div class="goal-name">Lakehouse Fund</div>
+              <div class="goal-meta">$8,200 of $50,000</div>
+              <div class="bar-track"><div class="bar-fill green" style="width:16.4%"></div></div>
+            </div>
+            <div class="goal-pct" style="color:var(--green)">16%</div>
+          </div>
+          <div class="goal-item">
+            <div class="goal-icon">▲</div>
+            <div class="goal-info">
+              <div class="goal-name">Emergency Fund</div>
+              <div class="goal-meta">$12,000 of $15,000</div>
+              <div class="bar-track"><div class="bar-fill green" style="width:80%"></div></div>
+            </div>
+            <div class="goal-pct" style="color:var(--green)">80%</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Monthly Budget</div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Housing</span><span class="progress-vals"><em>$780</em> / $800</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:97.5%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Food & Groceries</span><span class="progress-vals"><em>$340</em> / $400</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:85%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Transport</span><span class="progress-vals"><em>$180</em> / $200</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:90%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Subscriptions</span><span class="progress-vals"><em>$95</em> / $100</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:95%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Discretionary</span><span class="progress-vals"><em>$745</em> / $600</span></div>
+            <div class="bar-track"><div class="bar-fill red" style="width:100%"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding-top:12px;margin-top:8px;border-top:1px solid var(--border);font-size:11px;">
+            <span style="color:var(--text-dim)">Total Spent</span>
+            <span style="color:var(--text-hi)">$2,140 <span style="color:var(--text-dim)">/ $2,100</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section-label">Recent Transactions</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="data-table">
+        <thead>
+          <tr><th>Date</th><th>Description</th><th>Category</th><th class="num">Amount</th><th class="num">Balance</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 19</td><td>Interest — Marcus HYSA</td><td><span class="tag passive">passive</span></td><td class="num" style="color:var(--green)">+$520</td><td class="num">$125,400</td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 18</td><td>Whole Foods</td><td><span class="tag expense">expense</span></td><td class="num" style="color:var(--red)">−$87.40</td><td class="num">$124,880</td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 17</td><td>VTSAX Auto-invest</td><td><span class="tag invest">invest</span></td><td class="num" style="color:var(--blue)">−$1,500</td><td class="num">$124,967</td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 15</td><td>W-2 Direct Deposit</td><td><span class="tag income">income</span></td><td class="num" style="color:var(--green)">+$3,958</td><td class="num">$126,467</td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 14</td><td>Rent — Feb</td><td><span class="tag expense">expense</span></td><td class="num" style="color:var(--red)">−$780</td><td class="num">$122,509</td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 12</td><td>Guitar strings — PRS SE</td><td><span class="tag expense">expense</span></td><td class="num" style="color:var(--red)">−$28</td><td class="num">$123,289</td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 10</td><td>Trader Joe's</td><td><span class="tag expense">expense</span></td><td class="num" style="color:var(--red)">−$62</td><td class="num">$123,317</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- ═══════════════════════════════════════════════ INCOME -->
+  <div class="view" id="view-income">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Monthly Income</div>
+        <div class="stat-value accent">$8,833</div>
+        <div class="stat-sub delta-up">↑ $210 vs last month</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">YTD Income</div>
+        <div class="stat-value">$15,480</div>
+        <div class="stat-sub">Jan + Feb 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Annual Run Rate</div>
+        <div class="stat-value">$105,992</div>
+        <div class="stat-sub">at current pace</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Active Streams</div>
+        <div class="stat-value">3</div>
+        <div class="stat-sub">W2 · interest · misc</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Monthly Breakdown — Last 6 Months</div>
+          <div class="month-bars" id="income-bars"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-dim);">
+            <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;">
+            <span style="color:var(--green)">■ W-2</span>
+            <span style="color:var(--blue)">■ Interest</span>
+            <span style="color:var(--text-dim)">■ Misc</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Income Stream Detail</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Source</th><th>Type</th><th class="num">Monthly</th><th class="num">YTD</th><th class="num">Annual</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>W-2 Salary <span class="badge">post-tax est.</span></td>
+                <td><span class="tag income">active</span></td>
+                <td class="num">$7,917</td>
+                <td class="num">$15,834</td>
+                <td class="num">$95,000</td>
+              </tr>
+              <tr>
+                <td>Marcus HYSA Interest</td>
+                <td><span class="tag passive">passive</span></td>
+                <td class="num">$520</td>
+                <td class="num">$1,032</td>
+                <td class="num">$6,240</td>
+              </tr>
+              <tr>
+                <td>Misc / Other</td>
+                <td><span class="tag">other</span></td>
+                <td class="num">$396</td>
+                <td class="num">$614</td>
+                <td class="num">$4,752</td>
+              </tr>
+              <tr class="divider-row">
+                <td>Total</td><td></td>
+                <td class="num">$8,833</td>
+                <td class="num">$17,480</td>
+                <td class="num" style="color:var(--accent)">$105,992</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Income Composition</div>
+          <div style="margin-bottom:16px;">
+            <div class="progress-block">
+              <div class="progress-header"><span class="progress-name">W-2 Salary</span><span class="progress-vals"><em>89.6%</em></span></div>
+              <div class="bar-track" style="height:6px"><div class="bar-fill green" style="width:89.6%"></div></div>
+            </div>
+            <div class="progress-block">
+              <div class="progress-header"><span class="progress-name">Interest / Passive</span><span class="progress-vals"><em>5.9%</em></span></div>
+              <div class="bar-track" style="height:6px"><div class="bar-fill blue" style="width:5.9%"></div></div>
+            </div>
+            <div class="progress-block">
+              <div class="progress-header"><span class="progress-name">Misc / Other</span><span class="progress-vals"><em>4.5%</em></span></div>
+              <div class="bar-track" style="height:6px"><div class="bar-fill" style="width:4.5%"></div></div>
+            </div>
+          </div>
+          <div style="padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);font-size:11px;color:var(--text-dim);line-height:1.8;">
+            <div>Passive income: <span style="color:var(--text)">$520/mo (5.9%)</span></div>
+            <div>Active income: <span style="color:var(--text)">$8,313/mo (94.1%)</span></div>
+            <div style="margin-top:6px;color:var(--text-dim)">Goal: grow passive to 20% of total</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Income After Savings</div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;">
+            <div style="display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--border);">
+              <span style="color:var(--text-dim)">Gross monthly</span>
+              <span style="color:var(--text-hi)">$8,833</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span style="color:var(--text-dim)">→ VTSAX auto-invest</span>
+              <span style="color:var(--blue)">−$1,500</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span style="color:var(--text-dim)">→ MIT SCM savings</span>
+              <span style="color:var(--blue)">−$1,500</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span style="color:var(--text-dim)">→ Lakehouse fund</span>
+              <span style="color:var(--blue)">−$500</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);">
+              <span style="color:var(--text-dim)">Available to spend</span>
+              <span style="color:var(--text-hi)">$5,333</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span style="color:var(--text-dim)">Actual expenses</span>
+              <span style="color:var(--red)">−$2,140</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);">
+              <span style="color:var(--text-dim)">Monthly surplus</span>
+              <span style="color:var(--green)">+$3,193</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /income -->
+
+
+  <!-- ═══════════════════════════════════════════════ EXPENSES -->
+  <div class="view" id="view-expenses">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Feb Spent</div>
+        <div class="stat-value accent">$2,140</div>
+        <div class="stat-sub delta-dn">↑ $40 over budget</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Monthly Budget</div>
+        <div class="stat-value">$2,100</div>
+        <div class="stat-sub">fixed cap</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">YTD Expenses</div>
+        <div class="stat-value">$4,600</div>
+        <div class="stat-sub">Jan $2,460 + Feb $2,140</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">% of Income</div>
+        <div class="stat-value">24.2%</div>
+        <div class="stat-sub delta-up">↓ 0.9pts vs last month</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Category Breakdown — Feb 2026</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Category</th><th class="num">Budget</th><th class="num">Spent</th><th class="num">Remaining</th><th class="num">%</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Housing</td>
+                <td class="num" style="color:var(--text-dim)">$800</td>
+                <td class="num">$780</td>
+                <td class="num" style="color:var(--green)">+$20</td>
+                <td class="num">97.5%</td>
+              </tr>
+              <tr>
+                <td>Discretionary</td>
+                <td class="num" style="color:var(--text-dim)">$600</td>
+                <td class="num">$745</td>
+                <td class="num" style="color:var(--red)">−$145</td>
+                <td class="num" style="color:var(--red)">124.2%</td>
+              </tr>
+              <tr>
+                <td>Food & Groceries</td>
+                <td class="num" style="color:var(--text-dim)">$400</td>
+                <td class="num">$340</td>
+                <td class="num" style="color:var(--green)">+$60</td>
+                <td class="num">85.0%</td>
+              </tr>
+              <tr>
+                <td>Transport</td>
+                <td class="num" style="color:var(--text-dim)">$200</td>
+                <td class="num">$180</td>
+                <td class="num" style="color:var(--green)">+$20</td>
+                <td class="num">90.0%</td>
+              </tr>
+              <tr>
+                <td>Subscriptions</td>
+                <td class="num" style="color:var(--text-dim)">$100</td>
+                <td class="num">$95</td>
+                <td class="num" style="color:var(--green)">+$5</td>
+                <td class="num">95.0%</td>
+              </tr>
+              <tr class="divider-row">
+                <td>Total</td>
+                <td class="num" style="color:var(--text-dim)">$2,100</td>
+                <td class="num">$2,140</td>
+                <td class="num" style="color:var(--red)">−$40</td>
+                <td class="num" style="color:var(--red)">101.9%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="section-label">6-Month Expense Trend</div>
+          <div class="month-bars" id="expense-bars"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-dim);">
+            <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;">
+            <span style="color:var(--text-dim)">■ Spent</span>
+            <span style="color:var(--border-hi)">- - Budget ($2,100)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-stack">
+
+        <div class="card">
+          <div class="section-label">Budget vs Actual</div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Housing</span><span class="progress-vals"><em>$780</em> / $800</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:97.5%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Discretionary</span><span class="progress-vals" style="color:var(--red)"><em style="color:var(--red)">$745</em> / $600</span></div>
+            <div class="bar-track"><div class="bar-fill red" style="width:100%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Food & Groceries</span><span class="progress-vals"><em>$340</em> / $400</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:85%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Transport</span><span class="progress-vals"><em>$180</em> / $200</span></div>
+            <div class="bar-track"><div class="bar-fill green" style="width:90%"></div></div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-header"><span class="progress-name">Subscriptions</span><span class="progress-vals"><em>$95</em> / $100</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:95%"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Subscriptions</div>
+          <table class="data-table">
+            <thead><tr><th>Service</th><th class="num">$/mo</th></tr></thead>
+            <tbody>
+              <tr><td>Apple One</td><td class="num">$22</td></tr>
+              <tr><td>Spotify</td><td class="num">$11</td></tr>
+              <tr><td>YouTube Premium</td><td class="num">$14</td></tr>
+              <tr><td>iCloud 2TB</td><td class="num">$10</td></tr>
+              <tr><td>GitHub Pro</td><td class="num">$4</td></tr>
+              <tr><td>ChatGPT Plus</td><td class="num">$20</td></tr>
+              <tr><td>Miscellaneous</td><td class="num">$14</td></tr>
+              <tr class="divider-row"><td>Total</td><td class="num">$95</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /expenses -->
+
+
+  <!-- ═══════════════════════════════════════════════ GOALS -->
+  <div class="view" id="view-goals">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Active Goals</div>
+        <div class="stat-value accent">4</div>
+        <div class="stat-sub">3 on track · 1 early stage</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Monthly Allocated</div>
+        <div class="stat-value">$3,500</div>
+        <div class="stat-sub">across all goals</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total Saved</div>
+        <div class="stat-value">$145,600</div>
+        <div class="stat-sub">across all buckets</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Net Worth Target</div>
+        <div class="stat-value">$7M</div>
+        <div class="stat-sub">by age 35 · 2037</div>
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-card-header">
+        <div>
+          <div class="goal-card-title">◎ &nbsp;$7M Net Worth by 35</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:4px">Primary financial independence target</div>
+        </div>
+        <div class="goal-card-status">early stage</div>
+      </div>
+      <div class="goal-stats">
+        <div>
+          <div class="goal-stat-label">Current</div>
+          <div class="goal-stat-val" style="color:var(--accent)">$125,400</div>
+        </div>
+        <div>
+          <div class="goal-stat-label">Target</div>
+          <div class="goal-stat-val">$7,000,000</div>
+        </div>
+        <div>
+          <div class="goal-stat-label">Time Left</div>
+          <div class="goal-stat-val">11 yrs</div>
+        </div>
+      </div>
+      <div class="bar-track" style="height:4px"><div class="bar-fill" style="width:1.8%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--text-dim)"><span>1.8% complete</span><span>$6,874,600 remaining</span></div>
+      <div class="goal-projection">
+        Required monthly growth to hit target: <em>~$44,000/mo</em> net worth increase by 2037 (compounding). At current savings rate + 7% CAGR on invested assets, projected: <em>~$2.1M by 35</em>. Gap requires income scaling.
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-card-header">
+        <div>
+          <div class="goal-card-title">◈ &nbsp;MIT SCM Degree</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:4px">Supply Chain Management — blended/online program, target start 2027</div>
+        </div>
+        <div class="goal-card-status on-track">on track</div>
+      </div>
+      <div class="goal-stats">
+        <div>
+          <div class="goal-stat-label">Saved</div>
+          <div class="goal-stat-val" style="color:var(--blue)">$17,000</div>
+        </div>
+        <div>
+          <div class="goal-stat-label">Target</div>
+          <div class="goal-stat-val">$50,000</div>
+        </div>
+        <div>
+          <div class="goal-stat-label">Monthly</div>
+          <div class="goal-stat-val">$1,500</div>
+        </div>
+      </div>
+      <div class="bar-track" style="height:4px"><div class="bar-fill blue" style="width:34%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--text-dim)"><span>34% complete</span><span>$33,000 remaining</span></div>
+      <div class="goal-projection">At $1,500/mo, funded in <em>22 months</em> (Dec 2027). On track for program start. Consider lump-sum if cash surplus allows early completion.
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-card-header">
+        <div>
+          <div class="goal-card-title">⬡ &nbsp;Lakehouse Fund</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:4px">Down payment / acquisition fund for rural property</div>
+        </div>
+        <div class="goal-card-status on-track">on track</div>
+      </div>
+      <div class="goal-stats">
+        <div>
+          <div class="goal-stat-label">Saved</div>
+          <div class="goal-stat-val" style="color:var(--green)">$8,200</div>
+        </div>
+        <div>
+          <div class="goal-stat-label">Target</div>
+          <div class="goal-stat-val">$50,000</div>
+        </div>
+        <div>
+          <div class="goal-stat-label">Monthly</div>
+          <div class="goal-stat-val">$500</div>
+        </div>
+      </div>
+      <div class="bar-track" style="height:4px"><div class="bar-fill green" style="width:16.4%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--text-dim)"><span>16.4% complete</span><span>$41,800 remaining</span></div>
+      <div class="goal-projection">At $500/mo, funded in <em>84 months</em> (Feb 2033). Increase contribution after MIT goal completes to accelerate.
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-card-header">
+        <div>
+          <div class="goal-card-title">▲ &nbsp;Emergency Fund</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:4px">3 months of total expenses — held in HYSA</div>
+        </div>
+        <div class="goal-card-status on-track">on track</div>
+      </div>
+      <div class="goal-stats">
+        <div>
+          <div class="goal-stat-label">Saved</div>
+          <div class="goal-stat-val" style="color:var(--green)">$12,000</div>
+        </div>
+        <div>
+          <div class="goal-stat-label">Target</div>
+          <div class="goal-stat-val">$15,000</div>
+        </div>
+        <div>
+          <div class="goal-stat-label">Remaining</div>
+          <div class="goal-stat-val">$3,000</div>
+        </div>
+      </div>
+      <div class="bar-track" style="height:4px"><div class="bar-fill green" style="width:80%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--text-dim)"><span>80% complete</span><span>$3,000 remaining</span></div>
+      <div class="goal-projection">Fully funded in <em>2 months</em> at current pace. Once complete, redirect $500/mo to lakehouse fund.
+      </div>
+    </div>
+
+  </div><!-- /goals -->
+
+
+  <!-- ═══════════════════════════════════════════════ LOG -->
+  <div class="view" id="view-log">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Transactions</div>
+        <div class="stat-value accent">47</div>
+        <div class="stat-sub">Feb 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total In</div>
+        <div class="stat-value">$8,833</div>
+        <div class="stat-sub delta-up" style="color:var(--green)">income + interest</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total Out</div>
+        <div class="stat-value">$5,640</div>
+        <div class="stat-sub">expenses + investments</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Net Flow</div>
+        <div class="stat-value">+$3,193</div>
+        <div class="stat-sub delta-up">surplus this month</div>
+      </div>
+    </div>
+
+    <div class="filter-tabs" id="log-filters">
+      <div class="filter-tab active" data-filter="all">All</div>
+      <div class="filter-tab" data-filter="income">Income</div>
+      <div class="filter-tab" data-filter="expense">Expense</div>
+      <div class="filter-tab" data-filter="invest">Invest</div>
+      <div class="filter-tab" data-filter="passive">Passive</div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="data-table" id="log-table">
+        <thead>
+          <tr><th>Date</th><th>Description</th><th>Category</th><th class="num">Amount</th><th class="num">Running Balance</th></tr>
+        </thead>
+        <tbody id="log-body"></tbody>
+      </table>
+    </div>
+
+  </div><!-- /log -->
+
+</div><!-- /shell -->
+
+<script>
+// ── NAV SWITCHING ──────────────────────────────────────────────
+document.querySelectorAll('.nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.view;
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById('view-' + target).classList.add('active');
+  });
+});
+
+// ── LIVE CLOCK ─────────────────────────────────────────────────
+function tick() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US', {hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = now.toLocaleDateString('en-US', {month:'short',day:'numeric'});
+  document.getElementById('live-time').textContent = d + ' ' + t;
+}
+tick(); setInterval(tick, 1000);
+
+// ── SPARKLINE (overview) ────────────────────────────────────────
+(function() {
+  const data = [83000,88000,91500,95000,99000,103000,107500,110000,114000,118500,121000,125400];
+  const el = document.getElementById('ov-sparkline');
+  const max = Math.max(...data), min = Math.min(...data);
+  data.forEach((v,i) => {
+    const b = document.createElement('div');
+    b.className = 'spark-bar' + (i === data.length-1 ? ' current' : '');
+    b.style.height = ((v-min)/(max-min)*85+15) + '%';
+    b.title = '$' + v.toLocaleString();
+    el.appendChild(b);
+  });
+})();
+
+// ── INCOME BARS ─────────────────────────────────────────────────
+(function() {
+  const months = [
+    {w2:7700,int:480,misc:320},
+    {w2:7917,int:490,misc:410},
+    {w2:7917,int:500,misc:280},
+    {w2:7917,int:505,misc:600},
+    {w2:7917,int:510,misc:196},
+    {w2:7917,int:520,misc:396},
+  ];
+  const el = document.getElementById('income-bars');
+  const allTotals = months.map(m => m.w2+m.int+m.misc);
+  const max = Math.max(...allTotals);
+  months.forEach(m => {
+    const total = m.w2+m.int+m.misc;
+    const pct = total/max*100;
+    const col = document.createElement('div');
+    col.className = 'month-col';
+    col.innerHTML = `
+      <div class="month-bar-wrap">
+        <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:${pct}%;gap:1px;">
+          <div class="month-bar" style="background:var(--text-dim);height:${m.misc/total*100}%;min-height:2px" title="Misc: $${m.misc}"></div>
+          <div class="month-bar" style="background:var(--blue);height:${m.int/total*100}%;min-height:2px" title="Interest: $${m.int}"></div>
+          <div class="month-bar" style="background:var(--green);height:${m.w2/total*100}%;min-height:3px" title="W-2: $${m.w2}"></div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text-dim)">$${Math.round(total/1000)}k</div>
+    `;
+    el.appendChild(col);
+  });
+})();
+
+// ── EXPENSE BARS ─────────────────────────────────────────────────
+(function() {
+  const data = [2460,2380,2190,2820,2460,2140];
+  const el = document.getElementById('expense-bars');
+  const max = Math.max(...data);
+  data.forEach((v,i) => {
+    const pct = v/max*100;
+    const over = v > 2100;
+    const col = document.createElement('div');
+    col.className = 'month-col';
+    col.innerHTML = `
+      <div class="month-bar-wrap">
+        <div style="width:100%;height:${pct}%;display:flex;align-items:flex-end;">
+          <div class="month-bar" style="width:100%;height:100%;background:${over?'var(--red)':'var(--green)'};opacity:.7" title="$${v.toLocaleString()}"></div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text-dim)">$${(v/1000).toFixed(1)}k</div>
+    `;
+    el.appendChild(col);
+  });
+})();
+
+// ── TRANSACTION LOG ─────────────────────────────────────────────
+const txns = [
+  {date:'Feb 19',desc:'Interest — Marcus HYSA',cat:'passive',amt:520,bal:125400},
+  {date:'Feb 18',desc:'Whole Foods',cat:'expense',amt:-87.40,bal:124880},
+  {date:'Feb 17',desc:'VTSAX Auto-invest',cat:'invest',amt:-1500,bal:124967},
+  {date:'Feb 16',desc:'Gas — Shell',cat:'expense',amt:-48,bal:126467},
+  {date:'Feb 15',desc:'W-2 Direct Deposit',cat:'income',amt:3958,bal:126515},
+  {date:'Feb 14',desc:'Rent — Feb',cat:'expense',amt:-780,bal:122557},
+  {date:'Feb 13',desc:'Spotify',cat:'expense',amt:-11,bal:123337},
+  {date:'Feb 12',desc:'Guitar strings — PRS SE',cat:'expense',amt:-28,bal:123348},
+  {date:'Feb 11',desc:'Trader Joe\'s',cat:'expense',amt:-62,bal:123376},
+  {date:'Feb 10',desc:'Apple One',cat:'expense',amt:-22,bal:123438},
+  {date:'Feb 09',desc:'YouTube Premium',cat:'expense',amt:-14,bal:123460},
+  {date:'Feb 08',desc:'ChatGPT Plus',cat:'expense',amt:-20,bal:123474},
+  {date:'Feb 07',desc:'MIT savings transfer',cat:'invest',amt:-1500,bal:123494},
+  {date:'Feb 06',desc:'Lakehouse fund transfer',cat:'invest',amt:-500,bal:124994},
+  {date:'Feb 05',desc:'Costco — groceries',cat:'expense',amt:-128,bal:125494},
+  {date:'Feb 04',desc:'Uber',cat:'expense',amt:-24,bal:125622},
+  {date:'Feb 03',desc:'Misc income',cat:'income',amt:396,bal:125646},
+  {date:'Feb 01',desc:'W-2 Direct Deposit',cat:'income',amt:3959,bal:125250},
+  {date:'Jan 31',desc:'Interest — Marcus HYSA',cat:'passive',amt:510,bal:121291},
+  {date:'Jan 30',desc:'Amazon — books',cat:'expense',amt:-47,bal:120781},
+];
+
+function renderLog(filter) {
+  const filtered = filter === 'all' ? txns : txns.filter(t => t.cat === filter);
+  const body = document.getElementById('log-body');
+  body.innerHTML = filtered.map(t => {
+    const pos = t.amt > 0;
+    const amtStr = (pos ? '+' : '−') + '$' + Math.abs(t.amt).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    return `<tr>
+      <td style="color:var(--text-dim);font-size:11px">${t.date}</td>
+      <td>${t.desc}</td>
+      <td><span class="tag ${t.cat}">${t.cat}</span></td>
+      <td class="num" style="color:${pos?'var(--green)':t.cat==='invest'?'var(--blue)':'var(--red)'}">${amtStr}</td>
+      <td class="num">$${t.bal.toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+}
+renderLog('all');
+
+document.querySelectorAll('#log-filters .filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#log-filters .filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderLog(tab.dataset.filter);
+  });
+});
+</script>
+</body>
+</html>

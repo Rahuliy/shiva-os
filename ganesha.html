@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA // GANESHA</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --bg-raised: #111111;
+  --bg-hover:  #181818;
+  --border:    #222222;
+  --border-hi: #333333;
+  --text:      #c8c8c8;
+  --text-dim:  #555555;
+  --text-hi:   #efefef;
+  --accent:    #e8d5a3;
+  --green:     #7db88a;
+  --red:       #c47a6a;
+  --blue:      #6a8fa8;
+  --gold:      #c9973a;
+  --mono:      'IBM Plex Mono', monospace;
+  --serif:     'Libre Baskerville', serif;
+  --r:         2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:20px;}
+.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo span{color:var(--text-dim);font-weight:300;}
+.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back:hover{color:var(--accent);}
+.nav{display:flex;gap:2px;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
+.nav a.active{color:var(--accent);background:var(--bg-raised);}
+.topbar-right{font-size:11px;color:var(--text-dim);}
+#live-time{color:var(--text);}
+
+.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
+.card:hover{border-color:var(--border-hi);}
+.card+.card{margin-top:16px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
+.stat:hover{background:var(--bg-hover);}
+.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-value.accent{color:var(--accent);}
+.stat-sub{font-size:11px;color:var(--text-dim);}
+.delta-up{color:var(--green);}
+
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
+.col-stack{display:flex;flex-direction:column;gap:16px;}
+
+.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
+.bar-fill.green{background:var(--green);}
+.bar-fill.blue{background:var(--blue);}
+.bar-fill.red{background:var(--red);}
+
+.data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--bg-hover);}
+.data-table .num{text-align:right;}
+
+.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag.active{background:#1a2e1e;color:var(--green);}
+.tag.blocked{background:#2a1a18;color:var(--red);}
+.tag.review{background:#181e28;color:var(--blue);}
+.tag.done{background:#1e2a1e;color:var(--green);opacity:0.6;}
+.tag.dharma{background:#1e1e2a;color:var(--blue);}
+.tag.artha{background:#2a2a1a;color:var(--accent);}
+.tag.kama{background:#2a1a1e;color:#c47a8a;}
+.tag.moksha{background:#1a2a2a;color:#6ab8b8;}
+
+/* PROJECT CARD */
+.project-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:10px;transition:border-color .15s;}
+.project-card:hover{border-color:var(--border-hi);}
+.project-card.is-active{border-left:2px solid var(--accent);}
+.project-card.is-blocked{border-left:2px solid var(--red);}
+.project-card.is-done{opacity:0.5;}
+.project-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.project-title{color:var(--text-hi);font-size:13px;font-weight:500;}
+.project-meta{font-size:11px;color:var(--text-dim);margin-bottom:10px;line-height:1.7;}
+.project-meta em{color:var(--text);font-style:normal;}
+.project-footer{display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--text-dim);}
+.project-progress{flex:1;}
+
+/* REFLECTION */
+.reflection-entry{border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;transition:border-color .15s;}
+.reflection-entry:hover{border-color:var(--border-hi);}
+.reflection-date{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;}
+.reflection-question{font-size:10px;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;opacity:0.8;}
+.reflection-answer{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--text);line-height:1.85;margin-bottom:12px;}
+.reflection-answer:last-child{margin-bottom:0;}
+
+/* ROUTING TABLE */
+.routing-row{border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;transition:border-color .15s;}
+.routing-row:hover{border-color:var(--border-hi);}
+.routing-question{font-size:12px;color:var(--text-hi);margin-bottom:6px;}
+.routing-decision{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.routing-decision em{color:var(--text);font-style:normal;}
+.routing-footer{display:flex;gap:8px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.stat{animation:fadeUp .3s ease both;}
+.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
+.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
+.card,.project-card,.reflection-entry,.routing-row{animation:fadeUp .35s ease both;animation-delay:.1s;}
+
+@media(max-width:800px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back" href="index.html">← shiva os</a>
+    <div class="logo">GANESHA <span>// projects · reflection · routing</span></div>
+    <nav class="nav">
+      <a class="active" data-view="projects">projects</a>
+      <a data-view="reflection">reflection</a>
+      <a data-view="routing">routing</a>
+      <a data-view="log">log</a>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span id="live-time"></span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- PROJECTS -->
+  <div class="view active" id="view-projects">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Active</div>
+        <div class="stat-value accent">2</div>
+        <div class="stat-sub">in motion now</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Blocked</div>
+        <div class="stat-value">1</div>
+        <div class="stat-sub">waiting on something</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Queue</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">not yet started</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value">1</div>
+        <div class="stat-sub">this year</div>
+      </div>
+    </div>
+
+    <div class="section-label">Active</div>
+
+    <div class="project-card is-active">
+      <div class="project-header">
+        <div class="project-title">Shiva OS — Core Modules</div>
+        <span class="tag active">active</span>
+      </div>
+      <div class="project-meta">
+        Building the full OS UI: Lakshmi live · 7 modules remaining<br>
+        Deity: <em>Vishwakarma</em> (build) · Quadrant: <em>Moksha</em><br>
+        Started: <em>Feb 2026</em> · Target: <em>Q4 2026</em>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-dim)">Build progress</span><span style="color:var(--text)">12%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:12%"></div></div>
+      </div>
+      <div class="project-footer">
+        <span>Next: Kubera wireframe</span>
+        <span style="margin-left:auto">·</span>
+        <span>Last touch: today</span>
+      </div>
+    </div>
+
+    <div class="project-card is-active">
+      <div class="project-header">
+        <div class="project-title">MIT SCM Funding</div>
+        <span class="tag active">active</span>
+      </div>
+      <div class="project-meta">
+        $1,500/mo auto-transfer to dedicated savings bucket<br>
+        Deity: <em>Saraswati</em> (learning) · Quadrant: <em>Dharma</em><br>
+        Started: <em>Jan 2026</em> · Application target: <em>2026</em>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-dim)">Fund progress</span><span style="color:var(--blue)">34%</span></div>
+        <div class="bar-track"><div class="bar-fill blue" style="width:34%"></div></div>
+      </div>
+      <div class="project-footer">
+        <span>Next: Research program requirements</span>
+        <span style="margin-left:auto">·</span>
+        <span>On track</span>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">Blocked</div>
+
+    <div class="project-card is-blocked">
+      <div class="project-header">
+        <div class="project-title">Homelab Setup</div>
+        <span class="tag blocked">blocked</span>
+      </div>
+      <div class="project-meta">
+        Waiting on: <em>housing upgrade / more space</em><br>
+        Deity: <em>Vishwakarma</em> (infra) · Quadrant: <em>Moksha</em><br>
+        Blocker: Current apartment too small for rack equipment
+      </div>
+      <div class="project-footer">
+        <span style="color:var(--red)">Blocker: physical space</span>
+        <span style="margin-left:auto">·</span>
+        <span>Revisit: 2027</span>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">Queue</div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="data-table">
+        <thead><tr><th>Project</th><th>Deity</th><th>Quadrant</th><th>Depends On</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>LLC / Business Formation</td>
+            <td><span class="tag">Kubera</span></td>
+            <td><span class="tag artha">Artha</span></td>
+            <td style="color:var(--text-dim);font-size:11px">First revenue · 2027</td>
+          </tr>
+          <tr>
+            <td>Parkour Skills Documentation</td>
+            <td><span class="tag">Hanuman</span></td>
+            <td><span class="tag kama">Kama</span></td>
+            <td style="color:var(--text-dim);font-size:11px">Hanuman module build</td>
+          </tr>
+          <tr>
+            <td>Reading List System</td>
+            <td><span class="tag">Saraswati</span></td>
+            <td><span class="tag dharma">Dharma</span></td>
+            <td style="color:var(--text-dim);font-size:11px">Free after MIT funding auto</td>
+          </tr>
+          <tr>
+            <td>Lakehouse Fund Acceleration</td>
+            <td><span class="tag">Lakshmi</span></td>
+            <td><span class="tag artha">Artha</span></td>
+            <td style="color:var(--text-dim);font-size:11px">Emergency fund complete</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /projects -->
+
+
+  <!-- REFLECTION -->
+  <div class="view" id="view-reflection">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Review Streak</div>
+        <div class="stat-value accent">3</div>
+        <div class="stat-sub">weeks consecutive</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">This Week</div>
+        <div class="stat-value">Done</div>
+        <div class="stat-sub delta-up">Feb 17, 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total Reviews</div>
+        <div class="stat-value">7</div>
+        <div class="stat-sub">since Jan 2026</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Next Review</div>
+        <div class="stat-value" style="font-size:17px;">Feb 24</div>
+        <div class="stat-sub">Sunday · 4 days</div>
+      </div>
+    </div>
+
+    <div class="section-label">Weekly Reviews</div>
+
+    <div class="reflection-entry">
+      <div class="reflection-date">Week of Feb 17, 2026 — Sunday Review</div>
+      <div class="reflection-question">What did I actually do this week?</div>
+      <div class="reflection-answer">"Finished Lakshmi module. Started Kubera wireframe. Did three parkour sessions. Two VTSAX buys hit. Spent too much on discretionary — ate out four times."</div>
+      <div class="reflection-question">What was I avoiding?</div>
+      <div class="reflection-answer">"Calling about MIT application prerequisites. It feels large and I've been circling it for two weeks. That's the signal — do it Monday."</div>
+      <div class="reflection-question">What is the single most important thing next week?</div>
+      <div class="reflection-answer">"Research MIT SCM program requirements and draft a realistic application timeline."</div>
+    </div>
+
+    <div class="reflection-entry">
+      <div class="reflection-date">Week of Feb 10, 2026 — Sunday Review</div>
+      <div class="reflection-question">What did I actually do this week?</div>
+      <div class="reflection-answer">"Finished Lakshmi income and expenses tabs. Emergency fund at 80%. Two guitar sessions — played through a full song for the first time in months."</div>
+      <div class="reflection-question">What was I avoiding?</div>
+      <div class="reflection-answer">"Not tracking food spending closely. Over budget on discretionary again."</div>
+      <div class="reflection-question">What is the single most important thing next week?</div>
+      <div class="reflection-answer">"Cap discretionary at $600 hard. Log every expense same-day."</div>
+    </div>
+
+    <div class="reflection-entry" style="opacity:0.55;">
+      <div class="reflection-date">Week of Feb 3, 2026 — Sunday Review</div>
+      <div class="reflection-question">What did I actually do this week?</div>
+      <div class="reflection-answer">"Started Shiva OS project. Set up file structure. Built index.html and first Lakshmi draft."</div>
+      <div class="reflection-question">What was I avoiding?</div>
+      <div class="reflection-answer">"Looking at the $7M gap seriously. Knowing the number is uncomfortable — need to sit with it."</div>
+      <div class="reflection-question">What is the single most important thing next week?</div>
+      <div class="reflection-answer">"Keep building. One module a week minimum."</div>
+    </div>
+
+  </div><!-- /reflection -->
+
+
+  <!-- ROUTING -->
+  <div class="view" id="view-routing">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Open Decisions</div>
+        <div class="stat-value accent">2</div>
+        <div class="stat-sub">awaiting routing</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Routed This Month</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">decisions resolved</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Avg. Decision Time</div>
+        <div class="stat-value" style="font-size:18px;">3 days</div>
+        <div class="stat-sub">open → resolved</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Regret Rate</div>
+        <div class="stat-value">1</div>
+        <div class="stat-sub">reconsidered decisions</div>
+      </div>
+    </div>
+
+    <div class="section-label">Open — Needs Routing</div>
+
+    <div class="routing-row" style="border-left:2px solid var(--accent);">
+      <div class="routing-question">Should I apply to MIT SCM this cycle (2026) or wait until 2027?</div>
+      <div class="routing-decision">
+        Context: Fund is 34% complete. Application requires 2 years of work experience (have 2). GRE/GMAT waiver may apply.<br>
+        Tension: <em>apply now with partial funding vs wait one more year and apply fully funded</em>
+      </div>
+      <div class="routing-footer">
+        <span class="tag dharma">Saraswati</span>
+        <span class="tag artha">Lakshmi</span>
+        <span style="color:var(--text-dim);font-size:10px;margin-left:auto">Opened: Feb 12 · 8 days open</span>
+      </div>
+    </div>
+
+    <div class="routing-row" style="border-left:2px solid var(--accent);">
+      <div class="routing-question">Should Shiva OS be open-source or a paid product?</div>
+      <div class="routing-decision">
+        Context: It's built for personal use. Releasing it open-source builds reputation. Charging requires support and a product mindset.<br>
+        Tension: <em>data sovereignty + visibility vs revenue potential</em>
+      </div>
+      <div class="routing-footer">
+        <span class="tag">Kubera</span>
+        <span class="tag moksha">Vishwakarma</span>
+        <span style="color:var(--text-dim);font-size:10px;margin-left:auto">Opened: Feb 17 · 3 days open</span>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:20px;">Resolved</div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="data-table">
+        <thead><tr><th>Question</th><th>Decision</th><th>Routed To</th><th>Date</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="max-width:260px;">Should I increase VTSAX contribution or grow emergency fund first?</td>
+            <td style="color:var(--green);font-size:11px">Finish e-fund first ($3k left). Then redirect $500/mo to VTSAX.</td>
+            <td><span class="tag">Lakshmi</span></td>
+            <td style="color:var(--text-dim);font-size:11px">Feb 10</td>
+          </tr>
+          <tr>
+            <td style="max-width:260px;">Which module to build after Lakshmi?</td>
+            <td style="color:var(--green);font-size:11px">Kubera — same Artha quadrant, builds momentum.</td>
+            <td><span class="tag">Ganesha</span></td>
+            <td style="color:var(--text-dim);font-size:11px">Feb 14</td>
+          </tr>
+          <tr>
+            <td style="max-width:260px;">ChatGPT Plus — keep or cancel?</td>
+            <td style="color:var(--green);font-size:11px">Keep until Claude API directly replaces all use cases.</td>
+            <td><span class="tag">Kubera</span></td>
+            <td style="color:var(--text-dim);font-size:11px">Feb 8</td>
+          </tr>
+          <tr>
+            <td style="max-width:260px;">Training: gym membership or outdoor only?</td>
+            <td style="color:var(--green);font-size:11px">Outdoor only until spring. Gym if parkour training requires it.</td>
+            <td><span class="tag">Hanuman</span></td>
+            <td style="color:var(--text-dim);font-size:11px">Feb 1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /routing -->
+
+
+  <!-- LOG -->
+  <div class="view" id="view-log">
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Tasks This Week</div>
+        <div class="stat-value accent">12</div>
+        <div class="stat-sub">completed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Carry-over</div>
+        <div class="stat-value">3</div>
+        <div class="stat-sub">moved forward</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Cancelled</div>
+        <div class="stat-value">1</div>
+        <div class="stat-sub">no longer relevant</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Focus Mode</div>
+        <div class="stat-value" style="font-size:17px;">Shiva OS</div>
+        <div class="stat-sub">primary project</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="data-table">
+        <thead><tr><th>Date</th><th>Action</th><th>Project</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 20</td><td>Built Kubera wireframe (overview, revenue, P&L, projections)</td><td style="color:var(--text-dim);font-size:11px">Shiva OS</td><td><span class="tag done">done</span></td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 19</td><td>Lakshmi — log view + filter tabs</td><td style="color:var(--text-dim);font-size:11px">Shiva OS</td><td><span class="tag done">done</span></td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 18</td><td>Reviewed MIT SCM program page</td><td style="color:var(--text-dim);font-size:11px">MIT Prep</td><td><span class="tag done">done</span></td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 17</td><td>Sunday weekly review</td><td style="color:var(--text-dim);font-size:11px">Reflection</td><td><span class="tag done">done</span></td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 16</td><td>Parkour session — precision jumps, vault combos</td><td style="color:var(--text-dim);font-size:11px">Hanuman</td><td><span class="tag done">done</span></td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 15</td><td>Lakshmi goals tab — 4 goal cards complete</td><td style="color:var(--text-dim);font-size:11px">Shiva OS</td><td><span class="tag done">done</span></td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 14</td><td>Routing decision: module order post-Lakshmi</td><td style="color:var(--text-dim);font-size:11px">Ganesha</td><td><span class="tag done">done</span></td></tr>
+          <tr><td style="color:var(--text-dim);font-size:11px">Feb 12</td><td>PRS guitar session — worked on Comfortably Numb solo</td><td style="color:var(--text-dim);font-size:11px">Personal</td><td><span class="tag done">done</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /log -->
+
+</div>
+
+<script>
+document.querySelectorAll('.nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.view;
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById('view-' + target).classList.add('active');
+  });
+});
+function tick() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('live-time').textContent = d + ' ' + t;
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>
