@@ -3,587 +3,910 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SHIVA // KUBERA</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Shiva OS · Kubera</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+/* ─── FOUNDATION ─────────────────────────────────────────────────────── */
 :root {
-  --bg:        #0a0a0a;
-  --bg-raised: #111111;
-  --bg-hover:  #181818;
-  --border:    #222222;
-  --border-hi: #333333;
-  --text:      #c8c8c8;
-  --text-dim:  #555555;
-  --text-hi:   #efefef;
-  --accent:    #e8d5a3;
-  --green:     #7db88a;
-  --red:       #c47a6a;
-  --blue:      #6a8fa8;
-  --gold:      #c9973a;
+  --bg:        #0b0804;
+  --bg-1:      #110d05;
+  --bg-2:      #181106;
+  --bg-3:      #1e1508;
+
+  --border-0:  #261a07;
+  --border-1:  #36250d;
+  --border-2:  #4a3414;
+
+  --text-0:    #eedfc0;
+  --text-1:    #c09450;
+  --text-2:    #7a5a2c;
+  --text-3:    #4a3418;
+
+  /* Gold — Artha */
+  --gold:      #d4a030;
+  --gold-hi:   #ecbe48;
+  --gold-dim:  #6a5018;
+  --gold-bg:   #0e0a02;
+
+  /* Jade — income / positive */
+  --jade:      #206040;
+  --jade-hi:   #3a9060;
+  --jade-dim:  #0c3020;
+  --jade-bg:   #030e06;
+
+  /* Vermillion — cost / bottleneck */
+  --verm:      #b83818;
+  --verm-hi:   #d45030;
+  --verm-dim:  #481008;
+  --verm-bg:   #0e0402;
+
+  --cinzel:    'Cinzel', serif;
+  --spectral:  'Spectral', serif;
   --mono:      'IBM Plex Mono', monospace;
-  --r:         2px;
+  --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── rgba tokens (overridden in light mode) ── */
+  --topbar-bg:    rgba(11,8,4,0.96);
+  --glow-top:     rgba(212,160,48,0.15);
+  --glow-side-l:  rgba(212,160,48,0.04);
+  --glow-side-r:  rgba(184,56,24,0.04);
+  --glow-center:  rgba(212,160,48,0.03);
+  --grid-line:    rgba(212,160,48,0.026);
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
 
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
-.topbar-left{display:flex;align-items:center;gap:20px;}
-.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
-.logo span{color:var(--text-dim);font-weight:300;}
-.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
-.back:hover{color:var(--accent);}
-.nav{display:flex;gap:2px;}
-.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
-.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
-.nav a.active{color:var(--accent);background:var(--bg-raised);}
-.topbar-right{font-size:11px;color:var(--text-dim);}
-#live-time{color:var(--text);}
+/* ─── LIGHT MODE ─────────────────────────────────────────────────────── */
+html.light {
+  --bg:        #f2e6c8;
+  --bg-1:      #ecdcb4;
+  --bg-2:      #e4d09c;
+  --bg-3:      #d8c488;
 
-.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
-.view{display:none;}
-.view.active{display:block;}
+  --border-0:  #c8a86a;
+  --border-1:  #b09050;
+  --border-2:  #8a7038;
 
-.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+  --text-0:    #120c02;
+  --text-1:    #3e280a;
+  --text-2:    #6c4c1a;
+  --text-3:    #a07838;
 
-.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
-.card:hover{border-color:var(--border-hi);}
-.card+.card{margin-top:16px;}
+  --gold:      #8a6808;
+  --gold-hi:   #b08a18;
+  --gold-dim:  #c8a848;
+  --gold-bg:   #f8f0d4;
 
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
-.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
-.stat:hover{background:var(--bg-hover);}
-.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
-.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
-.stat-value.accent{color:var(--accent);}
-.stat-value.green{color:var(--green);}
-.stat-value.red{color:var(--red);}
-.stat-sub{font-size:11px;color:var(--text-dim);}
-.delta-up{color:var(--green);}
-.delta-dn{color:var(--red);}
+  --jade:      #145a2e;
+  --jade-hi:   #1c7840;
+  --jade-dim:  #4a9468;
+  --jade-bg:   #d4eedc;
 
-.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
-.col-stack{display:flex;flex-direction:column;gap:16px;}
+  --verm:      #962010;
+  --verm-hi:   #b83820;
+  --verm-dim:  #c87858;
+  --verm-bg:   #f4e0d8;
 
-.progress-block{margin-bottom:14px;}
-.progress-block:last-child{margin-bottom:0;}
-.progress-header{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
-.progress-name{color:var(--text);}
-.progress-vals{color:var(--text-dim);}
-.progress-vals em{color:var(--text);font-style:normal;}
-.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
-.bar-fill.green{background:var(--green);}
-.bar-fill.blue{background:var(--blue);}
-.bar-fill.red{background:var(--red);}
-.bar-fill.gold{background:var(--gold);}
+  --topbar-bg:    rgba(242,230,200,0.97);
+  --glow-top:     rgba(160,110,20,0.10);
+  --glow-side-l:  rgba(160,110,20,0.03);
+  --glow-side-r:  rgba(150,32,16,0.03);
+  --glow-center:  rgba(160,110,20,0.03);
+  --grid-line:    rgba(100,70,20,0.09);
+}
 
-.data-table{width:100%;border-collapse:collapse;font-size:12px;}
-.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
-.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
-.data-table tr:last-child td{border-bottom:none;}
-.data-table tbody tr:hover td{background:var(--bg-hover);}
-.data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
-.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
-.tag.revenue{background:#1a2e1e;color:var(--green);}
-.tag.cogs{background:#2a1a18;color:var(--red);}
-.tag.opex{background:#1e1e2a;color:var(--blue);}
-.tag.invest{background:#181e28;color:var(--blue);}
+/* ─── SMOOTH THEME TRANSITION ────────────────────────────────────────── */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition:
+    background-color 0.38s ease,
+    color            0.32s ease,
+    border-color     0.32s ease,
+    box-shadow       0.32s ease !important;
+}
 
-.divider-row{border-top:1px solid var(--border-hi);}
-.divider-row td{color:var(--text-hi)!important;font-weight:500;padding-top:12px!important;}
-.total-row td{color:var(--accent)!important;font-weight:600;border-top:1px solid var(--border-hi)!important;}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-/* P&L STATEMENT */
-.pl-section{margin-bottom:20px;}
-.pl-section-title{font-size:9px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);}
-.pl-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;}
-.pl-row:hover{background:var(--bg-hover);}
-.pl-row.indent{padding-left:28px;color:var(--text-dim);}
-.pl-row.subtotal{background:rgba(255,255,255,0.02);font-weight:500;color:var(--text-hi);}
-.pl-row.total{background:rgba(201,151,58,0.05);font-weight:600;color:var(--accent);border-top:1px solid var(--border-hi);}
-.pl-row.negative{color:var(--red);}
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--spectral);
+  font-size: 18px;
+  line-height: 1.75;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-/* PROJECTION CHART */
-.proj-row{display:grid;grid-template-columns:80px 1fr 80px;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;}
-.proj-row:last-child{border-bottom:none;}
-.proj-label{color:var(--text-dim);font-size:10px;letter-spacing:0.05em;}
-.proj-val{color:var(--text-hi);text-align:right;}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -5%,  var(--glow-top)    0%, transparent 60%),
+    radial-gradient(ellipse 35% 55% at 5%  88%,  var(--glow-side-l) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 45% at 95% 78%,  var(--glow-side-r) 0%, transparent 55%),
+    radial-gradient(ellipse 20% 30% at 50% 50%,  var(--glow-center) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
 
-/* STREAM CARDS */
-.stream-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:8px;transition:border-color .15s;}
-.stream-card:hover{border-color:var(--border-hi);}
-.stream-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-.stream-name{color:var(--text-hi);font-size:13px;font-weight:500;}
-.stream-status{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
-.stream-status.active{background:#1a2e1e;color:var(--green);}
-.stream-status.building{background:#181e28;color:var(--blue);}
-.stream-status.planned{background:var(--border);color:var(--text-dim);}
-.stream-meta{font-size:11px;color:var(--text-dim);line-height:1.7;}
-.stream-meta em{color:var(--text);font-style:normal;}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(45deg,  var(--grid-line) 1px, transparent 1px),
+    linear-gradient(-45deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 42px 42px;
+  pointer-events: none; z-index: 0;
+  mask-image: radial-gradient(ellipse 110% 80% at 50% 0%, black 0%, transparent 88%);
+}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-.stat{animation:fadeUp .3s ease both;}
-.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
-.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
-.card{animation:fadeUp .35s ease both;animation-delay:.1s;}
+.above { position: relative; z-index: 1; }
 
-@media(max-width:800px){
-  .stat-grid{grid-template-columns:repeat(2,1fr);}
-  .two-col{grid-template-columns:1fr;}
+/* ─── TOPBAR ─────────────────────────────────────────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 36px; height: 50px;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-0);
+  animation: fromTop 0.4s var(--ease) both;
+}
+.topbar::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold-dim)  0, var(--gold-dim)  4px, transparent 4px, transparent 8px,
+    var(--gold-dim)  8px, var(--gold-dim) 12px, transparent 12px, transparent 16px,
+    var(--verm-dim) 16px, var(--verm-dim) 20px, transparent 20px, transparent 24px
+  );
+  opacity: 0.65;
+}
+
+.topbar-left { display: flex; align-items: center; gap: 22px; }
+
+.back {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: lowercase;
+  color: var(--text-3); text-decoration: none;
+  transition: color 0.15s;
+}
+.back:hover { color: var(--gold-dim); }
+
+.topbar-brand { display: flex; align-items: baseline; gap: 10px; }
+.brand-name {
+  font-family: var(--cinzel);
+  font-size: 17px; font-weight: 600;
+  color: var(--gold); letter-spacing: 0.20em;
+}
+.brand-sep { color: var(--border-2); font-size: 13px; }
+.brand-sub {
+  font-family: var(--mono);
+  font-size: 12px; color: var(--text-3); letter-spacing: 0.10em;
+}
+.brand-sub span { color: var(--text-2); }
+
+.topbar-nav { display: flex; }
+.topbar-nav a {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: lowercase;
+  color: var(--text-3); text-decoration: none;
+  padding: 4px 10px;
+  transition: color 0.15s;
+}
+.topbar-nav a:hover { color: var(--text-2); }
+
+.topbar-right { display: flex; align-items: center; gap: 14px; }
+.theme-btn {
+  background: none;
+  border: 1px solid var(--border-1);
+  border-radius: 1px;
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.14em;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 3px 9px;
+  line-height: 1;
+  transition: color 0.15s, border-color 0.15s;
+  text-transform: lowercase;
+}
+.theme-btn:hover { color: var(--gold-dim); border-color: var(--gold-dim); }
+.live-dot {
+  width: 5px; height: 5px;
+  background: var(--gold); border-radius: 50%;
+  animation: livePulse 3s ease-in-out infinite;
+}
+@keyframes livePulse {
+  0%,100% { opacity: 0.35; transform: scale(0.85); box-shadow: none; }
+  50%      { opacity: 1;    transform: scale(1.1);  box-shadow: 0 0 6px var(--gold); }
+}
+#clock {
+  font-family: var(--mono);
+  font-size: 13px; color: var(--text-2); letter-spacing: 0.08em;
+}
+
+/* ─── SHELL ──────────────────────────────────────────────────────────── */
+.shell { max-width: 1920px; margin: 0 auto; padding: 0 52px 120px; }
+
+/* ─── MODULE HERO ────────────────────────────────────────────────────── */
+.mod-hero {
+  padding: 36px 0 28px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  border-bottom: 1px solid var(--border-0);
+  margin-bottom: 32px;
+  animation: riseIn 0.8s var(--ease) 0.1s both;
+}
+.mod-left { display: flex; flex-direction: column; gap: 8px; }
+.mod-pillar {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.22em;
+  color: var(--gold-dim); text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.mod-name {
+  font-family: var(--cinzel);
+  font-size: 54px; font-weight: 400;
+  color: var(--gold-hi); letter-spacing: 0.06em;
+  line-height: 1;
+}
+.mod-epithet {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 18px;
+  color: var(--text-3); margin-top: 6px;
+}
+.mod-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.domain-tag {
+  font-family: var(--cinzel);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  padding: 5px 12px; border: 1px solid var(--gold-dim);
+  color: var(--gold-dim); border-radius: 1px;
+}
+.mod-sub {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 15px; color: var(--text-3);
+}
+
+/* ─── SECTION LABEL ──────────────────────────────────────────────────── */
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.section-label {
+  font-family: var(--cinzel);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.32em; color: var(--text-3); text-transform: uppercase;
+  display: flex; align-items: center; gap: 14px;
+}
+.section-label::before { content: '◆'; font-size: 6px; color: var(--gold-dim); }
+.section-label::after  { content: ''; width: 52px; height: 1px; background: linear-gradient(90deg, var(--border-1), transparent); }
+.section-sub {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 15px; color: var(--text-3);
+}
+
+/* ─── GUNA ROW ───────────────────────────────────────────────────────── */
+.guna-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border-0);
+  border: 1px solid var(--border-0); border-radius: 2px;
+  overflow: hidden; margin-bottom: 44px;
+  animation: riseIn 0.7s var(--ease) 0.25s both;
+}
+.guna-cell {
+  background: var(--bg-1); padding: 22px 24px 18px;
+  position: relative; transition: background 0.2s;
+}
+.guna-cell:hover { background: var(--bg-2); }
+
+.guna-cell.sattva::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold-dim), transparent); opacity: 0.8;
+}
+/* Rajas = fire / urgency = bottleneck */
+.guna-cell.rajas {
+  background: color-mix(in srgb, var(--bg-1) 92%, var(--verm-bg));
+}
+.guna-cell.rajas::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--verm-dim), transparent); opacity: 0.9;
+}
+.guna-cell.rajas:hover { background: color-mix(in srgb, var(--bg-2) 90%, var(--verm-bg)); }
+
+.guna-label {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.22em;
+  color: var(--text-3); text-transform: uppercase; margin-bottom: 10px;
+}
+.guna-val {
+  font-family: var(--cinzel);
+  font-size: 36px; line-height: 1; margin-bottom: 6px; letter-spacing: 0.02em;
+}
+.guna-val.gold  { color: var(--gold); animation: valGlow 4.5s ease-in-out infinite; }
+.guna-val.green { color: var(--jade-hi); }
+.guna-val.sm    { font-size: 20px; color: var(--verm-hi); letter-spacing: 0.03em; }
+@keyframes valGlow {
+  0%,100% { text-shadow: none; }
+  50%      { text-shadow: 0 0 28px rgba(212,160,48,0.35); }
+}
+.guna-state {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 14px; color: var(--text-3);
+}
+.guna-state.live { color: var(--gold-dim); }
+.guna-state.warn { color: var(--verm); opacity: 0.75; }
+
+/* ─── P&L WATERFALL ──────────────────────────────────────────────────── */
+.pl-block {
+  background: var(--bg-1); border: 1px solid var(--border-0);
+  border-radius: 2px; overflow: hidden; margin-bottom: 44px;
+  animation: riseIn 0.7s var(--ease) 0.40s both;
+}
+.pl-header {
+  padding: 20px 30px 16px; border-bottom: 1px solid var(--border-0);
+  display: flex; align-items: baseline; justify-content: space-between;
+}
+.pl-header-title {
+  font-family: var(--cinzel);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.28em; color: var(--text-3); text-transform: uppercase;
+}
+.pl-header-period {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 15px; color: var(--text-2);
+}
+
+.pl-row {
+  display: grid; grid-template-columns: 1fr 200px 100px;
+  align-items: center; padding: 16px 30px;
+  border-bottom: 1px solid var(--border-0);
+  transition: background 0.15s;
+}
+.pl-row:hover { background: var(--bg-2); }
+.pl-row:last-child { border-bottom: none; }
+
+.pl-row.subtotal { background: color-mix(in srgb, var(--bg-1) 92%, var(--gold-bg)); }
+.pl-row.subtotal:hover { background: color-mix(in srgb, var(--bg-2) 90%, var(--gold-bg)); }
+.pl-row.net {
+  background: color-mix(in srgb, var(--bg-2) 90%, var(--jade-bg));
+  border-top: 1px solid var(--border-1);
+}
+.pl-row.net:hover { background: color-mix(in srgb, var(--bg-3) 88%, var(--jade-bg)); }
+
+.pl-name {
+  font-family: var(--spectral);
+  font-size: 17px; color: var(--text-1);
+}
+.pl-sub {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 14px;
+  color: var(--text-3); margin-top: 3px;
+}
+.pl-name-strong {
+  font-family: var(--cinzel);
+  font-size: 15px; color: var(--text-0);
+  letter-spacing: 0.06em;
+}
+
+.bar-track {
+  height: 3px; background: var(--border-0);
+  border-radius: 2px; overflow: hidden;
+}
+.bar-fill { height: 100%; border-radius: 2px; transition: width 1s var(--ease); }
+.bar-fill.green { background: var(--jade); }
+.bar-fill.red   { background: var(--verm); opacity: 0.7; }
+.bar-fill.gold  { background: var(--gold); }
+
+.pl-amt {
+  text-align: right;
+  font-family: var(--cinzel);
+  font-size: 20px; letter-spacing: 0.02em;
+}
+.pl-amt.green { color: var(--jade-hi); }
+.pl-amt.red   { color: var(--verm-hi); opacity: 0.85; }
+.pl-amt.gold  { color: var(--gold); }
+.pl-amt.lg    { font-size: 34px; color: var(--jade-hi); }
+
+/* ─── MARGIN ROW ─────────────────────────────────────────────────────── */
+.margin-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border-0);
+  border: 1px solid var(--border-0); border-radius: 2px;
+  overflow: hidden; margin-bottom: 44px;
+  animation: riseIn 0.7s var(--ease) 0.52s both;
+}
+.margin-cell {
+  background: var(--bg-1); padding: 24px 26px 20px;
+  position: relative; transition: background 0.2s;
+}
+.margin-cell:hover { background: var(--bg-2); }
+.margin-cell.positive::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--jade-dim), transparent); opacity: 0.9;
+}
+.margin-cell.caution::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--verm-dim), transparent); opacity: 0.8;
+}
+
+.margin-label {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.22em;
+  color: var(--text-3); text-transform: uppercase; margin-bottom: 10px;
+}
+.margin-val {
+  font-family: var(--cinzel);
+  font-size: 38px; line-height: 1; margin-bottom: 8px; letter-spacing: 0.02em;
+}
+.margin-val.green { color: var(--jade-hi); }
+.margin-val.gold  { color: var(--gold); }
+.margin-val.sm    { font-size: 26px; }
+.margin-meta {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 14px; color: var(--text-3);
+}
+
+/* ─── MILESTONE STACK ────────────────────────────────────────────────── */
+.milestone-stack {
+  display: flex; flex-direction: column; gap: 1px;
+  background: var(--border-0); border: 1px solid var(--border-0);
+  border-radius: 2px; overflow: hidden; margin-bottom: 44px;
+  animation: riseIn 0.7s var(--ease) 0.64s both;
+}
+.ms-row {
+  background: var(--bg-1); padding: 20px 30px;
+  display: flex; align-items: center; gap: 20px;
+  transition: background 0.2s;
+  border-left: 2px solid transparent;
+}
+.ms-row:hover { background: var(--bg-2); }
+
+.ms-row.done  { border-left-color: var(--jade-dim); opacity: 0.7; }
+.ms-row.next  {
+  border-left-color: var(--gold);
+  background: color-mix(in srgb, var(--bg-1) 93%, var(--gold-bg));
+}
+.ms-row.next:hover { background: color-mix(in srgb, var(--bg-2) 90%, var(--gold-bg)); }
+.ms-row.later { border-left-color: transparent; opacity: 0.45; }
+
+.ms-badge {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 1px; border: 1px solid;
+  white-space: nowrap; flex-shrink: 0;
+}
+.ms-badge.done  { border-color: var(--jade-dim);  color: var(--jade); }
+.ms-badge.next  { border-color: var(--gold-dim);  color: var(--gold); }
+.ms-badge.later { border-color: var(--border-1);  color: var(--text-3); }
+
+.ms-name {
+  font-family: var(--cinzel);
+  font-size: 17px; font-weight: 400;
+  color: var(--text-0); letter-spacing: 0.04em; flex: 1;
+}
+.ms-name.done {
+  text-decoration: line-through;
+  color: var(--text-2);
+  font-weight: 400;
+}
+.ms-detail {
+  font-family: var(--spectral);
+  font-size: 15px; color: var(--text-3);
+  text-align: right; white-space: nowrap;
+}
+.ms-detail strong {
+  font-family: var(--cinzel);
+  font-size: 14px; color: var(--text-2); font-weight: 400;
+}
+
+/* ─── VERSE BLOCKS ───────────────────────────────────────────────────── */
+.verse-stack { margin-bottom: 44px; animation: riseIn 0.7s var(--ease) 0.76s both; }
+.verse-block {
+  border-left: 2px solid var(--gold-dim);
+  background: var(--bg-1);
+  border-top: 1px solid var(--border-0);
+  border-right: 1px solid var(--border-0);
+  border-bottom: none;
+  padding: 24px 28px; margin-bottom: 1px;
+  transition: background 0.2s;
+}
+.verse-block:last-child { border-bottom: 1px solid var(--border-0); }
+.verse-block:hover { background: var(--bg-2); }
+.verse-line-1 {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 22px;
+  color: var(--text-0); line-height: 1.8; margin-bottom: 12px;
+}
+.verse-line-2 {
+  font-family: var(--spectral);
+  font-size: 15px; color: var(--text-3); line-height: 1.7;
+}
+.verse-line-2 strong { color: var(--text-2); font-weight: 400; }
+
+/* ─── OPERATIONS LOG ─────────────────────────────────────────────────── */
+.log-wrap {
+  background: var(--bg-1); border: 1px solid var(--border-0);
+  border-radius: 2px; overflow: hidden; margin-bottom: 44px;
+  animation: riseIn 0.7s var(--ease) 0.88s both;
+}
+.log-table { width: 100%; border-collapse: collapse; }
+.log-table th {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--text-3); font-weight: 400; text-align: left;
+  padding: 14px 22px; border-bottom: 1px solid var(--border-0);
+}
+.log-table td {
+  padding: 14px 22px; border-bottom: 1px solid var(--border-0);
+  font-family: var(--spectral); font-size: 16px;
+  color: var(--text-1); vertical-align: top;
+}
+.log-table tr:last-child td { border-bottom: none; }
+.log-table tbody tr:hover td { background: var(--bg-2); }
+
+.td-date {
+  font-family: var(--mono);
+  font-size: 13px; color: var(--text-3); white-space: nowrap;
+}
+.td-impact-pos { color: var(--jade-hi); font-family: var(--spectral); }
+.td-impact     { color: var(--text-3);  font-family: var(--spectral); font-style: italic; }
+
+.op-badge {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 1px; border: 1px solid;
+}
+.op-badge.done { border-color: var(--jade-dim); color: var(--jade); }
+.op-badge.act  { border-color: var(--gold-dim); color: var(--gold-dim); }
+.op-badge.plan { border-color: var(--border-1); color: var(--text-3); }
+
+/* ─── FOOTER ─────────────────────────────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--border-0);
+  padding: 18px 36px;
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative;
+}
+.footer::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold-dim) 0, var(--gold-dim) 4px, transparent 4px, transparent 8px,
+    var(--gold-dim) 8px, var(--gold-dim) 12px, transparent 12px, transparent 16px,
+    var(--verm-dim) 16px, var(--verm-dim) 20px, transparent 20px, transparent 24px
+  );
+  opacity: 0.45;
+}
+.footer-mantra {
+  font-family: var(--spectral);
+  font-style: italic; font-size: 17px;
+  color: var(--gold-dim); letter-spacing: 0.05em;
+}
+.footer-ver {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.18em;
+  color: var(--text-3); text-transform: uppercase;
+}
+
+/* ─── ANIMATIONS ─────────────────────────────────────────────────────── */
+@keyframes riseIn  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes fromTop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .guna-row    { grid-template-columns: repeat(2, 1fr); }
+  .margin-row  { grid-template-columns: 1fr; }
+  .pl-row      { grid-template-columns: 1fr 80px; }
+  .pl-row > :nth-child(2) { display: none; }
+  .shell       { padding: 0 20px 80px; }
+  .topbar      { padding: 0 20px; }
+  .mod-name    { font-size: 40px; }
+  .ms-detail   { display: none; }
 }
 </style>
 </head>
-<body>
+<body class="above">
 
-<div class="topbar">
+<!-- TOPBAR -->
+<div class="topbar above">
   <div class="topbar-left">
-    <a class="back" href="index.html">← shiva os</a>
-    <div class="logo">KUBERA <span>// business ops</span></div>
-    <nav class="nav">
-      <a class="active" data-view="overview">overview</a>
-      <a data-view="revenue">revenue</a>
-      <a data-view="expenses">expenses</a>
-      <a data-view="pl">p&amp;l</a>
-      <a data-view="projections">projections</a>
+    <a class="back" href="index.html">← root</a>
+    <div class="topbar-brand">
+      <span class="brand-name">Kubera</span>
+      <span class="brand-sep">//</span>
+      <span class="brand-sub"><span>business · eBay · P&amp;L</span></span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="#pl">p&amp;l</a>
+      <a href="#milestones">milestones</a>
+      <a href="#patterns">patterns</a>
+      <a href="#log">log</a>
     </nav>
   </div>
   <div class="topbar-right">
-    <span id="live-time"></span> &nbsp;·&nbsp; FY 2026
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">◐ day</button>
+    <div class="live-dot"></div>
+    <div id="clock">—</div>
   </div>
 </div>
 
-<div class="shell">
+<div class="shell above">
 
-  <!-- OVERVIEW -->
-  <div class="view active" id="view-overview">
+  <!-- MODULE HERO -->
+  <div class="mod-hero">
+    <div class="mod-left">
+      <div class="mod-pillar">Artha · I · Commerce</div>
+      <div class="mod-name">Kubera</div>
+      <div class="mod-epithet">lord of wealth, keeper of treasure, guardian of the north</div>
+    </div>
+    <div class="mod-right">
+      <span class="domain-tag">Artha · I</span>
+      <span class="mod-sub">business sovereignty</span>
+    </div>
+  </div>
 
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">Gross Revenue</div>
-        <div class="stat-value accent">$0</div>
-        <div class="stat-sub">no active business yet</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Net Profit</div>
-        <div class="stat-value">$0</div>
-        <div class="stat-sub">post COGS + opex</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Margin</div>
-        <div class="stat-value">—</div>
-        <div class="stat-sub">gross margin %</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Revenue Streams</div>
-        <div class="stat-value">0 <span style="font-size:13px;color:var(--text-dim)">/ 3 planned</span></div>
-        <div class="stat-sub">active · planned</div>
-      </div>
+  <!-- GUNA ROW -->
+  <div class="guna-row">
+    <div class="guna-cell sattva">
+      <div class="guna-label">Monthly Gross</div>
+      <div class="guna-val gold">$10,240</div>
+      <div class="guna-state live">milestone hit</div>
+    </div>
+    <div class="guna-cell sattva">
+      <div class="guna-label">Net Profit</div>
+      <div class="guna-val green">$3,157</div>
+      <div class="guna-state live">31% net margin</div>
+    </div>
+    <div class="guna-cell rajas">
+      <div class="guna-label">VA Status</div>
+      <div class="guna-val sm">Not Hired Yet</div>
+      <div class="guna-state warn">bottleneck</div>
+    </div>
+    <div class="guna-cell sattva">
+      <div class="guna-label">Feedback</div>
+      <div class="guna-val green">100%</div>
+      <div class="guna-state live">Top Rated Seller</div>
+    </div>
+  </div>
+
+  <!-- P&L WATERFALL -->
+  <div class="section-head" id="pl" style="scroll-margin-top:60px;">
+    <div class="section-label">P&amp;L Waterfall</div>
+    <div class="section-sub">Feb 2026 · eBay resale operation</div>
+  </div>
+
+  <div class="pl-block">
+    <div class="pl-header">
+      <span class="pl-header-title">Monthly P&amp;L · eBay Operations</span>
+      <span class="pl-header-period">February 2026</span>
     </div>
 
-    <div class="two-col">
-      <div class="col-stack">
-
-        <div class="card">
-          <div class="section-label">Revenue Streams — Planned</div>
-          <div class="stream-card">
-            <div class="stream-header">
-              <div class="stream-name">Supply Chain Consulting</div>
-              <div class="stream-status planned">planned</div>
-            </div>
-            <div class="stream-meta">
-              Post-MIT SCM degree · target: <em>2028</em><br>
-              Est. rate: <em>$150–250/hr</em> · 10–15 hrs/mo<br>
-              Est. annual: <em>$24,000–$45,000</em>
-            </div>
-          </div>
-          <div class="stream-card">
-            <div class="stream-header">
-              <div class="stream-name">Digital Products / Tools</div>
-              <div class="stream-status building">building</div>
-            </div>
-            <div class="stream-meta">
-              Shiva OS and similar systems · target: <em>2026–27</em><br>
-              Model: one-time + subscription<br>
-              Est. annual: <em>$5,000–$20,000</em>
-            </div>
-          </div>
-          <div class="stream-card">
-            <div class="stream-header">
-              <div class="stream-name">Content / Writing</div>
-              <div class="stream-status planned">planned</div>
-            </div>
-            <div class="stream-meta">
-              Technical writing · Tamil Shaiva tradition · finance<br>
-              Platform: Substack or equivalent<br>
-              Est. annual: <em>$3,000–$10,000</em>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="section-label">Business Readiness</div>
-          <div class="progress-block">
-            <div class="progress-header"><span class="progress-name">MIT SCM Credential</span><span class="progress-vals"><em>34%</em> funded</span></div>
-            <div class="bar-track"><div class="bar-fill blue" style="width:34%"></div></div>
-          </div>
-          <div class="progress-block">
-            <div class="progress-header"><span class="progress-name">Shiva OS — MVP</span><span class="progress-vals"><em>12%</em> complete</span></div>
-            <div class="bar-track"><div class="bar-fill" style="width:12%"></div></div>
-          </div>
-          <div class="progress-block">
-            <div class="progress-header"><span class="progress-name">LLC Formation</span><span class="progress-vals"><em>0%</em> · not started</span></div>
-            <div class="bar-track"><div class="bar-fill green" style="width:0%"></div></div>
-          </div>
-          <div class="progress-block">
-            <div class="progress-header"><span class="progress-name">Emergency Runway (6mo)</span><span class="progress-vals"><em>40%</em></span></div>
-            <div class="bar-track"><div class="bar-fill green" style="width:40%"></div></div>
-          </div>
-        </div>
-
+    <div class="pl-row">
+      <div class="pl-name">
+        Gross Revenue
+        <div class="pl-sub">all sales before deductions</div>
       </div>
-
-      <div class="col-stack">
-
-        <div class="card">
-          <div class="section-label">Income Breakdown</div>
-          <div style="padding:12px 0;text-align:center;color:var(--text-dim);font-size:11px;line-height:2.2;">
-            No business revenue yet.<br>
-            <span style="color:var(--accent)">W-2</span> remains sole active income.<br>
-            <br>
-            First stream target:<br>
-            <span style="color:var(--text)">Digital Products · Q4 2026</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="section-label">Key Milestones</div>
-          <table class="data-table">
-            <thead><tr><th>Milestone</th><th>Target</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr><td>Shiva OS public release</td><td style="color:var(--text-dim)">Q4 2026</td><td><span class="tag building">in build</span></td></tr>
-              <tr><td>First $1 online</td><td style="color:var(--text-dim)">2026</td><td><span class="tag">pending</span></td></tr>
-              <tr><td>LLC / sole prop setup</td><td style="color:var(--text-dim)">2027</td><td><span class="tag">pending</span></td></tr>
-              <tr><td>MIT SCM complete</td><td style="color:var(--text-dim)">2027</td><td><span class="tag building">in progress</span></td></tr>
-              <tr><td>First consulting client</td><td style="color:var(--text-dim)">2028</td><td><span class="tag">planned</span></td></tr>
-              <tr><td>$1k/mo passive biz</td><td style="color:var(--text-dim)">2028</td><td><span class="tag">planned</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
+      <div><div class="bar-track"><div class="bar-fill green" style="width:100%"></div></div></div>
+      <div class="pl-amt green">$10,240</div>
     </div>
 
-  </div><!-- /overview -->
-
-
-  <!-- REVENUE -->
-  <div class="view" id="view-revenue">
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">YTD Revenue</div>
-        <div class="stat-value accent">$0</div>
-        <div class="stat-sub">Jan–Feb 2026</div>
+    <div class="pl-row">
+      <div class="pl-name">
+        Cost of Goods (COGS)
+        <div class="pl-sub">inventory sourcing · ~60% of gross</div>
       </div>
-      <div class="stat">
-        <div class="stat-label">Run Rate</div>
-        <div class="stat-value">$0</div>
-        <div class="stat-sub">annualized</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Active Streams</div>
-        <div class="stat-value">0</div>
-        <div class="stat-sub">of 3 planned</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Target MRR (2028)</div>
-        <div class="stat-value" style="font-size:20px;">$3,000</div>
-        <div class="stat-sub">monthly recurring</div>
-      </div>
+      <div><div class="bar-track"><div class="bar-fill red" style="width:60%"></div></div></div>
+      <div class="pl-amt red">−$6,144</div>
     </div>
 
-    <div class="card">
-      <div class="section-label">Revenue Log</div>
-      <div style="padding:24px;text-align:center;color:var(--text-dim);font-size:11px;line-height:2.2;border:1px dashed var(--border);border-radius:var(--r);">
-        No revenue recorded yet.<br>
-        Transactions will appear here once business income is active.<br>
-        <span style="color:var(--text-dim);font-size:10px;margin-top:8px;display:block;">First entry expected: Q4 2026</span>
+    <div class="pl-row subtotal">
+      <div class="pl-name">
+        <div class="pl-name-strong">Gross Profit</div>
+        <div class="pl-sub">after inventory cost</div>
       </div>
+      <div><div class="bar-track"><div class="bar-fill gold" style="width:40%"></div></div></div>
+      <div class="pl-amt gold">$4,096</div>
     </div>
 
-    <div style="margin-top:16px;">
-      <div class="card">
-        <div class="section-label">Revenue Targets by Year</div>
-        <table class="data-table">
-          <thead><tr><th>Year</th><th>Stream</th><th class="num">Target</th><th>Notes</th></tr></thead>
-          <tbody>
-            <tr><td>2026</td><td>Digital Products</td><td class="num" style="color:var(--text-dim)">$2,000–5,000</td><td style="color:var(--text-dim);font-size:11px">Shiva OS initial release</td></tr>
-            <tr><td>2027</td><td>Digital + Content</td><td class="num" style="color:var(--text-dim)">$8,000–15,000</td><td style="color:var(--text-dim);font-size:11px">Post-MIT, subscription model</td></tr>
-            <tr><td>2028</td><td>All streams</td><td class="num" style="color:var(--accent)">$30,000–50,000</td><td style="color:var(--text-dim);font-size:11px">Consulting active</td></tr>
-            <tr><td>2030</td><td>All streams</td><td class="num" style="color:var(--accent)">$80,000–120,000</td><td style="color:var(--text-dim);font-size:11px">Scaling phase</td></tr>
-          </tbody>
-        </table>
+    <div class="pl-row">
+      <div class="pl-name">
+        eBay Platform Fees
+        <div class="pl-sub">~8% final value fee + managed payments</div>
       </div>
+      <div><div class="bar-track"><div class="bar-fill red" style="width:8%"></div></div></div>
+      <div class="pl-amt red">−$819</div>
     </div>
 
-  </div><!-- /revenue -->
-
-
-  <!-- EXPENSES -->
-  <div class="view" id="view-expenses">
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">Biz Expenses</div>
-        <div class="stat-value accent">$95</div>
-        <div class="stat-sub">monthly · tools only</div>
+    <div class="pl-row">
+      <div class="pl-name">
+        Operations &amp; Tools
+        <div class="pl-sub">shipping supplies, label printer, Seller Hub</div>
       </div>
-      <div class="stat">
-        <div class="stat-label">Annual Tools</div>
-        <div class="stat-value">$1,140</div>
-        <div class="stat-sub">software stack</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">COGS</div>
-        <div class="stat-value">$0</div>
-        <div class="stat-sub">no product revenue yet</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Biz % of Income</div>
-        <div class="stat-value">1.1%</div>
-        <div class="stat-sub">tools vs total income</div>
-      </div>
+      <div><div class="bar-track"><div class="bar-fill red" style="width:1.2%"></div></div></div>
+      <div class="pl-amt red">−$120</div>
     </div>
 
-    <div class="two-col">
-      <div class="col-stack">
-        <div class="card">
-          <div class="section-label">Business Tool Stack</div>
-          <table class="data-table">
-            <thead><tr><th>Tool</th><th>Purpose</th><th class="num">$/mo</th><th>Category</th></tr></thead>
-            <tbody>
-              <tr><td>GitHub Pro</td><td style="color:var(--text-dim)">Code hosting</td><td class="num">$4</td><td><span class="tag opex">opex</span></td></tr>
-              <tr><td>ChatGPT Plus</td><td style="color:var(--text-dim)">AI tooling</td><td class="num">$20</td><td><span class="tag opex">opex</span></td></tr>
-              <tr><td>Claude API credits</td><td style="color:var(--text-dim)">Shiva OS AI</td><td class="num">$15</td><td><span class="tag opex">opex</span></td></tr>
-              <tr><td>Domain + hosting</td><td style="color:var(--text-dim)">Web infra</td><td class="num">$12</td><td><span class="tag opex">opex</span></td></tr>
-              <tr><td>Figma (free tier)</td><td style="color:var(--text-dim)">Design</td><td class="num">$0</td><td><span class="tag">free</span></td></tr>
-              <tr><td>Notion (free tier)</td><td style="color:var(--text-dim)">Docs</td><td class="num">$0</td><td><span class="tag">free</span></td></tr>
-              <tr class="divider-row"><td>Total</td><td></td><td class="num">$51</td><td></td></tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="pl-row net">
+      <div class="pl-name">
+        <div class="pl-name-strong">Net Profit</div>
+        <div class="pl-sub">take-home after all costs</div>
       </div>
-      <div class="col-stack">
-        <div class="card">
-          <div class="section-label">Expense Allocation</div>
-          <div class="progress-block">
-            <div class="progress-header"><span class="progress-name">AI / API</span><span class="progress-vals"><em>$35</em> / mo</span></div>
-            <div class="bar-track"><div class="bar-fill" style="width:68%"></div></div>
-          </div>
-          <div class="progress-block">
-            <div class="progress-header"><span class="progress-name">Infrastructure</span><span class="progress-vals"><em>$12</em> / mo</span></div>
-            <div class="bar-track"><div class="bar-fill blue" style="width:24%"></div></div>
-          </div>
-          <div class="progress-block">
-            <div class="progress-header"><span class="progress-name">Dev Tools</span><span class="progress-vals"><em>$4</em> / mo</span></div>
-            <div class="bar-track"><div class="bar-fill green" style="width:8%"></div></div>
-          </div>
-          <div style="padding-top:12px;margin-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);">
-            Business tools are lean — all expense growth should be tied to revenue growth.
-          </div>
-        </div>
-      </div>
+      <div><div class="bar-track"><div class="bar-fill green" style="width:31%"></div></div></div>
+      <div class="pl-amt lg">$3,157</div>
     </div>
+  </div>
 
-  </div><!-- /expenses -->
-
-
-  <!-- P&L -->
-  <div class="view" id="view-pl">
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">Revenue</div>
-        <div class="stat-value accent">$0</div>
-        <div class="stat-sub">FY 2026 YTD</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Gross Profit</div>
-        <div class="stat-value">$0</div>
-        <div class="stat-sub">after COGS</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Operating Expense</div>
-        <div class="stat-value red">−$102</div>
-        <div class="stat-sub">tools + overhead</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Net Income</div>
-        <div class="stat-value red">−$102</div>
-        <div class="stat-sub">pre-tax</div>
-      </div>
+  <!-- MARGIN ROW -->
+  <div class="margin-row">
+    <div class="margin-cell positive">
+      <div class="margin-label">Gross Margin</div>
+      <div class="margin-val green">40%</div>
+      <div class="margin-meta">healthy · target 45% via better sourcing channels</div>
     </div>
-
-    <div class="card" style="padding:0;overflow:hidden;">
-      <div class="pl-section-title">INCOME STATEMENT — FEB 2026</div>
-
-      <div class="pl-section">
-        <div class="pl-section-title">Revenue</div>
-        <div class="pl-row indent"><span>Digital Products</span><span style="color:var(--text-dim)">$0</span></div>
-        <div class="pl-row indent"><span>Consulting</span><span style="color:var(--text-dim)">$0</span></div>
-        <div class="pl-row indent"><span>Content</span><span style="color:var(--text-dim)">$0</span></div>
-        <div class="pl-row subtotal"><span>Total Revenue</span><span>$0</span></div>
-      </div>
-
-      <div class="pl-section">
-        <div class="pl-section-title">Cost of Goods Sold</div>
-        <div class="pl-row indent"><span>API costs (revenue-linked)</span><span style="color:var(--text-dim)">$0</span></div>
-        <div class="pl-row subtotal"><span>Gross Profit</span><span>$0</span></div>
-        <div class="pl-row indent" style="font-size:10px;color:var(--text-dim);padding-top:4px;padding-bottom:4px;"><span>Gross Margin</span><span>—</span></div>
-      </div>
-
-      <div class="pl-section">
-        <div class="pl-section-title">Operating Expenses</div>
-        <div class="pl-row indent"><span>AI / API subscriptions</span><span style="color:var(--red)">−$35</span></div>
-        <div class="pl-row indent"><span>Infrastructure / hosting</span><span style="color:var(--red)">−$12</span></div>
-        <div class="pl-row indent"><span>Dev tools</span><span style="color:var(--red)">−$4</span></div>
-        <div class="pl-row indent"><span>Misc / admin</span><span style="color:var(--red)">−$51</span></div>
-        <div class="pl-row subtotal"><span>Total OpEx</span><span style="color:var(--red)">−$102</span></div>
-      </div>
-
-      <div class="pl-row total"><span>NET INCOME</span><span style="color:var(--red)">−$102</span></div>
+    <div class="margin-cell positive">
+      <div class="margin-label">Net Margin</div>
+      <div class="margin-val gold">31%</div>
+      <div class="margin-meta">strong · improves as overhead stays fixed with scale</div>
     </div>
-
-    <div style="margin-top:16px;padding:12px 16px;background:var(--bg-raised);border:1px solid var(--border);font-size:11px;color:var(--text-dim);line-height:1.9;border-radius:var(--r);">
-      Note: Business is pre-revenue. All current costs are absorbed by W-2 income and classified under personal subscriptions in Lakshmi. This P&L will activate once first business revenue is recorded.
+    <div class="margin-cell caution">
+      <div class="margin-label">Time Cost</div>
+      <div class="margin-val gold sm">~20 hrs/wk</div>
+      <div class="margin-meta">constraint · VA hire collapses this to ~8 hrs/wk</div>
     </div>
+  </div>
 
-  </div><!-- /pl -->
+  <!-- MILESTONES -->
+  <div class="section-head" id="milestones" style="scroll-margin-top:60px;">
+    <div class="section-label">Milestones</div>
+    <div class="section-sub">the path of the merchant king</div>
+  </div>
 
-
-  <!-- PROJECTIONS -->
-  <div class="view" id="view-projections">
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">2026 Target</div>
-        <div class="stat-value accent" style="font-size:20px;">$5,000</div>
-        <div class="stat-sub">digital products</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">2027 Target</div>
-        <div class="stat-value" style="font-size:20px;">$15,000</div>
-        <div class="stat-sub">products + content</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">2028 Target</div>
-        <div class="stat-value" style="font-size:20px;">$50,000</div>
-        <div class="stat-sub">consulting active</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">2030 Target</div>
-        <div class="stat-value" style="font-size:20px;">$120,000</div>
-        <div class="stat-sub">scaling phase</div>
-      </div>
+  <div class="milestone-stack">
+    <div class="ms-row done">
+      <span class="ms-badge done">done</span>
+      <span class="ms-name done">Hit $10k/mo gross consistently</span>
+      <span class="ms-detail">completed <strong>Feb 2026</strong></span>
     </div>
-
-    <div class="two-col">
-      <div class="col-stack">
-        <div class="card">
-          <div class="section-label">Revenue Projection — 5 Year</div>
-          <table class="data-table">
-            <thead><tr><th>Year</th><th class="num">Digital</th><th class="num">Consulting</th><th class="num">Content</th><th class="num">Total</th></tr></thead>
-            <tbody>
-              <tr><td>2026</td><td class="num" style="color:var(--text-dim)">$5k</td><td class="num" style="color:var(--text-dim)">$0</td><td class="num" style="color:var(--text-dim)">$0</td><td class="num" style="color:var(--accent)">$5k</td></tr>
-              <tr><td>2027</td><td class="num" style="color:var(--text-dim)">$10k</td><td class="num" style="color:var(--text-dim)">$0</td><td class="num" style="color:var(--text-dim)">$5k</td><td class="num" style="color:var(--accent)">$15k</td></tr>
-              <tr><td>2028</td><td class="num" style="color:var(--text-dim)">$15k</td><td class="num" style="color:var(--text-dim)">$30k</td><td class="num" style="color:var(--text-dim)">$5k</td><td class="num" style="color:var(--accent)">$50k</td></tr>
-              <tr><td>2029</td><td class="num" style="color:var(--text-dim)">$20k</td><td class="num" style="color:var(--text-dim)">$55k</td><td class="num" style="color:var(--text-dim)">$10k</td><td class="num" style="color:var(--accent)">$85k</td></tr>
-              <tr><td>2030</td><td class="num" style="color:var(--text-dim)">$25k</td><td class="num" style="color:var(--text-dim)">$85k</td><td class="num" style="color:var(--text-dim)">$10k</td><td class="num" style="color:var(--accent)">$120k</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="card">
-          <div class="section-label">Net Worth Impact — Business Income</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:2;padding:4px 0;">
-            <div class="proj-row">
-              <span class="proj-label">Scenario</span>
-              <span style="color:var(--text-dim);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;">W-2 Only</span>
-              <span class="proj-val" style="font-size:10px;color:var(--text-dim)">+ Biz</span>
-            </div>
-            <div class="proj-row">
-              <span class="proj-label">2027 NW</span>
-              <div class="bar-track" style="height:4px"><div class="bar-fill" style="width:35%"></div></div>
-              <span class="proj-val" style="color:var(--text)">$215k</span>
-            </div>
-            <div class="proj-row">
-              <span class="proj-label">2028 NW</span>
-              <div class="bar-track" style="height:4px"><div class="bar-fill green" style="width:52%"></div></div>
-              <span class="proj-val" style="color:var(--green)">$310k</span>
-            </div>
-            <div class="proj-row">
-              <span class="proj-label">2030 NW</span>
-              <div class="bar-track" style="height:4px"><div class="bar-fill gold" style="width:78%"></div></div>
-              <span class="proj-val" style="color:var(--gold)">$580k</span>
-            </div>
-            <div class="proj-row">
-              <span class="proj-label">2035 NW</span>
-              <div class="bar-track" style="height:4px"><div class="bar-fill" style="width:100%;background:var(--accent)"></div></div>
-              <span class="proj-val" style="color:var(--accent)">$2.1M+</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-stack">
-        <div class="card">
-          <div class="section-label">Path to $7M</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:2;padding:4px 0;">
-            <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
-              <div style="color:var(--text-hi);margin-bottom:4px;">W-2 only projection</div>
-              At current savings rate + 7% CAGR:<br>
-              <span style="color:var(--accent)">~$2.1M by age 35</span><br>
-              <span style="color:var(--red);font-size:10px;">Gap: $4.9M</span>
-            </div>
-            <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
-              <div style="color:var(--text-hi);margin-bottom:4px;">W-2 + Business projection</div>
-              W-2 + $120k/yr biz by 2030:<br>
-              <span style="color:var(--green)">~$3.8M by age 35</span><br>
-              <span style="color:var(--blue);font-size:10px;">Closer · still needs income scaling</span>
-            </div>
-            <div>
-              <div style="color:var(--text-hi);margin-bottom:4px;">The real lever</div>
-              W-2 growth + business + investments:<br>
-              Income needs to reach<br>
-              <span style="color:var(--accent)">$250k–300k/yr by 2030</span><br>
-              to make $7M realistic.
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="ms-row next">
+      <span class="ms-badge next">next</span>
+      <span class="ms-name">Hire first eBay VA</span>
+      <span class="ms-detail">unblock 12+ hrs/wk · <strong>Q1 2026</strong></span>
     </div>
+    <div class="ms-row later">
+      <span class="ms-badge later">Q2 2026</span>
+      <span class="ms-name">Scale to $20k/mo gross</span>
+      <span class="ms-detail">requires VA + expanded sourcing</span>
+    </div>
+    <div class="ms-row later">
+      <span class="ms-badge later">2026</span>
+      <span class="ms-name">Launch Shiva clothing brand — first design</span>
+      <span class="ms-detail">separate revenue stream · identity work</span>
+    </div>
+    <div class="ms-row later">
+      <span class="ms-badge later">2027</span>
+      <span class="ms-name">$50k/mo gross — systematic operation</span>
+      <span class="ms-detail">team + sourcing network + brand</span>
+    </div>
+    <div class="ms-row later">
+      <span class="ms-badge later">vision</span>
+      <span class="ms-name">Business income replaces W-2</span>
+      <span class="ms-detail">$120k+/yr net from own operation</span>
+    </div>
+  </div>
 
-  </div><!-- /projections -->
+  <!-- PATTERNS -->
+  <div class="section-head" id="patterns" style="scroll-margin-top:60px;">
+    <div class="section-label">Patterns</div>
+  </div>
+
+  <div class="verse-stack">
+    <div class="verse-block">
+      <div class="verse-line-1">$10k/mo gross is not a ceiling.<br>It is the first confirmation that the model works.</div>
+      <div class="verse-line-2">→ The binding constraint is now time, not demand. VA hire collapses it. This is the next action.</div>
+    </div>
+    <div class="verse-block">
+      <div class="verse-line-1">31% net margin on resale is not luck.<br>It is careful sourcing and controlled overhead kept in discipline.</div>
+      <div class="verse-line-2">→ Each 5% margin gain at $10k = $500/mo. At $50k = $2,500/mo. Margin compounds with volume.</div>
+    </div>
+    <div class="verse-block">
+      <div class="verse-line-1">Two incomes are better than one.<br>But the second income must not consume the first income's time.</div>
+      <div class="verse-line-2">→ eBay at 20 hrs/wk is a second job. After VA hire, it becomes a system. <strong>Systems scale; jobs do not.</strong></div>
+    </div>
+  </div>
+
+  <!-- OPERATIONS LOG -->
+  <div class="section-head" id="log" style="scroll-margin-top:60px;">
+    <div class="section-label">Operations Log</div>
+    <div class="section-sub">business actions record</div>
+  </div>
+
+  <div class="log-wrap">
+    <table class="log-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Action</th>
+          <th>Status</th>
+          <th>Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-date">Feb 2026</td>
+          <td>Consistent $10k/mo gross confirmed</td>
+          <td><span class="op-badge done">done</span></td>
+          <td class="td-impact-pos">model validated</td>
+        </tr>
+        <tr>
+          <td class="td-date">Feb 2026</td>
+          <td>VA hire spec drafted — Upwork sourcing criteria</td>
+          <td><span class="op-badge act">active</span></td>
+          <td class="td-impact">unlock 12+ hrs/wk</td>
+        </tr>
+        <tr>
+          <td class="td-date">Jan 2026</td>
+          <td>Listing title optimization for search velocity</td>
+          <td><span class="op-badge done">done</span></td>
+          <td class="td-impact-pos">+18% impressions</td>
+        </tr>
+        <tr>
+          <td class="td-date">Q2 2026</td>
+          <td>Shiva clothing brand — first design concept</td>
+          <td><span class="op-badge plan">planned</span></td>
+          <td class="td-impact">new revenue stream</td>
+        </tr>
+        <tr>
+          <td class="td-date">Q2 2026</td>
+          <td>Expand sourcing — liquidation + local estate sales</td>
+          <td><span class="op-badge plan">planned</span></td>
+          <td class="td-impact">improve COGS structure</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
 </div>
 
+<!-- FOOTER -->
+<div class="footer above">
+  <div class="footer-mantra">Dhana rakshati rakshitaḥ — wealth protected protects in return</div>
+  <div class="footer-ver">Shiva OS · Kubera · v2.0</div>
+</div>
+
 <script>
-document.querySelectorAll('.nav a').forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    const target = link.dataset.view;
-    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    link.classList.add('active');
-    document.getElementById('view-' + target).classList.add('active');
-  });
-});
+// ── Clock ──
 function tick() {
   const now = new Date();
-  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  document.getElementById('live-time').textContent = d + ' ' + t;
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 tick(); setInterval(tick, 1000);
+
+// ── Theme toggle ──
+const html = document.documentElement;
+const btn  = document.getElementById('theme-btn');
+
+function applyTheme(light) {
+  html.classList.toggle('light', light);
+  btn.textContent = light ? '◑ night' : '◐ day';
+}
+
+const saved = localStorage.getItem('shiva-theme');
+if (saved === 'light') applyTheme(true);
+
+btn.addEventListener('click', () => {
+  const goLight = !html.classList.contains('light');
+  html.classList.add('theme-transitioning');
+  applyTheme(goLight);
+  localStorage.setItem('shiva-theme', goLight ? 'light' : 'dark');
+  setTimeout(() => html.classList.remove('theme-transitioning'), 450);
+});
 </script>
 </body>
 </html>

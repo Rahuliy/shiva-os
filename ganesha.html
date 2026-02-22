@@ -3,492 +3,372 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SHIVA // GANESHA</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<title>Shiva OS · Ganesha</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:        #0a0a0a;
-  --bg-raised: #111111;
-  --bg-hover:  #181818;
-  --border:    #222222;
-  --border-hi: #333333;
-  --text:      #c8c8c8;
-  --text-dim:  #555555;
-  --text-hi:   #efefef;
-  --accent:    #e8d5a3;
-  --green:     #7db88a;
-  --red:       #c47a6a;
-  --blue:      #6a8fa8;
-  --gold:      #c9973a;
-  --mono:      'IBM Plex Mono', monospace;
-  --serif:     'Libre Baskerville', serif;
-  --r:         2px;
+  --bg:#0b0804; --bg-1:#110d05; --bg-2:#181106; --bg-3:#1e1508;
+  --border-0:#261a07; --border-1:#36250d; --border-2:#4a3414;
+  --text-0:#eedfc0; --text-1:#c09450; --text-2:#7a5a2c; --text-3:#4a3418;
+  --gold:#d4a030; --gold-hi:#ecbe48; --gold-dim:#6a5018; --gold-bg:#0e0a02;
+  --lapis:#1e4870; --lapis-hi:#3878a8; --lapis-dim:#0c2030; --lapis-bg:#040a12;
+  --jade:#206040; --jade-hi:#3a9060; --jade-dim:#0c3020; --jade-bg:#030e06;
+  --ivory:#988070; --ivory-hi:#c8b098; --ivory-dim:#4a3c30; --ivory-bg:#0c0a08;
+  --verm:#b83818; --verm-dim:#481008;
+  --cinzel:"Cinzel",serif; --spectral:"Spectral",serif; --mono:"IBM Plex Mono",monospace;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --topbar-bg:rgba(11,8,4,0.96);
+  --glow-top:rgba(212,160,48,0.16);
+  --ring-a:rgba(212,160,48,0.13); --ring-b:rgba(212,160,48,0.09); --ring-c:rgba(212,160,48,0.06);
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
 
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
-.topbar-left{display:flex;align-items:center;gap:20px;}
-.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
-.logo span{color:var(--text-dim);font-weight:300;}
-.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
-.back:hover{color:var(--accent);}
-.nav{display:flex;gap:2px;}
-.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
-.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
-.nav a.active{color:var(--accent);background:var(--bg-raised);}
-.topbar-right{font-size:11px;color:var(--text-dim);}
-#live-time{color:var(--text);}
+/* ─── LIGHT MODE ─────────────────────────────────────────────────────── */
+html.light {
+  --bg:        #f2e6c8;
+  --bg-1:      #ecdcb4;
+  --bg-2:      #e4d09c;
+  --bg-3:      #d8c488;
 
-.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
-.view{display:none;}
-.view.active{display:block;}
+  --border-0:  #c8a86a;
+  --border-1:  #b09050;
+  --border-2:  #8a7038;
 
-.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+  --text-0:    #120c02;
+  --text-1:    #3e280a;
+  --text-2:    #6c4c1a;
+  --text-3:    #a07838;
 
-.card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
-.card:hover{border-color:var(--border-hi);}
-.card+.card{margin-top:16px;}
+  --gold:      #8a6808;
+  --gold-hi:   #b08a18;
+  --gold-dim:  #c8a848;
+  --gold-bg:   #f8f0d4;
 
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
-.stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
-.stat:hover{background:var(--bg-hover);}
-.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
-.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
-.stat-value.accent{color:var(--accent);}
-.stat-sub{font-size:11px;color:var(--text-dim);}
-.delta-up{color:var(--green);}
+  --lapis:     #163264;
+  --lapis-hi:  #1e4898;
+  --lapis-dim: #5878c0;
+  --lapis-bg:  #d8e4f8;
 
-.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px;}
-.col-stack{display:flex;flex-direction:column;gap:16px;}
+  --jade:      #145a2e;
+  --jade-hi:   #1c7840;
+  --jade-dim:  #4a9468;
+  --jade-bg:   #d4eedc;
 
-.bar-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
-.bar-fill.green{background:var(--green);}
-.bar-fill.blue{background:var(--blue);}
-.bar-fill.red{background:var(--red);}
+  --ivory:     #4e3e2a;
+  --ivory-hi:  #6c5438;
+  --ivory-dim: #a08c6c;
+  --ivory-bg:  #ede6d8;
 
-.data-table{width:100%;border-collapse:collapse;font-size:12px;}
-.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
-.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;}
-.data-table tr:last-child td{border-bottom:none;}
-.data-table tbody tr:hover td{background:var(--bg-hover);}
-.data-table .num{text-align:right;}
+  --verm:      #962010;
+  --verm-dim:  #c87858;
 
-.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
-.tag.active{background:#1a2e1e;color:var(--green);}
-.tag.blocked{background:#2a1a18;color:var(--red);}
-.tag.review{background:#181e28;color:var(--blue);}
-.tag.done{background:#1e2a1e;color:var(--green);opacity:0.6;}
-.tag.dharma{background:#1e1e2a;color:var(--blue);}
-.tag.artha{background:#2a2a1a;color:var(--accent);}
-.tag.kama{background:#2a1a1e;color:#c47a8a;}
-.tag.moksha{background:#1a2a2a;color:#6ab8b8;}
+  --topbar-bg: rgba(242,230,200,0.97);
+}
 
-/* PROJECT CARD */
-.project-card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:10px;transition:border-color .15s;}
-.project-card:hover{border-color:var(--border-hi);}
-.project-card.is-active{border-left:2px solid var(--accent);}
-.project-card.is-blocked{border-left:2px solid var(--red);}
-.project-card.is-done{opacity:0.5;}
-.project-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-.project-title{color:var(--text-hi);font-size:13px;font-weight:500;}
-.project-meta{font-size:11px;color:var(--text-dim);margin-bottom:10px;line-height:1.7;}
-.project-meta em{color:var(--text);font-style:normal;}
-.project-footer{display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--text-dim);}
-.project-progress{flex:1;}
-
-/* REFLECTION */
-.reflection-entry{border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;transition:border-color .15s;}
-.reflection-entry:hover{border-color:var(--border-hi);}
-.reflection-date{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;}
-.reflection-question{font-size:10px;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;opacity:0.8;}
-.reflection-answer{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--text);line-height:1.85;margin-bottom:12px;}
-.reflection-answer:last-child{margin-bottom:0;}
-
-/* ROUTING TABLE */
-.routing-row{border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;transition:border-color .15s;}
-.routing-row:hover{border-color:var(--border-hi);}
-.routing-question{font-size:12px;color:var(--text-hi);margin-bottom:6px;}
-.routing-decision{font-size:11px;color:var(--text-dim);line-height:1.7;}
-.routing-decision em{color:var(--text);font-style:normal;}
-.routing-footer{display:flex;gap:8px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-.stat{animation:fadeUp .3s ease both;}
-.stat:nth-child(1){animation-delay:.05s;}.stat:nth-child(2){animation-delay:.10s;}
-.stat:nth-child(3){animation-delay:.15s;}.stat:nth-child(4){animation-delay:.20s;}
-.card,.project-card,.reflection-entry,.routing-row{animation:fadeUp .35s ease both;animation-delay:.1s;}
-
-@media(max-width:800px){
-  .stat-grid{grid-template-columns:repeat(2,1fr);}
-  .two-col{grid-template-columns:1fr;}
+/* ─── SMOOTH THEME TRANSITION ────────────────────────────────────────── */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition:
+    background-color 0.38s ease,
+    color            0.32s ease,
+    border-color     0.32s ease,
+    box-shadow       0.32s ease !important;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text-0);font-family:var(--spectral);font-size:16px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.topbar{position:sticky;top:0;z-index:100;height:50px;background:var(--topbar-bg);display:flex;align-items:center;justify-content:space-between;padding:0 28px;backdrop-filter:blur(8px)}
+.topbar::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:repeating-linear-gradient(90deg,var(--gold-dim) 0px,var(--gold-dim) 18px,transparent 18px,transparent 22px,var(--lapis-dim) 22px,var(--lapis-dim) 36px,transparent 36px,transparent 40px)}
+.topbar-left{display:flex;align-items:center;gap:20px}
+.topbar-back{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:0.1em;opacity:0.7;transition:opacity 0.2s}
+.topbar-back:hover{opacity:1;color:var(--text-2)}
+.topbar-brand{font-family:var(--mono);font-size:11px;color:var(--text-2);letter-spacing:0.12em}
+.topbar-brand span{color:var(--text-3)}
+.tab-nav{display:flex;gap:0;margin-left:8px}
+.tab-nav a{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;color:var(--text-3);padding:0 14px;height:50px;display:flex;align-items:center;border-bottom:1px solid transparent;transition:color 0.2s,border-color 0.2s;text-transform:lowercase}
+.tab-nav a:hover{color:var(--text-1)}
+.tab-nav a.active{color:var(--lapis-hi);border-bottom-color:var(--lapis-hi)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.theme-btn{background:none;border:1px solid var(--border-1);border-radius:1px;font-family:var(--mono);font-size:11px;letter-spacing:0.14em;color:var(--text-3);cursor:pointer;padding:3px 9px;line-height:1;transition:color 0.15s,border-color 0.15s;text-transform:lowercase}
+.theme-btn:hover{color:var(--gold-dim);border-color:var(--gold-dim)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--jade-hi);box-shadow:0 0 6px var(--jade-hi);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+#clock{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:0.1em}
+.page-wrap{max-width:1100px;margin:0 auto;padding:0 32px 80px}
+.mod-hero{display:flex;align-items:flex-start;justify-content:space-between;padding:36px 0 28px;border-bottom:1px solid var(--border-0);margin-bottom:32px;animation:riseIn 0.6s var(--ease) both}
+.mod-pillar{font-family:var(--mono);font-size:11px;color:var(--gold-dim);letter-spacing:0.28em;text-transform:uppercase;margin-bottom:6px}
+.mod-name{font-family:var(--cinzel);font-size:54px;font-weight:600;color:var(--lapis-hi);line-height:1;margin-bottom:10px;letter-spacing:0.02em}
+.mod-epithet{font-family:var(--spectral);font-style:italic;font-size:18px;color:var(--text-3);font-weight:300}
+.mod-hero-right{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:10px;padding-top:12px}
+.domain-tag{font-family:var(--cinzel);font-size:11px;letter-spacing:0.2em;color:var(--lapis-hi);border:1px solid var(--lapis-dim);padding:4px 14px;border-radius:2px;text-transform:uppercase}
+.mod-sub{font-family:var(--spectral);font-style:italic;font-size:15px;color:var(--text-3)}
+.guna-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-bottom:32px;animation:riseIn 0.6s 0.1s var(--ease) both}
+.guna-cell{background:var(--bg-1);padding:22px 24px 18px;position:relative;overflow:hidden}
+.guna-cell::before{content:"";position:absolute;top:0;left:0;right:0;height:2px}
+.guna-cell.sattva::before{background:var(--gold)}
+.guna-cell.rajas{background:color-mix(in srgb,var(--verm-dim) 30%,var(--bg-1))}
+.guna-cell.rajas::before{background:var(--verm)}
+.guna-cell.tamas{opacity:0.55}
+.guna-cell.tamas::before{background:var(--text-3)}
+.guna-label{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px}
+.guna-val{font-family:var(--cinzel);font-size:36px;font-weight:600;line-height:1;margin-bottom:4px}
+.guna-cell.sattva .guna-val{color:var(--gold-hi)}
+.guna-cell.rajas .guna-val{color:#ff6040}
+.guna-cell.tamas .guna-val{color:var(--text-2)}
+.guna-state{font-family:var(--spectral);font-style:italic;font-size:14px;color:var(--text-3)}
+.section-label{display:flex;align-items:center;gap:10px;font-family:var(--cinzel);font-size:11px;letter-spacing:0.32em;text-transform:uppercase;color:var(--text-3);margin-bottom:18px;margin-top:32px}
+.section-label::before{content:"◆";color:var(--gold-dim)}
+.section-label::after{content:"";flex:1;max-width:52px;height:1px;background:linear-gradient(90deg,var(--border-1),transparent)}
+.view{display:none;animation:riseIn 0.4s var(--ease) both}
+.view.active{display:block}
+.card{background:var(--bg-1);border:1px solid var(--border-0);border-radius:2px;margin-bottom:14px}
+.project-card{background:var(--bg-1);border:1px solid var(--border-0);border-radius:2px;padding:20px 24px;margin-bottom:10px}
+.project-card.blocked{border-left:2px solid var(--verm)}
+.project-card-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.project-title{font-family:var(--cinzel);font-size:16px;font-weight:500;color:var(--text-0)}
+.project-desc{font-family:var(--spectral);font-size:14px;color:var(--text-2);margin-bottom:10px}
+.project-meta{display:flex;gap:18px;font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:0.08em;margin-bottom:8px;flex-wrap:wrap}
+.project-meta .lbl{color:var(--text-3)}
+.project-meta .val{color:var(--text-2)}
+.project-next{font-family:var(--spectral);font-size:13px;color:var(--text-2);margin-top:8px}
+.project-next::before{content:"→ ";color:var(--gold-dim)}
+.progress-wrap{height:3px;background:var(--bg-3);border-radius:1px;margin:8px 0}
+.progress-fill{height:100%;border-radius:1px;background:var(--lapis-hi)}
+.progress-label{font-family:var(--mono);font-size:10px;color:var(--text-3);margin-top:8px}
+.tag{display:inline-flex;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:2px 8px;border-radius:1px;border:1px solid transparent;text-transform:uppercase}
+.tag.active{color:var(--jade-hi);border-color:var(--jade-dim)}
+.tag.blocked{color:#ff6040;border-color:var(--verm-dim)}
+.tag.done{color:var(--text-3);border-color:var(--border-0)}
+.tag.queued{color:var(--gold-dim);border-color:var(--gold-bg)}
+.tag.reading{color:var(--lapis-hi);border-color:var(--lapis-dim)}
+.tag.mit{color:var(--lapis-hi);border-color:var(--lapis-dim)}
+.tag.dharma,.tag.artha,.tag.kama,.tag.moksha{color:var(--text-3);border-color:var(--border-0)}
+.ledger-table{width:100%;border-collapse:collapse;font-size:14px}
+.ledger-table thead th{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-3);padding:10px 14px;border-bottom:1px solid var(--border-1);text-align:left;font-weight:400}
+.ledger-table tbody td{font-family:var(--spectral);font-size:14px;color:var(--text-1);padding:11px 14px;border-bottom:1px solid var(--border-0);vertical-align:middle}
+.ledger-table tbody tr:last-child td{border-bottom:none}
+.ledger-table tbody tr:hover td{background:rgba(212,160,48,0.02)}
+.ledger-table td.mono{font-family:var(--mono);font-size:12px;color:var(--text-3)}
+.ledger-table td.status-done{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.ledger-table td.status-active{font-family:var(--mono);font-size:11px;color:var(--jade-hi)}
+.ref-entry{background:var(--bg-1);border:1px solid var(--border-0);border-radius:2px;padding:20px 24px;margin-bottom:12px}
+.ref-entry.faded{opacity:0.55}
+.ref-week{font-family:var(--mono);font-size:11px;color:var(--gold-dim);letter-spacing:0.18em;margin-bottom:14px;text-transform:uppercase}
+.ref-q{font-family:var(--cinzel);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;margin-top:14px}
+.ref-q:first-of-type{margin-top:0}
+.ref-a{font-family:var(--spectral);font-size:14px;color:var(--text-1);line-height:1.7}
+.stats-bar{display:flex;gap:1px;margin-bottom:28px;animation:riseIn 0.5s 0.15s var(--ease) both}
+.stat-cell{background:var(--bg-1);padding:14px 20px;flex:1}
+.stat-cell-label{font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.stat-cell-val{font-family:var(--cinzel);font-size:24px;color:var(--text-0);line-height:1.2}
+.decision-card{background:var(--bg-1);border:1px solid var(--border-0);border-left:2px solid var(--gold-dim);border-radius:2px;padding:20px 24px;margin-bottom:10px}
+.decision-q{font-family:var(--cinzel);font-size:15px;color:var(--text-0);margin-bottom:10px;line-height:1.4}
+.decision-context{font-family:var(--spectral);font-size:14px;color:var(--text-2);margin-bottom:8px;line-height:1.65}
+.decision-tension{font-family:var(--spectral);font-style:italic;font-size:13px;color:var(--text-3);margin-bottom:12px;padding-left:12px;border-left:1px solid var(--border-1)}
+.decision-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.decision-age{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:0.08em}
+.verse-block{border-left:2px solid var(--gold-dim);background:var(--bg-1);border-top:1px solid var(--border-0);border-right:1px solid var(--border-0);border-bottom:1px solid var(--border-0);padding:28px 32px;margin-bottom:6px}
+.verse-line-1{font-family:var(--spectral);font-style:italic;font-size:22px;color:var(--text-0);line-height:1.6}
+.verse-source{font-family:var(--mono);font-size:11px;color:var(--gold-dim);letter-spacing:0.14em;margin-bottom:24px;padding-left:4px}
+.krishna-wrap{display:flex;flex-direction:column;gap:14px}
+.exchange-area{background:var(--bg-1);border:1px solid var(--border-0);border-radius:2px;padding:20px 24px;min-height:100px;display:none}
+.exchange-area.visible{display:block}
+.exchange-q{font-family:var(--spectral);font-style:italic;font-size:15px;color:var(--text-3);margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border-0)}
+.exchange-q::before{content:"↳ ";color:var(--gold-dim)}
+.exchange-a{font-family:var(--spectral);font-size:15px;color:var(--text-1);line-height:1.75}
+.chat-input-row{display:flex;align-items:center;gap:10px;background:var(--bg-1);border:1px solid var(--border-0);border-radius:2px;padding:10px 16px}
+.chat-arrow{font-family:var(--mono);font-size:14px;color:var(--gold-dim)}
+.chat-input{flex:1;background:transparent;border:none;outline:none;font-family:var(--spectral);font-size:15px;color:var(--text-0);caret-color:var(--gold)}
+.chat-input::placeholder{color:var(--text-3)}
+.chat-submit{font-family:var(--mono);font-size:12px;color:var(--lapis-hi);background:transparent;border:1px solid var(--lapis-dim);padding:4px 12px;border-radius:1px;cursor:pointer;letter-spacing:0.1em;transition:all 0.2s}
+.chat-submit:hover{background:var(--lapis-dim);color:var(--text-0)}
+.chat-submit:disabled{opacity:0.4;cursor:default}
+.api-key-row{display:flex;align-items:center;gap:10px;background:var(--gold-bg);border:1px solid var(--gold-dim);border-radius:2px;padding:10px 16px}
+.api-key-label{font-family:var(--mono);font-size:11px;color:var(--gold-dim);letter-spacing:0.12em;white-space:nowrap}
+.api-key-input{flex:1;background:transparent;border:none;outline:none;font-family:var(--mono);font-size:13px;color:var(--text-0)}
+.api-key-save{font-family:var(--mono);font-size:11px;color:var(--gold);background:transparent;border:1px solid var(--gold-dim);padding:3px 10px;border-radius:1px;cursor:pointer;transition:all 0.2s}
+.api-key-save:hover{background:var(--gold-dim)}
+.status-bar{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:0.1em;padding:4px 0}
+.page-footer{border-top:1px solid var(--border-0);padding:18px 36px;display:flex;justify-content:space-between;align-items:center;margin-top:60px}
+.footer-mantra{font-family:var(--spectral);font-style:italic;font-size:14px;color:var(--text-3)}
+.footer-version{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:0.14em}
+@keyframes riseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fromTop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  .page-wrap{padding:0 16px 60px}
+  .mod-name{font-size:36px}
+  .mod-hero{flex-direction:column;gap:16px}
+  .mod-hero-right{align-items:flex-start;text-align:left}
+  .guna-row{grid-template-columns:repeat(2,1fr)}
+  .stats-bar{flex-wrap:wrap}
+  .stats-bar .stat-cell{min-width:48%}
+  .topbar{padding:0 14px}
+  .topbar-brand{display:none}
+  .tab-nav a{padding:0 10px}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
+<header class="topbar">
   <div class="topbar-left">
-    <a class="back" href="index.html">← shiva os</a>
-    <div class="logo">GANESHA <span>// projects · reflection · routing</span></div>
-    <nav class="nav">
-      <a class="active" data-view="projects">projects</a>
-      <a data-view="reflection">reflection</a>
-      <a data-view="routing">routing</a>
-      <a data-view="log">log</a>
+    <a href="index.html" class="topbar-back">← root</a>
+    <span class="topbar-brand">Ganesha <span>//</span> projects · reflection · routing</span>
+    <nav class="tab-nav">
+      <a href="#" data-view="projects" class="active">projects</a>
+      <a href="#" data-view="reflection">reflection</a>
+      <a href="#" data-view="routing">routing</a>
+      <a href="#" data-view="log">log</a>
+      <a href="#" data-view="krishna">krishna</a>
     </nav>
   </div>
   <div class="topbar-right">
-    <span id="live-time"></span>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">◐ day</button>
+    <div class="live-dot"></div>
+    <span id="clock">00:00:00</span>
   </div>
-</div>
+</header>
 
-<div class="shell">
+<div class="page-wrap">
+  <div class="mod-hero">
+    <div class="mod-hero-left">
+      <div class="mod-pillar">Dharma · II</div>
+      <div class="mod-name">Ganesha</div>
+      <div class="mod-epithet">remover of obstacles, router of paths, keeper of dharmic order</div>
+    </div>
+    <div class="mod-hero-right">
+      <div class="domain-tag">Dharma · II</div>
+      <div class="mod-sub">right action · routing</div>
+    </div>
+  </div>
 
-  <!-- PROJECTS -->
+  <!-- PROJECTS VIEW -->
   <div class="view active" id="view-projects">
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">Active</div>
-        <div class="stat-value accent">2</div>
-        <div class="stat-sub">in motion now</div>
+    <div class="guna-row">
+      <div class="guna-cell sattva">
+        <div class="guna-label">Active</div><div class="guna-val">2</div><div class="guna-state">in motion</div>
       </div>
-      <div class="stat">
-        <div class="stat-label">Blocked</div>
-        <div class="stat-value">1</div>
-        <div class="stat-sub">waiting on something</div>
+      <div class="guna-cell rajas">
+        <div class="guna-label">Blocked</div><div class="guna-val">1</div><div class="guna-state">needs clearing</div>
       </div>
-      <div class="stat">
-        <div class="stat-label">Queue</div>
-        <div class="stat-value">4</div>
-        <div class="stat-sub">not yet started</div>
+      <div class="guna-cell sattva">
+        <div class="guna-label">Queue</div><div class="guna-val">4</div><div class="guna-state">awaiting gate</div>
       </div>
-      <div class="stat">
-        <div class="stat-label">Completed</div>
-        <div class="stat-value">1</div>
-        <div class="stat-sub">this year</div>
+      <div class="guna-cell tamas">
+        <div class="guna-label">Completed</div><div class="guna-val">1</div><div class="guna-state">this year</div>
       </div>
     </div>
 
     <div class="section-label">Active</div>
 
-    <div class="project-card is-active">
-      <div class="project-header">
+    <div class="project-card">
+      <div class="project-card-header">
         <div class="project-title">Shiva OS — Core Modules</div>
         <span class="tag active">active</span>
       </div>
+      <div class="project-desc">Building the full OS UI: Lakshmi and Kubera live · 6 modules remaining</div>
       <div class="project-meta">
-        Building the full OS UI: Lakshmi live · 7 modules remaining<br>
-        Deity: <em>Vishwakarma</em> (build) · Quadrant: <em>Moksha</em><br>
-        Started: <em>Feb 2026</em> · Target: <em>Q4 2026</em>
+        <span><span class="lbl">Deity&ensp;</span><span class="val">Vishwakarma (build)</span></span>
+        <span><span class="lbl">Quadrant&ensp;</span><span class="val">Moksha</span></span>
+        <span><span class="lbl">Started&ensp;</span><span class="val">Feb 2026</span></span>
+        <span><span class="lbl">Target&ensp;</span><span class="val">Q4 2026</span></span>
       </div>
-      <div style="margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-dim)">Build progress</span><span style="color:var(--text)">12%</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:12%"></div></div>
-      </div>
-      <div class="project-footer">
-        <span>Next: Kubera wireframe</span>
-        <span style="margin-left:auto">·</span>
-        <span>Last touch: today</span>
-      </div>
+      <div class="progress-label">25% complete</div>
+      <div class="progress-wrap"><div class="progress-fill" style="width:25%"></div></div>
+      <div class="project-next">Ganesha + Saraswati v2 rebuild</div>
     </div>
 
-    <div class="project-card is-active">
-      <div class="project-header">
+    <div class="project-card">
+      <div class="project-card-header">
         <div class="project-title">MIT SCM Funding</div>
         <span class="tag active">active</span>
       </div>
+      <div class="project-desc">,500/mo auto-transfer to dedicated savings bucket</div>
       <div class="project-meta">
-        $1,500/mo auto-transfer to dedicated savings bucket<br>
-        Deity: <em>Saraswati</em> (learning) · Quadrant: <em>Dharma</em><br>
-        Started: <em>Jan 2026</em> · Application target: <em>2026</em>
+        <span><span class="lbl">Deity&ensp;</span><span class="val">Saraswati (learning)</span></span>
+        <span><span class="lbl">Quadrant&ensp;</span><span class="val">Dharma</span></span>
+        <span><span class="lbl">Started&ensp;</span><span class="val">Jan 2026</span></span>
+        <span><span class="lbl">App. target&ensp;</span><span class="val">2026</span></span>
       </div>
-      <div style="margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-dim)">Fund progress</span><span style="color:var(--blue)">34%</span></div>
-        <div class="bar-track"><div class="bar-fill blue" style="width:34%"></div></div>
-      </div>
-      <div class="project-footer">
-        <span>Next: Research program requirements</span>
-        <span style="margin-left:auto">·</span>
-        <span>On track</span>
-      </div>
+      <div class="progress-label">34% complete</div>
+      <div class="progress-wrap"><div class="progress-fill" style="width:34%"></div></div>
+      <div class="project-next">Research program requirements</div>
     </div>
 
-    <div class="section-label" style="margin-top:20px;">Blocked</div>
+    <div class="section-label">Blocked</div>
 
-    <div class="project-card is-blocked">
-      <div class="project-header">
+    <div class="project-card blocked">
+      <div class="project-card-header">
         <div class="project-title">Homelab Setup</div>
         <span class="tag blocked">blocked</span>
       </div>
+      <div class="project-desc">Waiting on: housing upgrade / more space</div>
       <div class="project-meta">
-        Waiting on: <em>housing upgrade / more space</em><br>
-        Deity: <em>Vishwakarma</em> (infra) · Quadrant: <em>Moksha</em><br>
-        Blocker: Current apartment too small for rack equipment
+        <span><span class="lbl">Deity&ensp;</span><span class="val">Vishwakarma (infra)</span></span>
+        <span><span class="lbl">Quadrant&ensp;</span><span class="val">Moksha</span></span>
       </div>
-      <div class="project-footer">
-        <span style="color:var(--red)">Blocker: physical space</span>
-        <span style="margin-left:auto">·</span>
-        <span>Revisit: 2027</span>
-      </div>
+      <div style="margin-top:10px;font-family:var(--mono);font-size:11px;color:#ff6040;letter-spacing:0.1em">BLOCKER — Current apartment too small</div>
     </div>
 
-    <div class="section-label" style="margin-top:20px;">Queue</div>
-
-    <div class="card" style="padding:0;overflow:hidden;">
-      <table class="data-table">
+    <div class="section-label">Queue</div>
+    <div class="card">
+      <table class="ledger-table">
         <thead><tr><th>Project</th><th>Deity</th><th>Quadrant</th><th>Depends On</th></tr></thead>
         <tbody>
-          <tr>
-            <td>LLC / Business Formation</td>
-            <td><span class="tag">Kubera</span></td>
-            <td><span class="tag artha">Artha</span></td>
-            <td style="color:var(--text-dim);font-size:11px">First revenue · 2027</td>
-          </tr>
-          <tr>
-            <td>Parkour Skills Documentation</td>
-            <td><span class="tag">Hanuman</span></td>
-            <td><span class="tag kama">Kama</span></td>
-            <td style="color:var(--text-dim);font-size:11px">Hanuman module build</td>
-          </tr>
-          <tr>
-            <td>Reading List System</td>
-            <td><span class="tag">Saraswati</span></td>
-            <td><span class="tag dharma">Dharma</span></td>
-            <td style="color:var(--text-dim);font-size:11px">Free after MIT funding auto</td>
-          </tr>
-          <tr>
-            <td>Lakehouse Fund Acceleration</td>
-            <td><span class="tag">Lakshmi</span></td>
-            <td><span class="tag artha">Artha</span></td>
-            <td style="color:var(--text-dim);font-size:11px">Emergency fund complete</td>
-          </tr>
+          <tr><td>LLC / Business Formation</td><td class="mono">Kubera</td><td><span class="tag artha">Artha</span></td><td class="mono">First revenue · 2027</td></tr>
+          <tr><td>Parkour Skills Documentation</td><td class="mono">Hanuman</td><td><span class="tag kama">Kama</span></td><td class="mono">Hanuman module build</td></tr>
+          <tr><td>Reading List System</td><td class="mono">Saraswati</td><td><span class="tag dharma">Dharma</span></td><td class="mono">Free after MIT funding auto</td></tr>
+          <tr><td>Lakehouse Fund Acceleration</td><td class="mono">Lakshmi</td><td><span class="tag artha">Artha</span></td><td class="mono">Emergency fund complete</td></tr>
         </tbody>
       </table>
     </div>
-
-  </div><!-- /projects -->
-
-
-  <!-- REFLECTION -->
-  <div class="view" id="view-reflection">
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">Review Streak</div>
-        <div class="stat-value accent">3</div>
-        <div class="stat-sub">weeks consecutive</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">This Week</div>
-        <div class="stat-value">Done</div>
-        <div class="stat-sub delta-up">Feb 17, 2026</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Total Reviews</div>
-        <div class="stat-value">7</div>
-        <div class="stat-sub">since Jan 2026</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Next Review</div>
-        <div class="stat-value" style="font-size:17px;">Feb 24</div>
-        <div class="stat-sub">Sunday · 4 days</div>
-      </div>
-    </div>
-
-    <div class="section-label">Weekly Reviews</div>
-
-    <div class="reflection-entry">
-      <div class="reflection-date">Week of Feb 17, 2026 — Sunday Review</div>
-      <div class="reflection-question">What did I actually do this week?</div>
-      <div class="reflection-answer">"Finished Lakshmi module. Started Kubera wireframe. Did three parkour sessions. Two VTSAX buys hit. Spent too much on discretionary — ate out four times."</div>
-      <div class="reflection-question">What was I avoiding?</div>
-      <div class="reflection-answer">"Calling about MIT application prerequisites. It feels large and I've been circling it for two weeks. That's the signal — do it Monday."</div>
-      <div class="reflection-question">What is the single most important thing next week?</div>
-      <div class="reflection-answer">"Research MIT SCM program requirements and draft a realistic application timeline."</div>
-    </div>
-
-    <div class="reflection-entry">
-      <div class="reflection-date">Week of Feb 10, 2026 — Sunday Review</div>
-      <div class="reflection-question">What did I actually do this week?</div>
-      <div class="reflection-answer">"Finished Lakshmi income and expenses tabs. Emergency fund at 80%. Two guitar sessions — played through a full song for the first time in months."</div>
-      <div class="reflection-question">What was I avoiding?</div>
-      <div class="reflection-answer">"Not tracking food spending closely. Over budget on discretionary again."</div>
-      <div class="reflection-question">What is the single most important thing next week?</div>
-      <div class="reflection-answer">"Cap discretionary at $600 hard. Log every expense same-day."</div>
-    </div>
-
-    <div class="reflection-entry" style="opacity:0.55;">
-      <div class="reflection-date">Week of Feb 3, 2026 — Sunday Review</div>
-      <div class="reflection-question">What did I actually do this week?</div>
-      <div class="reflection-answer">"Started Shiva OS project. Set up file structure. Built index.html and first Lakshmi draft."</div>
-      <div class="reflection-question">What was I avoiding?</div>
-      <div class="reflection-answer">"Looking at the $7M gap seriously. Knowing the number is uncomfortable — need to sit with it."</div>
-      <div class="reflection-question">What is the single most important thing next week?</div>
-      <div class="reflection-answer">"Keep building. One module a week minimum."</div>
-    </div>
-
-  </div><!-- /reflection -->
-
-
-  <!-- ROUTING -->
-  <div class="view" id="view-routing">
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">Open Decisions</div>
-        <div class="stat-value accent">2</div>
-        <div class="stat-sub">awaiting routing</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Routed This Month</div>
-        <div class="stat-value">4</div>
-        <div class="stat-sub">decisions resolved</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Avg. Decision Time</div>
-        <div class="stat-value" style="font-size:18px;">3 days</div>
-        <div class="stat-sub">open → resolved</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Regret Rate</div>
-        <div class="stat-value">1</div>
-        <div class="stat-sub">reconsidered decisions</div>
-      </div>
-    </div>
-
-    <div class="section-label">Open — Needs Routing</div>
-
-    <div class="routing-row" style="border-left:2px solid var(--accent);">
-      <div class="routing-question">Should I apply to MIT SCM this cycle (2026) or wait until 2027?</div>
-      <div class="routing-decision">
-        Context: Fund is 34% complete. Application requires 2 years of work experience (have 2). GRE/GMAT waiver may apply.<br>
-        Tension: <em>apply now with partial funding vs wait one more year and apply fully funded</em>
-      </div>
-      <div class="routing-footer">
-        <span class="tag dharma">Saraswati</span>
-        <span class="tag artha">Lakshmi</span>
-        <span style="color:var(--text-dim);font-size:10px;margin-left:auto">Opened: Feb 12 · 8 days open</span>
-      </div>
-    </div>
-
-    <div class="routing-row" style="border-left:2px solid var(--accent);">
-      <div class="routing-question">Should Shiva OS be open-source or a paid product?</div>
-      <div class="routing-decision">
-        Context: It's built for personal use. Releasing it open-source builds reputation. Charging requires support and a product mindset.<br>
-        Tension: <em>data sovereignty + visibility vs revenue potential</em>
-      </div>
-      <div class="routing-footer">
-        <span class="tag">Kubera</span>
-        <span class="tag moksha">Vishwakarma</span>
-        <span style="color:var(--text-dim);font-size:10px;margin-left:auto">Opened: Feb 17 · 3 days open</span>
-      </div>
-    </div>
-
-    <div class="section-label" style="margin-top:20px;">Resolved</div>
-
-    <div class="card" style="padding:0;overflow:hidden;">
-      <table class="data-table">
-        <thead><tr><th>Question</th><th>Decision</th><th>Routed To</th><th>Date</th></tr></thead>
-        <tbody>
-          <tr>
-            <td style="max-width:260px;">Should I increase VTSAX contribution or grow emergency fund first?</td>
-            <td style="color:var(--green);font-size:11px">Finish e-fund first ($3k left). Then redirect $500/mo to VTSAX.</td>
-            <td><span class="tag">Lakshmi</span></td>
-            <td style="color:var(--text-dim);font-size:11px">Feb 10</td>
-          </tr>
-          <tr>
-            <td style="max-width:260px;">Which module to build after Lakshmi?</td>
-            <td style="color:var(--green);font-size:11px">Kubera — same Artha quadrant, builds momentum.</td>
-            <td><span class="tag">Ganesha</span></td>
-            <td style="color:var(--text-dim);font-size:11px">Feb 14</td>
-          </tr>
-          <tr>
-            <td style="max-width:260px;">ChatGPT Plus — keep or cancel?</td>
-            <td style="color:var(--green);font-size:11px">Keep until Claude API directly replaces all use cases.</td>
-            <td><span class="tag">Kubera</span></td>
-            <td style="color:var(--text-dim);font-size:11px">Feb 8</td>
-          </tr>
-          <tr>
-            <td style="max-width:260px;">Training: gym membership or outdoor only?</td>
-            <td style="color:var(--green);font-size:11px">Outdoor only until spring. Gym if parkour training requires it.</td>
-            <td><span class="tag">Hanuman</span></td>
-            <td style="color:var(--text-dim);font-size:11px">Feb 1</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div><!-- /routing -->
-
-
-  <!-- LOG -->
-  <div class="view" id="view-log">
-
-    <div class="stat-grid">
-      <div class="stat">
-        <div class="stat-label">Tasks This Week</div>
-        <div class="stat-value accent">12</div>
-        <div class="stat-sub">completed</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Carry-over</div>
-        <div class="stat-value">3</div>
-        <div class="stat-sub">moved forward</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Cancelled</div>
-        <div class="stat-value">1</div>
-        <div class="stat-sub">no longer relevant</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Focus Mode</div>
-        <div class="stat-value" style="font-size:17px;">Shiva OS</div>
-        <div class="stat-sub">primary project</div>
-      </div>
-    </div>
-
-    <div class="card" style="padding:0;overflow:hidden;">
-      <table class="data-table">
-        <thead><tr><th>Date</th><th>Action</th><th>Project</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td style="color:var(--text-dim);font-size:11px">Feb 20</td><td>Built Kubera wireframe (overview, revenue, P&L, projections)</td><td style="color:var(--text-dim);font-size:11px">Shiva OS</td><td><span class="tag done">done</span></td></tr>
-          <tr><td style="color:var(--text-dim);font-size:11px">Feb 19</td><td>Lakshmi — log view + filter tabs</td><td style="color:var(--text-dim);font-size:11px">Shiva OS</td><td><span class="tag done">done</span></td></tr>
-          <tr><td style="color:var(--text-dim);font-size:11px">Feb 18</td><td>Reviewed MIT SCM program page</td><td style="color:var(--text-dim);font-size:11px">MIT Prep</td><td><span class="tag done">done</span></td></tr>
-          <tr><td style="color:var(--text-dim);font-size:11px">Feb 17</td><td>Sunday weekly review</td><td style="color:var(--text-dim);font-size:11px">Reflection</td><td><span class="tag done">done</span></td></tr>
-          <tr><td style="color:var(--text-dim);font-size:11px">Feb 16</td><td>Parkour session — precision jumps, vault combos</td><td style="color:var(--text-dim);font-size:11px">Hanuman</td><td><span class="tag done">done</span></td></tr>
-          <tr><td style="color:var(--text-dim);font-size:11px">Feb 15</td><td>Lakshmi goals tab — 4 goal cards complete</td><td style="color:var(--text-dim);font-size:11px">Shiva OS</td><td><span class="tag done">done</span></td></tr>
-          <tr><td style="color:var(--text-dim);font-size:11px">Feb 14</td><td>Routing decision: module order post-Lakshmi</td><td style="color:var(--text-dim);font-size:11px">Ganesha</td><td><span class="tag done">done</span></td></tr>
-          <tr><td style="color:var(--text-dim);font-size:11px">Feb 12</td><td>PRS guitar session — worked on Comfortably Numb solo</td><td style="color:var(--text-dim);font-size:11px">Personal</td><td><span class="tag done">done</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div><!-- /log -->
+  </div>
 
 </div>
 
 <script>
-document.querySelectorAll('.nav a').forEach(link => {
+// ── Clock ──
+function tick() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+tick(); setInterval(tick, 1000);
+
+// ── Tab nav ──
+document.querySelectorAll('.tab-nav a').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
     const target = link.dataset.view;
-    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    if (!target) return;
+    document.querySelectorAll('.tab-nav a').forEach(a => a.classList.remove('active'));
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     link.classList.add('active');
-    document.getElementById('view-' + target).classList.add('active');
+    document.getElementById('view-' + target)?.classList.add('active');
   });
 });
-function tick() {
-  const now = new Date();
-  const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  document.getElementById('live-time').textContent = d + ' ' + t;
+
+// ── Theme toggle ──
+const html = document.documentElement;
+const btn  = document.getElementById('theme-btn');
+
+function applyTheme(light) {
+  html.classList.toggle('light', light);
+  btn.textContent = light ? '◑ night' : '◐ day';
 }
-tick(); setInterval(tick, 1000);
+
+const saved = localStorage.getItem('shiva-theme');
+if (saved === 'light') applyTheme(true);
+
+btn.addEventListener('click', () => {
+  const goLight = !html.classList.contains('light');
+  html.classList.add('theme-transitioning');
+  applyTheme(goLight);
+  localStorage.setItem('shiva-theme', goLight ? 'light' : 'dark');
+  setTimeout(() => html.classList.remove('theme-transitioning'), 450);
+});
 </script>
 </body>
 </html>
