@@ -4,47 +4,75 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SHIVA // MURUGAN</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:        #0a0a0a;
-  --bg-raised: #111111;
-  --bg-hover:  #181818;
-  --border:    #222222;
-  --border-hi: #333333;
-  --text:      #c8c8c8;
-  --text-dim:  #555555;
-  --text-hi:   #efefef;
-  --accent:    #e8d5a3;
-  --green:     #7db88a;
+  --bg:        #1a1208;
+  --bg-raised: #221808;
+  --bg-hover:  #2a1e0e;
+  --border:    #3a2810;
+  --border-hi: #4e3618;
+  --text:      #c8a870;
+  --text-dim:  #6e5030;
+  --text-hi:   #f0e4cc;
+  --accent:    #c9973a;
+  --green:     #6aaa72;
   --red:       #c47a6a;
-  --blue:      #6a8fa8;
+  --blue:      #4a8aaa;
   --violet:    #8a6ab8;
   --gold:      #c9973a;
   --mono:      'IBM Plex Mono', monospace;
   --r:         2px;
 }
+html.light {
+  --bg:        #f2e6c8;
+  --bg-raised: #ecdcb4;
+  --bg-hover:  #e4d09c;
+  --border:    #c8a86a;
+  --border-hi: #b09050;
+  --text:      #3e280a;
+  --text-dim:  #a07838;
+  --text-hi:   #120c02;
+  --accent:    #8a6808;
+  --gold:      #8a6808;
+  --green:     #1c7840;
+  --red:       #962010;
+  --blue:      #1e4898;
+  --violet:    #6040a0;
+}
+html.light .tag.flow    { background:#ede8f8; }
+html.light .tag.deep    { background:#d8e4f8; }
+html.light .tag.shallow { background:#f8f0d4; }
+html.light .tag.broken  { background:#f4e0d8; }
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background .38s ease, color .38s ease, border-color .38s ease !important;
+}
+.theme-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-size:15px;letter-spacing:0.1em;padding:3px 10px;border-radius:var(--r);cursor:pointer;transition:color .15s,border-color .15s;}
+.theme-btn:hover{color:var(--accent);border-color:var(--accent);}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:20px;line-height:1.6;min-height:100vh;}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
 .topbar-left{display:flex;align-items:center;gap:20px;}
-.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo{font-size:17px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
 .logo span{color:var(--text-dim);font-weight:300;}
-.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back{font-size:17px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
 .back:hover{color:var(--accent);}
 .nav{display:flex;gap:2px;}
-.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:17px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
 .nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
 .nav a.active{color:var(--accent);background:var(--bg-raised);}
-.topbar-right{font-size:11px;color:var(--text-dim);}
+.topbar-right{display:flex;align-items:center;gap:14px;font-size:17px;color:var(--text-dim);}
 #live-time{color:var(--text);}
 
-.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.shell{max-width:1920px;margin:0 auto;padding:24px 48px 60px;}
 .view{display:none;}
 .view.active{display:block;}
 
-.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label{font-size:15px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 .card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
@@ -54,11 +82,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
 .stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
 .stat:hover{background:var(--bg-hover);}
-.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
-.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-label{font-size:15px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:35px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
 .stat-value.accent{color:var(--accent);}
 .stat-value.violet{color:var(--violet);}
-.stat-sub{font-size:11px;color:var(--text-dim);}
+.stat-sub{font-size:16px;color:var(--text-dim);}
 .delta-up{color:var(--green);}
 .delta-dn{color:var(--red);}
 
@@ -72,44 +100,44 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .bar-fill.blue{background:var(--blue);}
 .bar-fill.red{background:var(--red);}
 
-.data-table{width:100%;border-collapse:collapse;font-size:12px;}
-.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;font-size:17px;}
+.data-table th{font-size:15px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
 .data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
 .data-table tr:last-child td{border-bottom:none;}
 .data-table tbody tr:hover td{background:var(--bg-hover);}
 .data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
 
-.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag{display:inline-block;font-size:14px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
 .tag.flow{background:#1e1a2a;color:var(--violet);}
 .tag.deep{background:#181e28;color:var(--blue);}
 .tag.shallow{background:#2a2a1a;color:var(--accent);}
 .tag.broken{background:#2a1a18;color:var(--red);}
 
 /* ENERGY BARS */
-.energy-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;}
+.energy-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:16px;}
 .energy-row:last-child{border-bottom:none;}
-.energy-time{width:48px;color:var(--text-dim);font-size:10px;}
+.energy-time{width:48px;color:var(--text-dim);font-size:15px;}
 .energy-bar-wrap{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
 .energy-bar{height:100%;border-radius:3px;}
-.energy-val{width:30px;text-align:right;color:var(--text-dim);font-size:10px;}
+.energy-val{width:30px;text-align:right;color:var(--text-dim);font-size:15px;}
 
 /* SESSION CARD */
 .session-card{background:var(--bg-raised);border:1px solid var(--border);border-left:2px solid;border-radius:var(--r);padding:14px 16px;margin-bottom:8px;transition:border-color .15s;}
 .session-card:hover{background:var(--bg-hover);}
 .session-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
-.session-title{color:var(--text-hi);font-size:12px;font-weight:500;}
-.session-meta{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.session-title{color:var(--text-hi);font-size:17px;font-weight:500;}
+.session-meta{font-size:17px;color:var(--text-dim);line-height:1.7;}
 .session-meta em{color:var(--text);font-style:normal;}
 .session-footer{display:flex;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
 
 /* RITUAL ROW */
 .ritual-row{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
 .ritual-row:last-child{border-bottom:none;}
-.ritual-time{width:60px;font-size:10px;color:var(--text-dim);flex-shrink:0;padding-top:2px;}
+.ritual-time{width:60px;font-size:15px;color:var(--text-dim);flex-shrink:0;padding-top:2px;}
 .ritual-body{flex:1;}
-.ritual-name{color:var(--text-hi);font-size:12px;margin-bottom:2px;}
-.ritual-desc{font-size:11px;color:var(--text-dim);line-height:1.7;}
-.ritual-streak{font-size:10px;margin-left:auto;color:var(--green);white-space:nowrap;}
+.ritual-name{color:var(--text-hi);font-size:17px;margin-bottom:2px;}
+.ritual-desc{font-size:17px;color:var(--text-dim);line-height:1.7;}
+.ritual-streak{font-size:15px;margin-left:auto;color:var(--green);white-space:nowrap;}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 .stat{animation:fadeUp .3s ease both;}
@@ -137,6 +165,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     </nav>
   </div>
   <div class="topbar-right">
+    <button class="theme-btn" id="theme-btn">◐ day</button>
     <span id="live-time"></span>
   </div>
 </div>
@@ -149,7 +178,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     <div class="stat-grid">
       <div class="stat">
         <div class="stat-label">Deep Work Today</div>
-        <div class="stat-value violet">3.5<span style="font-size:14px;color:var(--text-dim)">h</span></div>
+        <div class="stat-value violet">3.5<span style="font-size:18px;color:var(--text-dim)">h</span></div>
         <div class="stat-sub delta-up">↑ vs 2.1h avg</div>
       </div>
       <div class="stat">
@@ -164,7 +193,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Distraction Rate</div>
-        <div class="stat-value" style="font-size:18px;">2.1/h</div>
+        <div class="stat-value" style="font-size:23px;">2.1/h</div>
         <div class="stat-sub delta-up">↓ vs 3.4 last week</div>
       </div>
     </div>
@@ -175,13 +204,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         <div class="card">
           <div class="section-label">Daily Energy Profile — Today</div>
           <div id="energy-profile"></div>
-          <div style="margin-top:10px;font-size:10px;color:var(--text-dim);">Subjective energy 1–10 · logged at each time block</div>
+          <div style="margin-top:10px;font-size:14px;color:var(--text-dim);">Subjective energy 1–10 · logged at each time block</div>
         </div>
 
         <div class="card">
           <div class="section-label">Weekly Deep Work — Hours / Day</div>
           <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:flex-end;height:72px;margin-bottom:8px;" id="focus-bars"></div>
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);">
+          <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--text-dim);">
             <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
           </div>
         </div>
@@ -192,7 +221,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Focus Quality — This Week</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:1;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:1;">
             <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
               <span>Total deep work</span><span style="color:var(--text-hi)">16.4h</span>
             </div>
@@ -216,7 +245,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Flow State Conditions</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:1.9;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:1.9;">
             <div style="color:var(--green);margin-bottom:4px;">Optimal conditions (personal)</div>
             <div>— 6:30–9:30am block, post morning ritual</div>
             <div>— PRS guitar instrumental (no vocals) as background</div>
@@ -252,7 +281,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Avg Session</div>
-        <div class="stat-value">52<span style="font-size:14px;color:var(--text-dim)">min</span></div>
+        <div class="stat-value">52<span style="font-size:18px;color:var(--text-dim)">min</span></div>
         <div class="stat-sub">target: 60+</div>
       </div>
       <div class="stat">
@@ -275,8 +304,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         Output: <em>2 full module wireframes complete</em>
       </div>
       <div class="session-footer">
-        <span style="font-size:10px;color:var(--text-dim)">Energy at start: 8/10</span>
-        <span style="font-size:10px;color:var(--text-dim);margin-left:auto">Interrupts: 0</span>
+        <span style="font-size:14px;color:var(--text-dim)">Energy at start: 8/10</span>
+        <span style="font-size:14px;color:var(--text-dim);margin-left:auto">Interrupts: 0</span>
       </div>
     </div>
 
@@ -290,8 +319,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         Output: <em>eligibility confirmed, prereqs mapped, application timeline drafted</em>
       </div>
       <div class="session-footer">
-        <span style="font-size:10px;color:var(--text-dim)">Energy at start: 7/10</span>
-        <span style="font-size:10px;color:var(--text-dim);margin-left:auto">Interrupts: 1</span>
+        <span style="font-size:14px;color:var(--text-dim)">Energy at start: 7/10</span>
+        <span style="font-size:14px;color:var(--text-dim);margin-left:auto">Interrupts: 1</span>
       </div>
     </div>
 
@@ -306,8 +335,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         Interrupts: <em>phone 3x, started late</em>
       </div>
       <div class="session-footer">
-        <span style="font-size:10px;color:var(--text-dim)">Energy at start: 4/10</span>
-        <span style="font-size:10px;color:var(--text-dim);margin-left:auto">Interrupts: 3</span>
+        <span style="font-size:14px;color:var(--text-dim)">Energy at start: 4/10</span>
+        <span style="font-size:14px;color:var(--text-dim);margin-left:auto">Interrupts: 3</span>
       </div>
     </div>
 
@@ -321,8 +350,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         Output: <em>Lakshmi module complete (5 views)</em>
       </div>
       <div class="session-footer">
-        <span style="font-size:10px;color:var(--text-dim)">Energy at start: 9/10</span>
-        <span style="font-size:10px;color:var(--text-dim);margin-left:auto">Interrupts: 0</span>
+        <span style="font-size:14px;color:var(--text-dim)">Energy at start: 9/10</span>
+        <span style="font-size:14px;color:var(--text-dim);margin-left:auto">Interrupts: 0</span>
       </div>
     </div>
 
@@ -362,7 +391,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Ritual Score</div>
-        <div class="stat-value" style="font-size:20px;">74%</div>
+        <div class="stat-value" style="font-size:26px;">74%</div>
         <div class="stat-sub">7-day compliance</div>
       </div>
     </div>
@@ -466,12 +495,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Dead Zone</div>
-        <div class="stat-value" style="color:var(--red);font-size:18px;">2–4pm</div>
+        <div class="stat-value" style="color:var(--red);font-size:23px;">2–4pm</div>
         <div class="stat-sub">lowest quality work</div>
       </div>
       <div class="stat">
         <div class="stat-label">Best Day</div>
-        <div class="stat-value" style="font-size:18px;">Tuesday</div>
+        <div class="stat-value" style="font-size:23px;">Tuesday</div>
         <div class="stat-sub">avg 4.2h deep work</div>
       </div>
     </div>
@@ -483,14 +512,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
           <table class="data-table">
             <thead><tr><th>Time Block</th><th class="num">Avg Hours</th><th class="num">Avg Quality</th><th>Assessment</th></tr></thead>
             <tbody>
-              <tr><td>5:00–7:00am</td><td class="num">0.3h</td><td class="num" style="color:var(--text-dim)">7.2/10</td><td style="color:var(--text-dim);font-size:11px">Rarely used</td></tr>
-              <tr><td>7:00–9:00am</td><td class="num" style="color:var(--violet)">1.8h</td><td class="num" style="color:var(--violet)">9.1/10</td><td style="color:var(--violet);font-size:11px">Peak · protect</td></tr>
-              <tr><td>9:00–11:00am</td><td class="num" style="color:var(--green)">1.2h</td><td class="num" style="color:var(--green)">8.3/10</td><td style="color:var(--green);font-size:11px">High · use for flow continuation</td></tr>
-              <tr><td>11:00am–1:00pm</td><td class="num">0.8h</td><td class="num">6.8/10</td><td style="color:var(--text-dim);font-size:11px">Declining · meetings ok</td></tr>
-              <tr><td>1:00–3:00pm</td><td class="num">0.4h</td><td class="num">5.2/10</td><td style="color:var(--text-dim);font-size:11px">Admin / review tasks</td></tr>
-              <tr><td>3:00–5:00pm</td><td class="num" style="color:var(--red)">0.1h</td><td class="num" style="color:var(--red)">3.8/10</td><td style="color:var(--red);font-size:11px">Dead zone — don't schedule deep work</td></tr>
-              <tr><td>5:00–8:00pm</td><td class="num">0.3h</td><td class="num">5.5/10</td><td style="color:var(--text-dim);font-size:11px">Low priority tasks ok</td></tr>
-              <tr><td>8:00–10:00pm</td><td class="num">0.6h</td><td class="num">6.4/10</td><td style="color:var(--text-dim);font-size:11px">Reading only — no building</td></tr>
+              <tr><td>5:00–7:00am</td><td class="num">0.3h</td><td class="num" style="color:var(--text-dim)">7.2/10</td><td style="color:var(--text-dim);font-size:15px">Rarely used</td></tr>
+              <tr><td>7:00–9:00am</td><td class="num" style="color:var(--violet)">1.8h</td><td class="num" style="color:var(--violet)">9.1/10</td><td style="color:var(--violet);font-size:15px">Peak · protect</td></tr>
+              <tr><td>9:00–11:00am</td><td class="num" style="color:var(--green)">1.2h</td><td class="num" style="color:var(--green)">8.3/10</td><td style="color:var(--green);font-size:15px">High · use for flow continuation</td></tr>
+              <tr><td>11:00am–1:00pm</td><td class="num">0.8h</td><td class="num">6.8/10</td><td style="color:var(--text-dim);font-size:15px">Declining · meetings ok</td></tr>
+              <tr><td>1:00–3:00pm</td><td class="num">0.4h</td><td class="num">5.2/10</td><td style="color:var(--text-dim);font-size:15px">Admin / review tasks</td></tr>
+              <tr><td>3:00–5:00pm</td><td class="num" style="color:var(--red)">0.1h</td><td class="num" style="color:var(--red)">3.8/10</td><td style="color:var(--red);font-size:15px">Dead zone — don't schedule deep work</td></tr>
+              <tr><td>5:00–8:00pm</td><td class="num">0.3h</td><td class="num">5.5/10</td><td style="color:var(--text-dim);font-size:15px">Low priority tasks ok</td></tr>
+              <tr><td>8:00–10:00pm</td><td class="num">0.6h</td><td class="num">6.4/10</td><td style="color:var(--text-dim);font-size:15px">Reading only — no building</td></tr>
             </tbody>
           </table>
         </div>
@@ -498,7 +527,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       <div class="col-stack">
         <div class="card">
           <div class="section-label">Monthly Trend — Deep Work Hours</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:1.6;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:1.6;">
             <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
               <span>Oct 2025</span><span style="color:var(--text)">28h</span>
             </div>
@@ -521,7 +550,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         </div>
         <div class="card">
           <div class="section-label">Distraction Analysis</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:2;">
             <div style="display:flex;justify-content:space-between;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--border);">
               <span>Phone pickup</span><span style="color:var(--red)">42%</span>
             </div>
@@ -602,6 +631,24 @@ function tick() {
   document.getElementById('live-time').textContent = d + ' ' + t;
 }
 tick(); setInterval(tick, 1000);
+
+// Theme toggle
+const THEME_KEY = 'shiva-theme';
+function applyTheme(light) {
+  document.documentElement.classList.toggle('light', light);
+  document.getElementById('theme-btn').textContent = light ? '◑ night' : '◐ day';
+}
+(function(){
+  const saved = localStorage.getItem(THEME_KEY);
+  applyTheme(saved === 'light');
+})();
+document.getElementById('theme-btn').addEventListener('click', () => {
+  const isLight = document.documentElement.classList.contains('light');
+  document.documentElement.classList.add('theme-transitioning');
+  setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+  localStorage.setItem(THEME_KEY, isLight ? 'dark' : 'light');
+  applyTheme(!isLight);
+});
 </script>
 </body>
 </html>

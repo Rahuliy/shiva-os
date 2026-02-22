@@ -4,47 +4,77 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SHIVA // VISHWAKARMA</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:        #0a0a0a;
-  --bg-raised: #111111;
-  --bg-hover:  #181818;
-  --border:    #222222;
-  --border-hi: #333333;
-  --text:      #c8c8c8;
-  --text-dim:  #555555;
-  --text-hi:   #efefef;
-  --accent:    #e8d5a3;
-  --green:     #7db88a;
+  --bg:        #1a1208;
+  --bg-raised: #221808;
+  --bg-hover:  #2a1e0e;
+  --border:    #3a2810;
+  --border-hi: #4e3618;
+  --text:      #c8a870;
+  --text-dim:  #6e5030;
+  --text-hi:   #f0e4cc;
+  --accent:    #c9973a;
+  --green:     #6aaa72;
   --red:       #c47a6a;
-  --blue:      #6a8fa8;
+  --blue:      #4a8aaa;
   --cyan:      #5ab8b8;
   --gold:      #c9973a;
   --mono:      'IBM Plex Mono', monospace;
   --r:         2px;
 }
+html.light {
+  --bg:        #f2e6c8;
+  --bg-raised: #ecdcb4;
+  --bg-hover:  #e4d09c;
+  --border:    #c8a86a;
+  --border-hi: #b09050;
+  --text:      #3e280a;
+  --text-dim:  #a07838;
+  --text-hi:   #120c02;
+  --accent:    #8a6808;
+  --gold:      #8a6808;
+  --green:     #1c7840;
+  --red:       #962010;
+  --blue:      #1e4898;
+  --cyan:      #1a7878;
+}
+html.light .tag.up       { background:#d4f0ec; }
+html.light .tag.down     { background:#f4e0d8; }
+html.light .tag.planned  { background:#d8e4f8; }
+html.light .tag.building { background:#f8f0d4; }
+html.light .tag.blocked  { background:#f4e0d8; }
+html.light .tag.done     { background:#d4eedc; }
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background .38s ease, color .38s ease, border-color .38s ease !important;
+}
+.theme-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-size:15px;letter-spacing:0.1em;padding:3px 10px;border-radius:var(--r);cursor:pointer;transition:color .15s,border-color .15s;}
+.theme-btn:hover{color:var(--accent);border-color:var(--accent);}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:20px;line-height:1.6;min-height:100vh;}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
 .topbar-left{display:flex;align-items:center;gap:20px;}
-.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo{font-size:17px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
 .logo span{color:var(--text-dim);font-weight:300;}
-.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back{font-size:17px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
 .back:hover{color:var(--accent);}
 .nav{display:flex;gap:2px;}
-.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:17px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
 .nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
 .nav a.active{color:var(--accent);background:var(--bg-raised);}
-.topbar-right{font-size:11px;color:var(--text-dim);}
+.topbar-right{display:flex;align-items:center;gap:14px;font-size:17px;color:var(--text-dim);}
 #live-time{color:var(--text);}
 
-.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.shell{max-width:1920px;margin:0 auto;padding:24px 48px 60px;}
 .view{display:none;}
 .view.active{display:block;}
 
-.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label{font-size:15px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 .card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
@@ -54,11 +84,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
 .stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
 .stat:hover{background:var(--bg-hover);}
-.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
-.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-label{font-size:15px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:35px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
 .stat-value.accent{color:var(--accent);}
 .stat-value.cyan{color:var(--cyan);}
-.stat-sub{font-size:11px;color:var(--text-dim);}
+.stat-sub{font-size:16px;color:var(--text-dim);}
 .delta-up{color:var(--green);}
 .delta-dn{color:var(--red);}
 
@@ -72,14 +102,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .bar-fill.blue{background:var(--blue);}
 .bar-fill.red{background:var(--red);}
 
-.data-table{width:100%;border-collapse:collapse;font-size:12px;}
-.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;font-size:17px;}
+.data-table th{font-size:15px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
 .data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
 .data-table tr:last-child td{border-bottom:none;}
 .data-table tbody tr:hover td{background:var(--bg-hover);}
 .data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
 
-.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag{display:inline-block;font-size:14px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
 .tag.up{background:#0d1e1a;color:var(--cyan);}
 .tag.down{background:#2a1a18;color:var(--red);}
 .tag.planned{background:#1e1e2a;color:var(--blue);}
@@ -88,36 +118,36 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .tag.done{background:#1a2e1e;color:var(--green);opacity:0.7;}
 
 /* SERVICE ROW */
-.service-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.service-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:17px;}
 .service-row:last-child{border-bottom:none;}
 .service-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .service-dot.up{background:var(--cyan);}
 .service-dot.down{background:var(--red);}
 .service-dot.planned{background:transparent;border:1px solid var(--text-dim);}
 .service-name{flex:1;color:var(--text);}
-.service-host{font-size:10px;color:var(--text-dim);width:100px;}
-.service-uptime{font-size:11px;width:60px;text-align:right;}
+.service-host{font-size:15px;color:var(--text-dim);width:100px;}
+.service-uptime{font-size:16px;width:60px;text-align:right;}
 .service-uptime.up{color:var(--cyan);}
 
 /* DEVICE ROW */
 .device-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
 .device-row:last-child{border-bottom:none;}
-.device-icon{width:32px;height:32px;border:1px solid var(--border-hi);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:var(--accent);}
+.device-icon{width:32px;height:32px;border:1px solid var(--border-hi);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:var(--accent);}
 .device-body{flex:1;}
-.device-name{color:var(--text-hi);font-size:12px;font-weight:500;margin-bottom:2px;}
-.device-meta{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.device-name{color:var(--text-hi);font-size:17px;font-weight:500;margin-bottom:2px;}
+.device-meta{font-size:16px;color:var(--text-dim);line-height:1.7;}
 .device-meta em{color:var(--text);font-style:normal;}
 
 /* BUILD LOG */
 .build-row{padding:12px 0;border-bottom:1px solid var(--border);}
 .build-row:last-child{border-bottom:none;}
 .build-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
-.build-title{color:var(--text-hi);font-size:12px;}
-.build-meta{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.build-title{color:var(--text-hi);font-size:17px;}
+.build-meta{font-size:17px;color:var(--text-dim);line-height:1.7;}
 .build-meta em{color:var(--text);font-style:normal;}
 
 /* NETWORK TOPOLOGY */
-.topo{font-family:var(--mono);font-size:11px;color:var(--text-dim);line-height:2.2;padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);}
+.topo{font-family:var(--mono);font-size:16px;color:var(--text-dim);line-height:2.2;padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);}
 .topo .node{color:var(--cyan);}
 .topo .edge{color:var(--text-dim);}
 .topo .label{color:var(--text);}
@@ -149,6 +179,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     </nav>
   </div>
   <div class="topbar-right">
+    <button class="theme-btn" id="theme-btn">◐ day</button>
     <span id="live-time"></span>
   </div>
 </div>
@@ -171,7 +202,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Homelab Status</div>
-        <div class="stat-value" style="font-size:17px;">Blocked</div>
+        <div class="stat-value" style="font-size:22px;">Blocked</div>
         <div class="stat-sub">needs physical space</div>
       </div>
       <div class="stat">
@@ -250,7 +281,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Infrastructure Tiers</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:1.9;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:1.9;">
             <div style="padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border);">
               <div style="color:var(--cyan);margin-bottom:4px;">Tier 1 — Cloud (active)</div>
               GitHub Pages · Cloudflare Workers · Namecheap DNS<br>
@@ -272,7 +303,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Data Sovereignty — Principles</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:2;">
             <div>— No personal data in proprietary cloud if avoidable</div>
             <div>— Shiva OS runs entirely on local files (now)</div>
             <div>— Future: all modules backed by self-hosted DB</div>
@@ -296,7 +327,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     <div class="stat-grid">
       <div class="stat">
         <div class="stat-label">Homelab Status</div>
-        <div class="stat-value" style="font-size:17px;color:var(--red)">Blocked</div>
+        <div class="stat-value" style="font-size:22px;color:var(--red)">Blocked</div>
         <div class="stat-sub">physical space · 2027</div>
       </div>
       <div class="stat">
@@ -311,7 +342,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Budget (homelab)</div>
-        <div class="stat-value accent" style="font-size:20px;">$800</div>
+        <div class="stat-value accent" style="font-size:26px;">$800</div>
         <div class="stat-sub">when unblocked · 1-time</div>
       </div>
     </div>
@@ -377,7 +408,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ <span class="node">Raspberry Pi</span> <span class="edge">· PiHole DNS</span>
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="pending">IoT VLAN (future)</span>
           </div>
-          <div style="margin-top:10px;font-size:10px;color:var(--text-dim);">
+          <div style="margin-top:10px;font-size:14px;color:var(--text-dim);">
             Blocked until 2027 housing change. Diagrammed for clarity when the time comes.
           </div>
         </div>
@@ -420,7 +451,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Security</div>
-        <div class="stat-value" style="font-size:17px;">Basic</div>
+        <div class="stat-value" style="font-size:22px;">Basic</div>
         <div class="stat-sub">1PW · 2FA on critical</div>
       </div>
       <div class="stat">
@@ -459,7 +490,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
               <tr><td>Everything (NAS)</td><td style="color:var(--text-dim)">Homelab (future)</td><td style="color:var(--text-dim)">Daily auto</td><td><span class="tag planned">planned</span></td></tr>
             </tbody>
           </table>
-          <div style="margin-top:10px;font-size:11px;color:var(--red);">
+          <div style="margin-top:10px;font-size:15px;color:var(--red);">
             Risk: local documents and Shiva OS data have no automated backup currently. Fix before homelab — use USB drive rotation minimum.
           </div>
         </div>
@@ -467,7 +498,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       <div class="col-stack">
         <div class="card">
           <div class="section-label">Security Posture</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:2;">
             <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
               <span>Password manager</span><span style="color:var(--cyan)">1Password ✓</span>
             </div>
@@ -536,7 +567,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
     <div class="card" style="border-left:2px solid var(--accent);">
       <div class="build-header" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-        <div style="color:var(--text-hi);font-size:13px;font-weight:500;">Shiva OS — All Modules</div>
+        <div style="color:var(--text-hi);font-size:17px;font-weight:500;">Shiva OS — All Modules</div>
         <span class="tag building">building</span>
       </div>
       <div class="build-meta">
@@ -545,14 +576,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         Next: replace static data with localStorage or JSON · then DB backend
       </div>
       <div style="margin-top:10px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-dim)">Module completion</span><span style="color:var(--accent)">12%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:15px;margin-bottom:4px;"><span style="color:var(--text-dim)">Module completion</span><span style="color:var(--accent)">12%</span></div>
         <div class="bar-track"><div class="bar-fill" style="width:12%"></div></div>
       </div>
     </div>
 
     <div class="card" style="border-left:2px solid var(--blue);margin-top:8px;">
       <div class="build-header" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-        <div style="color:var(--text-hi);font-size:13px;font-weight:500;">Shiva OS — Data Persistence</div>
+        <div style="color:var(--text-hi);font-size:17px;font-weight:500;">Shiva OS — Data Persistence</div>
         <span class="tag building">planning</span>
       </div>
       <div class="build-meta">
@@ -612,6 +643,24 @@ function tick() {
   document.getElementById('live-time').textContent = d + ' ' + t;
 }
 tick(); setInterval(tick, 1000);
+
+// Theme toggle
+const THEME_KEY = 'shiva-theme';
+function applyTheme(light) {
+  document.documentElement.classList.toggle('light', light);
+  document.getElementById('theme-btn').textContent = light ? '◑ night' : '◐ day';
+}
+(function(){
+  const saved = localStorage.getItem(THEME_KEY);
+  applyTheme(saved === 'light');
+})();
+document.getElementById('theme-btn').addEventListener('click', () => {
+  const isLight = document.documentElement.classList.contains('light');
+  document.documentElement.classList.add('theme-transitioning');
+  setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+  localStorage.setItem(THEME_KEY, isLight ? 'dark' : 'light');
+  applyTheme(!isLight);
+});
 </script>
 </body>
 </html>

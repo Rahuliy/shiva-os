@@ -4,47 +4,74 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SHIVA // DHANVANTARI</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:        #0a0a0a;
-  --bg-raised: #111111;
-  --bg-hover:  #181818;
-  --border:    #222222;
-  --border-hi: #333333;
-  --text:      #c8c8c8;
-  --text-dim:  #555555;
-  --text-hi:   #efefef;
-  --accent:    #e8d5a3;
-  --green:     #7db88a;
+  --bg:        #1a1208;
+  --bg-raised: #221808;
+  --bg-hover:  #2a1e0e;
+  --border:    #3a2810;
+  --border-hi: #4e3618;
+  --text:      #c8a870;
+  --text-dim:  #6e5030;
+  --text-hi:   #f0e4cc;
+  --accent:    #c9973a;
+  --green:     #6aaa72;
   --red:       #c47a6a;
-  --blue:      #6a8fa8;
+  --blue:      #4a8aaa;
   --teal:      #5aab9a;
   --gold:      #c9973a;
   --mono:      'IBM Plex Mono', monospace;
   --r:         2px;
 }
+html.light {
+  --bg:        #f2e6c8;
+  --bg-raised: #ecdcb4;
+  --bg-hover:  #e4d09c;
+  --border:    #c8a86a;
+  --border-hi: #b09050;
+  --text:      #3e280a;
+  --text-dim:  #a07838;
+  --text-hi:   #120c02;
+  --accent:    #8a6808;
+  --gold:      #8a6808;
+  --green:     #1c7840;
+  --red:       #962010;
+  --blue:      #1e4898;
+  --teal:      #1a8a7a;
+}
+html.light .tag.good { background:#d4f0ec; }
+html.light .tag.ok   { background:#f8f0d4; }
+html.light .tag.low  { background:#f4e0d8; }
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background .38s ease, color .38s ease, border-color .38s ease !important;
+}
+.theme-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-size:15px;letter-spacing:0.1em;padding:3px 10px;border-radius:var(--r);cursor:pointer;transition:color .15s,border-color .15s;}
+.theme-btn:hover{color:var(--accent);border-color:var(--accent);}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:20px;line-height:1.6;min-height:100vh;}
 
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
 .topbar-left{display:flex;align-items:center;gap:20px;}
-.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
+.logo{font-size:17px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
 .logo span{color:var(--text-dim);font-weight:300;}
-.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
+.back{font-size:17px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
 .back:hover{color:var(--accent);}
 .nav{display:flex;gap:2px;}
-.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
+.nav a{color:var(--text-dim);text-decoration:none;font-size:17px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
 .nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
 .nav a.active{color:var(--accent);background:var(--bg-raised);}
-.topbar-right{font-size:11px;color:var(--text-dim);}
+.topbar-right{display:flex;align-items:center;gap:14px;font-size:17px;color:var(--text-dim);}
 #live-time{color:var(--text);}
 
-.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.shell{max-width:1920px;margin:0 auto;padding:24px 48px 60px;}
 .view{display:none;}
 .view.active{display:block;}
 
-.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label{font-size:15px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 .card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
@@ -54,11 +81,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
 .stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
 .stat:hover{background:var(--bg-hover);}
-.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
-.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-label{font-size:15px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-size:35px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
 .stat-value.accent{color:var(--accent);}
 .stat-value.teal{color:var(--teal);}
-.stat-sub{font-size:11px;color:var(--text-dim);}
+.stat-sub{font-size:16px;color:var(--text-dim);}
 .delta-up{color:var(--green);}
 .delta-dn{color:var(--red);}
 
@@ -72,29 +99,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .bar-fill.blue{background:var(--blue);}
 .bar-fill.red{background:var(--red);}
 
-.data-table{width:100%;border-collapse:collapse;font-size:12px;}
-.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;font-size:17px;}
+.data-table th{font-size:15px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
 .data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
 .data-table tr:last-child td{border-bottom:none;}
 .data-table tbody tr:hover td{background:var(--bg-hover);}
 .data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
 
-.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag{display:inline-block;font-size:14px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
 .tag.good{background:#0d1e1a;color:var(--teal);}
 .tag.ok{background:#2a2a1a;color:var(--accent);}
 .tag.low{background:#2a1a18;color:var(--red);}
 
 /* SLEEP BARS */
-.sleep-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;}
+.sleep-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:16px;}
 .sleep-row:last-child{border-bottom:none;}
-.sleep-date{width:50px;color:var(--text-dim);font-size:10px;}
+.sleep-date{width:50px;color:var(--text-dim);font-size:15px;}
 .sleep-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
 .sleep-bar{height:100%;border-radius:3px;transition:width .5s ease;}
 .sleep-hours{width:38px;text-align:right;color:var(--text);}
 .sleep-quality{width:50px;text-align:right;}
 
 /* METRIC ROW */
-.metric-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:17px;}
 .metric-row:last-child{border-bottom:none;}
 .metric-label{color:var(--text-dim);}
 .metric-val{color:var(--text-hi);}
@@ -103,11 +130,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .metric-val.low{color:var(--red);}
 
 /* HABIT GRID */
-.habit-grid{display:grid;grid-template-columns:160px repeat(7,1fr);gap:2px;font-size:10px;}
+.habit-grid{display:grid;grid-template-columns:160px repeat(7,1fr);gap:2px;font-size:15px;}
 .habit-grid-header{display:contents;}
 .habit-label{color:var(--text-dim);padding:4px 0;display:flex;align-items:center;}
 .habit-day{text-align:center;padding:4px 2px;color:var(--text-dim);}
-.habit-cell{aspect-ratio:1;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.habit-cell{aspect-ratio:1;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:15px;}
 .habit-cell.done{background:var(--teal);color:var(--bg);}
 .habit-cell.miss{background:var(--border);color:var(--text-dim);}
 .habit-cell.partial{background:rgba(90,171,154,0.3);color:var(--teal);}
@@ -139,6 +166,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     </nav>
   </div>
   <div class="topbar-right">
+    <button class="theme-btn" id="theme-btn">◐ day</button>
     <span id="live-time"></span>
   </div>
 </div>
@@ -151,7 +179,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     <div class="stat-grid">
       <div class="stat">
         <div class="stat-label">Avg Sleep</div>
-        <div class="stat-value teal">7.1<span style="font-size:14px;color:var(--text-dim)">h</span></div>
+        <div class="stat-value teal">7.1<span style="font-size:18px;color:var(--text-dim)">h</span></div>
         <div class="stat-sub">7-day rolling</div>
       </div>
       <div class="stat">
@@ -181,9 +209,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Health Protocols</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:1;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:1;">
             <div style="margin-bottom:14px;">
-              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;"><span style="color:var(--text)">Morning</span><span style="color:var(--teal)">Active</span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:16px;"><span style="color:var(--text)">Morning</span><span style="color:var(--teal)">Active</span></div>
               <div style="padding-left:12px;line-height:2;">
                 No phone first 30 min · sunlight exposure<br>
                 Cold water face · water + electrolytes<br>
@@ -191,18 +219,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
               </div>
             </div>
             <div style="margin-bottom:14px;padding-top:12px;border-top:1px solid var(--border);">
-              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;"><span style="color:var(--text)">Evening Wind-down</span><span style="color:var(--teal)">Active</span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:16px;"><span style="color:var(--text)">Evening Wind-down</span><span style="color:var(--teal)">Active</span></div>
               <div style="padding-left:12px;line-height:2;">
                 No screens after 10pm · dim lights after 9pm<br>
                 Reading before sleep · consistent 11pm bedtime target
               </div>
             </div>
             <div style="padding-top:12px;border-top:1px solid var(--border);">
-              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;"><span style="color:var(--text)">Nutrition</span><span style="color:var(--accent)">Partial</span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:16px;"><span style="color:var(--text)">Nutrition</span><span style="color:var(--accent)">Partial</span></div>
               <div style="padding-left:12px;line-height:2;">
                 Vegetarian base · minimize ultra-processed<br>
                 Lentils, rice, vegetables as staples<br>
-                <span style="color:var(--text-dim);font-size:10px;">Not tracking macros — not the priority</span>
+                <span style="color:var(--text-dim);font-size:14px;">Not tracking macros — not the priority</span>
               </div>
             </div>
           </div>
@@ -226,7 +254,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Recovery Notes</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:2;">
             <div style="color:var(--red);margin-bottom:6px;">Flags this week:</div>
             <div style="padding-left:8px;margin-bottom:10px;">
               — Caffeine after 2pm on 3 days<br>
@@ -269,7 +297,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Bedtime Target</div>
-        <div class="stat-value" style="font-size:18px;">11:00 pm</div>
+        <div class="stat-value" style="font-size:23px;">11:00 pm</div>
         <div class="stat-sub">hit 4/7 nights</div>
       </div>
     </div>
@@ -277,7 +305,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     <div class="card">
       <div class="section-label">Nightly Log — Feb 2026</div>
       <div id="sleep-detail-chart"></div>
-      <div style="margin-top:8px;font-size:10px;color:var(--text-dim);">Target: 7.5–8.5h &nbsp;·&nbsp; below 6.5h is flagged red</div>
+      <div style="margin-top:8px;font-size:14px;color:var(--text-dim);">Target: 7.5–8.5h &nbsp;·&nbsp; below 6.5h is flagged red</div>
     </div>
 
     <div style="margin-top:16px;">
@@ -286,11 +314,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         <table class="data-table">
           <thead><tr><th>Factor</th><th>Effect on Sleep</th><th>Action</th></tr></thead>
           <tbody>
-            <tr><td>Caffeine after 2pm</td><td style="color:var(--red)">−0.6h avg sleep</td><td style="color:var(--text-dim);font-size:11px">Cut to 12pm deadline</td></tr>
-            <tr><td>Screens before bed</td><td style="color:var(--red)">Later sleep onset</td><td style="color:var(--text-dim);font-size:11px">10pm screen cutoff</td></tr>
-            <tr><td>Morning sunlight</td><td style="color:var(--teal)">+0.4h deeper sleep</td><td style="color:var(--text-dim);font-size:11px">Keep — already doing</td></tr>
-            <tr><td>Training day</td><td style="color:var(--teal)">+0.5h quality</td><td style="color:var(--text-dim);font-size:11px">Consistent exercise helps</td></tr>
-            <tr><td>Consistent bedtime</td><td style="color:var(--teal)">Biggest lever</td><td style="color:var(--text-dim);font-size:11px">11pm hard target</td></tr>
+            <tr><td>Caffeine after 2pm</td><td style="color:var(--red)">−0.6h avg sleep</td><td style="color:var(--text-dim);font-size:15px">Cut to 12pm deadline</td></tr>
+            <tr><td>Screens before bed</td><td style="color:var(--red)">Later sleep onset</td><td style="color:var(--text-dim);font-size:15px">10pm screen cutoff</td></tr>
+            <tr><td>Morning sunlight</td><td style="color:var(--teal)">+0.4h deeper sleep</td><td style="color:var(--text-dim);font-size:15px">Keep — already doing</td></tr>
+            <tr><td>Training day</td><td style="color:var(--teal)">+0.5h quality</td><td style="color:var(--text-dim);font-size:15px">Consistent exercise helps</td></tr>
+            <tr><td>Consistent bedtime</td><td style="color:var(--teal)">Biggest lever</td><td style="color:var(--text-dim);font-size:15px">11pm hard target</td></tr>
           </tbody>
         </table>
       </div>
@@ -320,7 +348,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Longest Habit Streak</div>
-        <div class="stat-value" style="font-size:17px;">No alcohol</div>
+        <div class="stat-value" style="font-size:22px;">No alcohol</div>
         <div class="stat-sub">ongoing · 90+ days</div>
       </div>
     </div>
@@ -329,7 +357,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       <div class="section-label">Weekly Habit Tracker — Feb 17–23</div>
       <div class="habit-grid">
         <!-- Header -->
-        <div class="habit-label" style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;">Habit</div>
+        <div class="habit-label" style="font-size:13px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;">Habit</div>
         <div class="habit-day">M</div><div class="habit-day">T</div><div class="habit-day">W</div>
         <div class="habit-day">T</div><div class="habit-day">F</div><div class="habit-day">S</div><div class="habit-day">S</div>
 
@@ -366,7 +394,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
         <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div>
         <div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div><div class="habit-cell done">✓</div>
       </div>
-      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:16px;font-size:10px;color:var(--text-dim);">
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:16px;font-size:14px;color:var(--text-dim);">
         <span><span style="color:var(--teal)">✓</span> Done</span>
         <span><span style="color:var(--text-dim)">·</span> Missed</span>
         <span><span style="color:var(--text-dim)">—</span> N/A</span>
@@ -399,22 +427,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     <div class="stat-grid">
       <div class="stat">
         <div class="stat-label">Last Bloodwork</div>
-        <div class="stat-value" style="font-size:17px;">Nov 2025</div>
+        <div class="stat-value" style="font-size:22px;">Nov 2025</div>
         <div class="stat-sub">annual physical</div>
       </div>
       <div class="stat">
         <div class="stat-label">Next Check</div>
-        <div class="stat-value" style="font-size:17px;">Nov 2026</div>
+        <div class="stat-value" style="font-size:22px;">Nov 2026</div>
         <div class="stat-sub">annual · schedule</div>
       </div>
       <div class="stat">
         <div class="stat-label">Eye Exam</div>
-        <div class="stat-value" style="font-size:17px;">Due</div>
+        <div class="stat-value" style="font-size:22px;">Due</div>
         <div class="stat-sub">last: 2023</div>
       </div>
       <div class="stat">
         <div class="stat-label">Dental</div>
-        <div class="stat-value" style="font-size:17px;">Jul 2026</div>
+        <div class="stat-value" style="font-size:22px;">Jul 2026</div>
         <div class="stat-sub">6-month scheduled</div>
       </div>
     </div>
@@ -436,7 +464,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
               <tr><td>Triglycerides</td><td class="num">82 mg/dL</td><td class="num" style="color:var(--text-dim)">&lt;150</td><td><span class="tag good">good</span></td></tr>
             </tbody>
           </table>
-          <div style="margin-top:10px;font-size:11px;color:var(--text-dim);">
+          <div style="margin-top:10px;font-size:15px;color:var(--text-dim);">
             Action: B12 supplement (vegetarian diet) · recheck Nov 2026
           </div>
         </div>
@@ -460,9 +488,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
           <table class="data-table">
             <thead><tr><th>Supplement</th><th>Dose</th><th>Reason</th></tr></thead>
             <tbody>
-              <tr><td>Vitamin B12</td><td style="color:var(--text-dim)">1000 mcg / day</td><td style="color:var(--text-dim);font-size:11px">Vegetarian diet</td></tr>
-              <tr><td>Vitamin D3</td><td style="color:var(--text-dim)">2000 IU / day</td><td style="color:var(--text-dim);font-size:11px">NJ winter, desk job</td></tr>
-              <tr><td>Magnesium glycinate</td><td style="color:var(--text-dim)">300 mg · night</td><td style="color:var(--text-dim);font-size:11px">Sleep quality</td></tr>
+              <tr><td>Vitamin B12</td><td style="color:var(--text-dim)">1000 mcg / day</td><td style="color:var(--text-dim);font-size:15px">Vegetarian diet</td></tr>
+              <tr><td>Vitamin D3</td><td style="color:var(--text-dim)">2000 IU / day</td><td style="color:var(--text-dim);font-size:15px">NJ winter, desk job</td></tr>
+              <tr><td>Magnesium glycinate</td><td style="color:var(--text-dim)">300 mg · night</td><td style="color:var(--text-dim);font-size:15px">Sleep quality</td></tr>
             </tbody>
           </table>
         </div>
@@ -520,6 +548,24 @@ function tick() {
   document.getElementById('live-time').textContent = d + ' ' + t;
 }
 tick(); setInterval(tick, 1000);
+
+// Theme toggle
+const THEME_KEY = 'shiva-theme';
+function applyTheme(light) {
+  document.documentElement.classList.toggle('light', light);
+  document.getElementById('theme-btn').textContent = light ? '◑ night' : '◐ day';
+}
+(function(){
+  const saved = localStorage.getItem(THEME_KEY);
+  applyTheme(saved === 'light');
+})();
+document.getElementById('theme-btn').addEventListener('click', () => {
+  const isLight = document.documentElement.classList.contains('light');
+  document.documentElement.classList.add('theme-transitioning');
+  setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+  localStorage.setItem(THEME_KEY, isLight ? 'dark' : 'light');
+  applyTheme(!isLight);
+});
 </script>
 </body>
 </html>
