@@ -4,48 +4,216 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SHIVA // HANUMAN</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:        #0a0a0a;
-  --bg-raised: #111111;
-  --bg-hover:  #181818;
-  --border:    #222222;
-  --border-hi: #333333;
-  --text:      #c8c8c8;
-  --text-dim:  #555555;
-  --text-hi:   #efefef;
-  --accent:    #e8d5a3;
-  --green:     #7db88a;
-  --red:       #c47a6a;
-  --blue:      #6a8fa8;
-  --orange:    #c47a3a;
-  --gold:      #c9973a;
+  --bg:        #0b0804;
+  --bg-1:      #110d05;
+  --bg-2:      #181106;
+  --bg-3:      #1e1508;
+  --bg-raised: var(--bg-1);
+  --bg-hover:  var(--bg-2);
+
+  --border-0:  #261a07;
+  --border-1:  #36250d;
+  --border-2:  #4a3414;
+  --border:    var(--border-1);
+  --border-hi: var(--border-2);
+
+  --text-0:    #eedfc0;
+  --text-1:    #c09450;
+  --text-2:    #7a5a2c;
+  --text-3:    #4a3418;
+  --text-hi:   var(--text-0);
+  --text:      var(--text-1);
+  --text-dim:  var(--text-2);
+
+  --gold:      #d4a030;
+  --gold-hi:   #ecbe48;
+  --gold-dim:  #6a5018;
+  --gold-bg:   #0e0a02;
+  --accent:    var(--gold);
+
+  --jade:      #206040;
+  --jade-hi:   #3a9060;
+  --jade-dim:  #0c3020;
+  --jade-bg:   #030e06;
+  --green:     var(--jade-hi);
+
+  --verm:      #b83818;
+  --verm-hi:   #d45030;
+  --verm-dim:  #481008;
+  --verm-bg:   #0e0402;
+  --red:       var(--verm-hi);
+
+  --saffron:   #c87830;
+  --saffron-hi: #e89848;
+  --saffron-dim: #603808;
+  --saffron-bg: #120800;
+  --orange:    var(--saffron);
+
+  --cinzel:    'Cinzel', serif;
+  --spectral:  'Spectral', serif;
   --mono:      'IBM Plex Mono', monospace;
-  --r:         2px;
+  --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+
+  --topbar-bg:    rgba(11,8,4,0.96);
+  --glow-top:     rgba(212,160,48,0.15);
+  --glow-side-l:  rgba(212,160,48,0.04);
+  --glow-side-r:  rgba(200,120,48,0.04);
+  --glow-center:  rgba(212,160,48,0.03);
+  --grid-line:    rgba(212,160,48,0.026);
+
+  --r: 2px;
+}
+
+/* ─── LIGHT MODE ─────────────────────────────────────────────────────── */
+html.light {
+  --bg:        #f2e6c8;
+  --bg-1:      #ecdcb4;
+  --bg-2:      #e4d09c;
+  --bg-3:      #d8c488;
+  --bg-raised: var(--bg-1);
+  --bg-hover:  var(--bg-2);
+  --border-0:  #c8a86a;
+  --border-1:  #b09050;
+  --border-2:  #8a7038;
+  --border:    var(--border-1);
+  --border-hi: var(--border-2);
+  --text-0:    #120c02;
+  --text-1:    #3e280a;
+  --text-2:    #6c4c1a;
+  --text-3:    #a07838;
+  --text-hi:   var(--text-0);
+  --text:      var(--text-1);
+  --text-dim:  var(--text-2);
+  --gold:      #8a6808;
+  --gold-hi:   #b08a18;
+  --gold-dim:  #c8a848;
+  --gold-bg:   #f8f0d4;
+  --jade:      #145a2e;
+  --jade-hi:   #1c7840;
+  --jade-dim:  #4a9468;
+  --jade-bg:   #d4eedc;
+  --green:     var(--jade-hi);
+  --verm:      #962010;
+  --verm-hi:   #b83820;
+  --verm-dim:  #c87858;
+  --verm-bg:   #f4e0d8;
+  --red:       var(--verm-hi);
+  --saffron:   #b05010;
+  --saffron-hi: #d07030;
+  --saffron-dim: #d0a060;
+  --saffron-bg: #f8ead4;
+  --orange:    var(--saffron);
+  --topbar-bg:    rgba(242,230,200,0.97);
+  --glow-top:     rgba(160,110,20,0.10);
+  --glow-side-l:  rgba(160,110,20,0.03);
+  --glow-side-r:  rgba(176,80,16,0.03);
+  --glow-center:  rgba(160,110,20,0.03);
+  --grid-line:    rgba(100,70,20,0.09);
+}
+
+html.light .tag.solid     { background: #d4eedc; }
+html.light .tag.sharp     { background: #d4eedc; }
+html.light .tag.pr        { background: #d4eedc; }
+html.light .tag.practicing{ background: #d8e4f8; }
+html.light .tag.learning  { background: #f8f0d4; }
+
+/* ─── SMOOTH THEME TRANSITION ────────────────────────────────────────── */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition:
+    background-color 0.38s ease,
+    color            0.32s ease,
+    border-color     0.32s ease,
+    box-shadow       0.32s ease !important;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;}
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--spectral);
+  font-size: 18px;
+  line-height: 1.75;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -5%,  var(--glow-top)    0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 5%  90%,  var(--glow-side-l) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 45% at 95% 75%,  var(--glow-side-r) 0%, transparent 55%),
+    radial-gradient(ellipse 20% 30% at 50% 50%,  var(--glow-center) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(45deg,  var(--grid-line) 1px, transparent 1px),
+    linear-gradient(-45deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 42px 42px;
+  pointer-events: none; z-index: 0;
+  mask-image: radial-gradient(ellipse 110% 80% at 50% 0%, black 0%, transparent 88%);
+}
+.above { position: relative; z-index: 1; }
 
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.topbar {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 50px;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-0);
+}
+.topbar::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold-dim) 0px, var(--gold-dim) 18px, transparent 18px, transparent 22px,
+    var(--saffron-dim) 22px, var(--saffron-dim) 36px, transparent 36px, transparent 40px
+  );
+  opacity: 0.65;
+}
 .topbar-left{display:flex;align-items:center;gap:20px;}
-.logo{font-size:11px;font-weight:600;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;}
-.logo span{color:var(--text-dim);font-weight:300;}
-.back{font-size:11px;color:var(--text-dim);text-decoration:none;letter-spacing:0.06em;transition:color .15s;}
-.back:hover{color:var(--accent);}
+.topbar-brand { display: flex; align-items: center; gap: 8px; }
+.brand-name { font-family: var(--cinzel); font-size: 14px; font-weight: 600; color: var(--gold); letter-spacing: 0.20em; }
+.brand-sep { color: var(--border-2); font-size: 12px; margin: 0 2px; }
+.brand-sub { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.10em; }
+.back { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: lowercase; color: var(--text-3); text-decoration: none; transition: color 0.15s; }
+.back:hover { color: var(--text-2); }
 .nav{display:flex;gap:2px;}
-.nav a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.08em;padding:4px 10px;border-radius:var(--r);transition:color .15s,background .15s;cursor:pointer;}
-.nav a:hover{color:var(--text-hi);background:var(--bg-raised);}
-.nav a.active{color:var(--accent);background:var(--bg-raised);}
-.topbar-right{font-size:11px;color:var(--text-dim);}
-#live-time{color:var(--text);}
+.nav a {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: lowercase;
+  color: var(--text-3); text-decoration: none;
+  padding: 0 12px; height: 50px;
+  display: flex; align-items: center;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.nav a:hover { color: var(--text-1); }
+.nav a.active { color: var(--saffron-hi); border-bottom-color: var(--saffron-hi); }
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.theme-btn { background: none; border: 1px solid var(--border-1); border-radius: 1px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--text-3); cursor: pointer; padding: 3px 9px; line-height: 1; transition: color 0.15s, border-color 0.15s; text-transform: lowercase; }
+.theme-btn:hover { color: var(--gold-dim); border-color: var(--gold-dim); }
+.live-dot { width: 5px; height: 5px; background: var(--gold); border-radius: 50%; animation: livePulse 3s ease-in-out infinite; }
+@keyframes livePulse { 0%,100% { opacity: 0.35; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 6px var(--gold); } }
+#clock { font-family: var(--mono); font-size: 11px; color: var(--text-2); letter-spacing: 0.08em; }
 
-.shell{max-width:1200px;margin:0 auto;padding:24px 24px 60px;}
+.shell{max-width:1920px;margin:0 auto;padding:0 52px 120px;position:relative;z-index:1;}
 .view{display:none;}
 .view.active{display:block;}
 
-.section-label{font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.section-label{font-family: var(--cinzel); font-size:11px;letter-spacing:0.28em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::before{content:'◆';font-size:6px;color:var(--gold-dim);}
+.section-label::after{content:'';width:52px;height:1px;background:linear-gradient(90deg,var(--border-1),transparent);flex:unset;}
 
 .card{background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;}
 .card:hover{border-color:var(--border-hi);}
@@ -54,10 +222,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
 .stat{background:var(--bg-raised);padding:20px 20px 16px;display:flex;flex-direction:column;gap:6px;transition:background .15s;}
 .stat:hover{background:var(--bg-hover);}
-.stat-label{font-size:10px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
-.stat-value{font-size:26px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
+.stat-label{font-family: var(--mono); font-size:15px;letter-spacing:0.15em;color:var(--text-dim);text-transform:uppercase;}
+.stat-value{font-family: var(--cinzel); font-size:35px;font-weight:500;color:var(--text-hi);letter-spacing:-0.02em;line-height:1;}
 .stat-value.accent{color:var(--accent);}
-.stat-sub{font-size:11px;color:var(--text-dim);}
+.stat-sub{font-size:16px;color:var(--text-dim);}
 .delta-up{color:var(--green);}
 .delta-dn{color:var(--red);}
 
@@ -70,15 +238,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .bar-fill.blue{background:var(--blue);}
 .bar-fill.orange{background:var(--orange);}
 
-.data-table{width:100%;border-collapse:collapse;font-size:12px;}
-.data-table th{font-size:10px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
-.data-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table{width:100%;border-collapse:collapse;font-size:17px;}
+.data-table th{font-family: var(--mono); font-size:15px;letter-spacing:0.12em;color:var(--text-dim);text-transform:uppercase;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);}
+.data-table td{font-family: var(--spectral); padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
 .data-table tr:last-child td{border-bottom:none;}
 .data-table tbody tr:hover td{background:var(--bg-hover);}
 .data-table .num{text-align:right;font-variant-numeric:tabular-nums;}
 .divider-row td{color:var(--text-hi)!important;font-weight:500;border-top:1px solid var(--border-hi)!important;padding-top:12px!important;}
 
-.tag{display:inline-block;font-size:9px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
+.tag{display:inline-block;font-family: var(--mono); font-size:10px;letter-spacing:0.1em;padding:2px 6px;border-radius:2px;text-transform:uppercase;background:var(--border);color:var(--text-dim);}
 .tag.solid{background:#1a2e1e;color:var(--green);}
 .tag.practicing{background:#181e28;color:var(--blue);}
 .tag.learning{background:#2a2a1a;color:var(--accent);}
@@ -92,17 +260,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .hm-cell.l2{background:rgba(125,184,138,0.55);}
 .hm-cell.l3{background:rgba(125,184,138,0.85);}
 .hm-cell.l4{background:var(--green);}
-.heatmap-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text-dim);}
+.heatmap-labels{display:flex;justify-content:space-between;font-size:14px;color:var(--text-dim);}
 
 /* MOVEMENT SKILL */
-.movement-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.movement-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:17px;}
 .movement-row:last-child{border-bottom:none;}
 .movement-name{flex:1;color:var(--text);}
-.movement-category{font-size:10px;color:var(--text-dim);width:80px;}
-.movement-notes{font-size:10px;color:var(--text-dim);flex:1;text-align:right;}
+.movement-category{font-size:15px;color:var(--text-dim);width:80px;}
+.movement-notes{font-size:15px;color:var(--text-dim);flex:1;text-align:right;}
 
 /* STRENGTH RECORD */
-.lift-row{display:grid;grid-template-columns:1fr 80px 80px 80px;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;}
+.lift-row{display:grid;grid-template-columns:1fr 80px 80px 80px;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);font-size:17px;}
 .lift-row:last-child{border-bottom:none;}
 .lift-row:hover{background:var(--bg-hover);}
 .lift-name{color:var(--text);}
@@ -114,9 +282,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 .session-row{padding:12px 0;border-bottom:1px solid var(--border);}
 .session-row:last-child{border-bottom:none;}
 .session-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.session-date{font-size:11px;color:var(--text-dim);}
-.session-type{font-size:11px;color:var(--text);}
-.session-notes{font-size:11px;color:var(--text-dim);line-height:1.7;}
+.session-date{font-size:16px;color:var(--text-dim);}
+.session-type{font-size:16px;color:var(--text);}
+.session-notes{font-size:16px;color:var(--text-dim);line-height:1.7;}
 .session-notes em{color:var(--text);font-style:normal;}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -136,7 +304,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 <div class="topbar">
   <div class="topbar-left">
     <a class="back" href="index.html">← shiva os</a>
-    <div class="logo">HANUMAN <span>// training · parkour · strength</span></div>
+    <div class="topbar-brand">
+      <span class="brand-name">HANUMAN</span>
+      <span class="brand-sep">//</span>
+      <span class="brand-sub">strength · discipline · practice</span>
+    </div>
     <nav class="nav">
       <a class="active" data-view="overview">overview</a>
       <a data-view="parkour">parkour</a>
@@ -145,7 +317,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     </nav>
   </div>
   <div class="topbar-right">
-    <span id="live-time"></span>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">◐ day</button>
+    <div class="live-dot"></div>
+    <span id="clock"></span>
   </div>
 </div>
 
@@ -162,7 +336,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Current Streak</div>
-        <div class="stat-value">6 <span style="font-size:14px;color:var(--text-dim)">days</span></div>
+        <div class="stat-value">6 <span style="font-size:18px;color:var(--text-dim)">days</span></div>
         <div class="stat-sub delta-up">best: 14 days</div>
       </div>
       <div class="stat">
@@ -172,7 +346,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Latest PR</div>
-        <div class="stat-value" style="font-size:17px;">Pull-up</div>
+        <div class="stat-value" style="font-size:22px;">Pull-up</div>
         <div class="stat-sub delta-up">14 reps · Feb 14</div>
       </div>
     </div>
@@ -186,7 +360,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
           <div class="heatmap-labels">
             <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span>
           </div>
-          <div style="display:flex;gap:12px;margin-top:10px;font-size:10px;color:var(--text-dim);align-items:center;">
+          <div style="display:flex;gap:12px;margin-top:10px;font-size:14px;color:var(--text-dim);align-items:center;">
             <span>Less</span>
             <div style="display:flex;gap:2px;">
               <div style="width:10px;height:10px;background:var(--border);border-radius:1px;"></div>
@@ -203,10 +377,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
           <table class="data-table">
             <thead><tr><th>Week</th><th>Type</th><th class="num">Sessions</th><th class="num">Duration</th><th>Notes</th></tr></thead>
             <tbody>
-              <tr><td style="color:var(--text-dim);font-size:11px">Feb 17</td><td><span class="tag practicing">Parkour</span></td><td class="num">2</td><td class="num">90 min</td><td style="color:var(--text-dim);font-size:11px">Precision work</td></tr>
-              <tr><td style="color:var(--text-dim);font-size:11px">Feb 10</td><td><span class="tag solid">Mixed</span></td><td class="num">3</td><td class="num">140 min</td><td style="color:var(--text-dim);font-size:11px">PR on pull-ups</td></tr>
-              <tr><td style="color:var(--text-dim);font-size:11px">Feb 3</td><td><span class="tag practicing">Parkour</span></td><td class="num">2</td><td class="num">80 min</td><td style="color:var(--text-dim);font-size:11px">Vault combos</td></tr>
-              <tr><td style="color:var(--text-dim);font-size:11px">Jan 27</td><td><span class="tag solid">Strength</span></td><td class="num">3</td><td class="num">120 min</td><td style="color:var(--text-dim);font-size:11px">Calisthenics block</td></tr>
+              <tr><td style="color:var(--text-dim);font-size:15px">Feb 17</td><td><span class="tag practicing">Parkour</span></td><td class="num">2</td><td class="num">90 min</td><td style="color:var(--text-dim);font-size:15px">Precision work</td></tr>
+              <tr><td style="color:var(--text-dim);font-size:15px">Feb 10</td><td><span class="tag solid">Mixed</span></td><td class="num">3</td><td class="num">140 min</td><td style="color:var(--text-dim);font-size:15px">PR on pull-ups</td></tr>
+              <tr><td style="color:var(--text-dim);font-size:15px">Feb 3</td><td><span class="tag practicing">Parkour</span></td><td class="num">2</td><td class="num">80 min</td><td style="color:var(--text-dim);font-size:15px">Vault combos</td></tr>
+              <tr><td style="color:var(--text-dim);font-size:15px">Jan 27</td><td><span class="tag solid">Strength</span></td><td class="num">3</td><td class="num">120 min</td><td style="color:var(--text-dim);font-size:15px">Calisthenics block</td></tr>
             </tbody>
           </table>
         </div>
@@ -217,23 +391,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Current Focus</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:2;">
             <div style="display:flex;justify-content:space-between;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border);">
               <div>
-                <div style="color:var(--text-hi);font-size:12px;margin-bottom:2px;">Parkour — Precision</div>
+                <div style="color:var(--text-hi);font-size:16px;margin-bottom:2px;">Parkour — Precision</div>
                 <div>Landing accuracy on narrow surfaces</div>
                 <div>3× / week · outdoor</div>
               </div>
             </div>
             <div style="display:flex;justify-content:space-between;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border);">
               <div>
-                <div style="color:var(--text-hi);font-size:12px;margin-bottom:2px;">Calisthenics — Pull strength</div>
+                <div style="color:var(--text-hi);font-size:16px;margin-bottom:2px;">Calisthenics — Pull strength</div>
                 <div>Pull-up progression → muscle-up prep</div>
                 <div>2× / week · bodyweight</div>
               </div>
             </div>
             <div>
-              <div style="color:var(--text-hi);font-size:12px;margin-bottom:2px;">Mobility — Hip flexors</div>
+              <div style="color:var(--text-hi);font-size:16px;margin-bottom:2px;">Mobility — Hip flexors</div>
               <div>Daily 10 min · desk job corrective</div>
             </div>
           </div>
@@ -241,7 +415,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Capability Snapshot</div>
-          <div style="font-size:11px;line-height:1;">
+          <div style="font-size:15px;line-height:1;">
             <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
               <span style="color:var(--text-dim)">Pull-ups (max)</span><span style="color:var(--green)">14 reps ↑</span>
             </div>
@@ -295,12 +469,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
     <div class="card">
       <div class="section-label">Movement Library</div>
 
-      <div style="font-size:10px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;display:grid;grid-template-columns:1fr 80px 100px 1fr;gap:12px;">
+      <div style="font-size:14px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;display:grid;grid-template-columns:1fr 80px 100px 1fr;gap:12px;">
         <span>Movement</span><span>Category</span><span>Level</span><span>Notes</span>
       </div>
 
       <!-- Vaults -->
-      <div style="font-size:9px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:4px;">Vaults</div>
+      <div style="font-size:13px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:4px;">Vaults</div>
       <div class="movement-row">
         <div class="movement-name">Speed vault</div>
         <div class="movement-category">Vault</div>
@@ -333,7 +507,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
 
       <!-- Jumps -->
-      <div style="font-size:9px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-top:8px;margin-bottom:4px;">Jumps</div>
+      <div style="font-size:13px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-top:8px;margin-bottom:4px;">Jumps</div>
       <div class="movement-row">
         <div class="movement-name">Precision jump</div>
         <div class="movement-category">Jump</div>
@@ -360,7 +534,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
 
       <!-- Climbs -->
-      <div style="font-size:9px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-top:8px;margin-bottom:4px;">Climbs &amp; Balance</div>
+      <div style="font-size:13px;letter-spacing:0.16em;color:var(--text-dim);text-transform:uppercase;padding:6px 0;border-bottom:1px solid var(--border);margin-top:8px;margin-bottom:4px;">Climbs &amp; Balance</div>
       <div class="movement-row">
         <div class="movement-name">Wall run (pop)</div>
         <div class="movement-category">Climb</div>
@@ -417,7 +591,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Muscle-up Target</div>
-        <div class="stat-value" style="font-size:17px;">18 pull-ups</div>
+        <div class="stat-value" style="font-size:22px;">18 pull-ups</div>
         <div class="stat-sub">prerequisite strength</div>
       </div>
     </div>
@@ -426,8 +600,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       <div class="col-stack">
 
         <div class="card" style="padding:0;overflow:hidden;">
-          <div style="padding:12px 20px 8px;font-size:10px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);">Personal Records — Calisthenics</div>
-          <div style="display:grid;grid-template-columns:1fr 80px 80px 80px;gap:0;padding:8px 12px;font-size:10px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);">
+          <div style="padding:12px 20px 8px;font-size:14px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);">Personal Records — Calisthenics</div>
+          <div style="display:grid;grid-template-columns:1fr 80px 80px 80px;gap:0;padding:8px 12px;font-size:14px;letter-spacing:0.1em;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);">
             <span>Exercise</span><span style="text-align:right">Current</span><span style="text-align:right">PR</span><span style="text-align:right">Target</span>
           </div>
           <div class="lift-row"><span class="lift-name">Pull-up (max reps)</span><span class="lift-val">14</span><span class="lift-val pr">14 ↑</span><span class="lift-val dim">18</span></div>
@@ -446,7 +620,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
 
         <div class="card">
           <div class="section-label">Pull-up Progression</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:1.6;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:1.6;">
             <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
               <span>Oct 2025</span><span style="color:var(--text)">8 reps</span>
             </div>
@@ -466,14 +640,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
               <span style="color:var(--accent)">Target</span><span style="color:var(--accent)">18 reps</span>
             </div>
           </div>
-          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--text-dim);">
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:15px;color:var(--text-dim);">
             At +2/mo pace → 18 in ~2 months. Muscle-up attempt: April 2026.
           </div>
         </div>
 
         <div class="card">
           <div class="section-label">Current Program</div>
-          <div style="font-size:11px;color:var(--text-dim);line-height:2;">
+          <div style="font-size:15px;color:var(--text-dim);line-height:2;">
             <div style="color:var(--text-hi);margin-bottom:6px;">3-day split</div>
             <div style="padding:6px 0;border-bottom:1px solid var(--border);">
               <span style="color:var(--text)">Day A</span> — Pull (pull-ups, rows, dead hang)
@@ -504,7 +678,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13
       </div>
       <div class="stat">
         <div class="stat-label">Total Time</div>
-        <div class="stat-value">310 <span style="font-size:14px;color:var(--text-dim)">min</span></div>
+        <div class="stat-value">310 <span style="font-size:18px;color:var(--text-dim)">min</span></div>
         <div class="stat-sub">Feb 2026</div>
       </div>
       <div class="stat">
@@ -589,9 +763,29 @@ function tick() {
   const now = new Date();
   const t = now.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
   const d = now.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  document.getElementById('live-time').textContent = d + ' ' + t;
+  document.getElementById('clock').textContent = d + ' ' + t;
 }
 tick(); setInterval(tick, 1000);
+
+// ── Theme toggle ──
+const html = document.documentElement;
+const btn  = document.getElementById('theme-btn');
+
+function applyTheme(light) {
+  html.classList.toggle('light', light);
+  btn.textContent = light ? '◑ night' : '◐ day';
+}
+
+const saved = localStorage.getItem('shiva-theme');
+if (saved === 'light') applyTheme(true);
+
+btn.addEventListener('click', () => {
+  const goLight = !html.classList.contains('light');
+  html.classList.add('theme-transitioning');
+  applyTheme(goLight);
+  localStorage.setItem('shiva-theme', goLight ? 'light' : 'dark');
+  setTimeout(() => html.classList.remove('theme-transitioning'), 450);
+});
 </script>
 </body>
 </html>
