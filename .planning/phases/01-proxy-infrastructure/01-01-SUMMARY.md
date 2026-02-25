@@ -165,3 +165,14 @@ curl -s https://shiva-os-proxy.<subdomain>.workers.dev/api/unknown | cat
 ---
 *Phase: 01-proxy-infrastructure*
 *Completed: 2026-02-25*
+
+## Self-Check: PASSED
+
+- FOUND: worker/wrangler.toml
+- FOUND: worker/src/index.js
+- FOUND: .gitignore
+- FOUND: lakshmi.html (modified)
+- FOUND: kubera.html (modified)
+- FOUND: .planning/phases/01-proxy-infrastructure/01-01-SUMMARY.md
+- FOUND commit 4650e97 (Task 1)
+- FOUND commit 5710448 (Task 2)
