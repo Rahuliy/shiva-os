@@ -31,7 +31,9 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A fetch from kubera.html to the Worker URL returns a valid eBay OAuth token exchange response without exposing App ID, Cert ID, or Client Secret in DevTools
   3. The Worker URL is configurable via localStorage so no code changes are needed to point at a different Worker deployment
   4. Opening browser DevTools on any Shiva OS page reveals no Teller certificate and no eBay credentials
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 01-01-PLAN.md — Deploy Cloudflare Worker proxy with Teller sandbox routing, eBay stub, CORS, and browser-side Worker URL config
 
 ### Phase 2: Data Layer Foundations
 **Goal**: All views build on a shared layer of correct, safe utilities — currency arithmetic in integer cents, dates normalized to local midnight, transactions cached in IndexedDB with TTL, and skeleton states shown while data loads
@@ -107,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Proxy Infrastructure | 0/TBD | Not started | - |
+| 1. Proxy Infrastructure | 0/1 | Planned | - |
 | 2. Data Layer Foundations | 0/TBD | Not started | - |
 | 3. Teller Enrollment and Account Routing | 0/TBD | Not started | - |
 | 4. Lakshmi Core Views | 0/TBD | Not started | - |
