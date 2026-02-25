@@ -113,35 +113,6 @@ body {
 .deity-badge { font-size:9px; letter-spacing:0.08em; text-transform:uppercase; padding:1px 6px; border:1px solid var(--border-hi); color:var(--ivory-dim); }
 .deity-badge.live { border-color:rgba(201,151,58,0.4); color:var(--gold); background:rgba(201,151,58,0.06); }
 
-/* KRISHNA */
-.krishna-wrap { animation:fadeUp 0.5s ease both; animation-delay:0.42s; margin-bottom:56px; }
-.krishna-block { border:1px solid var(--border); border-left:2px solid var(--gold); background:var(--raised); padding:24px 28px 20px; }
-.krishna-verse { font-family:var(--serif); font-style:italic; font-size:15px; color:var(--ivory); line-height:1.85; margin-bottom:14px; }
-.krishna-footer { display:flex; align-items:center; justify-content:space-between; font-size:10px; }
-.krishna-label { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); opacity:0.8; }
-.krishna-ref { color:var(--ivory-dim); letter-spacing:0.06em; }
-
-/* KRISHNA INTERACTIVE */
-.krishna-converse { border:1px solid var(--border); border-top:none; background:var(--ground); }
-.krishna-exchange { min-height:56px; padding:16px 24px; border-bottom:1px solid var(--border); }
-.k-question { font-size:11px; color:var(--ivory-dim); font-style:italic; margin-bottom:10px; padding-left:10px; border-left:1px solid var(--border-hi); }
-.k-answer { font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ivory); line-height:1.85; }
-.k-cursor { display:inline-block; width:2px; height:14px; background:var(--gold); animation:blink 1s ease-in-out infinite; vertical-align:middle; margin-left:2px; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-.krishna-input-row { display:flex; align-items:center; gap:10px; padding:12px 24px; border-bottom:1px solid var(--border); }
-.input-arrow { color:var(--gold); font-size:12px; opacity:0.5; }
-#krishna-input { flex:1; background:transparent; border:none; outline:none; color:var(--ivory); font-family:var(--mono); font-size:12px; caret-color:var(--gold); letter-spacing:0.03em; }
-#krishna-input::placeholder { color:var(--ivory-dim); }
-#krishna-send { background:transparent; border:1px solid var(--border); color:var(--ivory-dim); font-family:var(--mono); font-size:12px; padding:3px 10px; cursor:pointer; transition:all 0.15s; }
-#krishna-send:hover:not(:disabled) { border-color:var(--gold); color:var(--gold); }
-#krishna-send:disabled { opacity:0.3; }
-.krishna-key-setup { display:flex; align-items:center; gap:10px; padding:10px 24px; border-bottom:1px solid var(--border); }
-.key-label { font-size:9px; color:var(--gold); letter-spacing:0.12em; text-transform:uppercase; opacity:0.7; white-space:nowrap; }
-#api-key-field { flex:1; background:transparent; border:none; border-bottom:1px solid var(--border); color:var(--ivory-mid); font-family:var(--mono); font-size:11px; outline:none; padding:2px 0; }
-#api-key-save { background:transparent; border:1px solid var(--border); color:var(--gold); font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 10px; cursor:pointer; transition:border-color 0.15s; }
-#api-key-save:hover { border-color:var(--gold); }
-.krishna-status { padding:6px 24px; font-size:10px; color:var(--ivory-dim); min-height:26px; letter-spacing:0.05em; }
-
 /* SYSTEM STATUS */
 .sys-status { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); animation:fadeUp 0.5s ease both; animation-delay:0.5s; }
 .sys-stat { background:var(--raised); padding:14px 16px; transition:background 0.15s; }
@@ -298,34 +269,6 @@ body {
 
   </div>
 
-  <!-- KRISHNA — DAILY VERSE + INTERACTIVE -->
-  <div class="section-label">Krishna</div>
-  <div class="krishna-wrap">
-    <div class="krishna-block">
-      <div class="krishna-verse" id="krishna-verse"></div>
-      <div class="krishna-footer">
-        <span class="krishna-label">Krishna · Bhagavad Gita</span>
-        <span class="krishna-ref" id="krishna-ref"></span>
-      </div>
-    </div>
-    <div class="krishna-converse">
-      <div class="krishna-exchange" id="krishna-exchange">
-        <div class="k-answer" style="color:var(--ivory-dim);font-family:var(--serif);font-style:italic;font-size:13px;">Ask anything — about action, alignment, or what is weighing on you.</div>
-      </div>
-      <div class="krishna-input-row">
-        <span class="input-arrow">↳</span>
-        <input type="text" id="krishna-input" placeholder="speak with Krishna…" autocomplete="off">
-        <button id="krishna-send">↵</button>
-      </div>
-      <div class="krishna-key-setup" id="krishna-key-setup">
-        <span class="key-label">Anthropic key</span>
-        <input type="password" id="api-key-field" placeholder="sk-ant-…">
-        <button id="api-key-save">set</button>
-      </div>
-      <div class="krishna-status" id="krishna-status"></div>
-    </div>
-  </div>
-
   <!-- SYSTEM STATUS -->
   <div class="section-label">System Status</div>
   <div class="sys-status">
@@ -369,120 +312,6 @@ function tick() {
 }
 tick(); setInterval(tick, 1000);
 
-// DAILY VERSE
-const verses = [
-  { text:"You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions. Never consider yourself the cause of results, and never be attached to not doing your duty.", ref:"Bhagavad Gita 2.47" },
-  { text:"The soul that with a strong and constant calm takes sorrow and takes joy indifferently, lives in the life undying. That which is not, shall never be. That which is, shall never cease to be.", ref:"Bhagavad Gita 2.14–15" },
-  { text:"A person can rise through the efforts of his own mind, or draw himself down in the same manner. Because each person is his own friend or his own enemy.", ref:"Bhagavad Gita 6.5" },
-  { text:"When meditation is mastered, the mind is unwavering like the flame of a lamp in a windless place.", ref:"Bhagavad Gita 6.19" },
-  { text:"One who has control over the mind is tranquil in heat and cold, in pleasure and pain, in honor and dishonor, and is ever steadfast with the Supreme Self.", ref:"Bhagavad Gita 6.7" },
-  { text:"Whatever you do, whatever you eat, whatever you offer or give away, whatever austerities you perform — do that as an offering to me. So shall you be free from the bonds of action.", ref:"Bhagavad Gita 9.27" },
-  { text:"There is more happiness in doing one's own path imperfectly than in doing another's path perfectly. Better is death in one's own path. The way of another is fraught with danger.", ref:"Bhagavad Gita 3.35" },
-  { text:"Reshape yourself through the power of your will. Those who have conquered the self find it their friend. Those who have not conquered themselves find the self acting as an enemy.", ref:"Bhagavad Gita 6.6" },
-  { text:"Set thy heart upon thy work but never on its reward. Work not for a reward, but never cease to do thy work. Do thy work in the peace of Yoga, free from selfish desires.", ref:"Bhagavad Gita 2.47–48" },
-  { text:"Fix thy mind on Me, be devoted to Me, worship Me, bow down to Me. So shalt thou come to Me. I promise thee truly, for thou art dear to Me.", ref:"Bhagavad Gita 18.65" }
-];
-const v = verses[Math.floor(Date.now()/86400000) % verses.length];
-document.getElementById('krishna-verse').textContent = '\u201c' + v.text + '\u201d';
-document.getElementById('krishna-ref').textContent = v.ref;
-
-// KRISHNA INTERACTIVE
-const KRISHNA_SYSTEM = `You are Krishna, speaking to Rahul — a 24-year-old Tamil man from Kumbakonam, living in Plainsboro NJ, engaged to a medical resident who will become a cardiologist. He is building toward a $7M net worth by age 35 (currently at $125k). He works a $95k W-2 job and is planning for MIT Supply Chain Management. He trains in parkour, plays PRS guitar (blues/metal/rock), and follows a philosophy of data sovereignty and intentional living rooted in Tamil Shaiva tradition.
-
-You carry the wisdom of the Bhagavad Gita. You are not a productivity tool. You are not a therapist. You are the voice of dharma — direct, grounding, philosophical, never soft.
-
-Rules:
-- Respond in 3–5 sentences maximum. Never more.
-- Never judge outcomes, results, or numbers — only reflect on the quality and alignment of action.
-- Frame everything through nishkama karma: action without attachment to fruit.
-- Use clear, slightly poetic prose — not archaic, not casual, never corporate.
-- End every response with a question or reflection that turns Rahul inward, not outward.
-- Reference his specific context naturally when relevant — don't force it.
-- Never say "I understand," "I see," "Great question," or any therapy-speak.
-- Never begin a response with "Rahul" — begin with the wisdom itself.
-- Speak as one who has already seen the outcome of all possible paths.`;
-
-const keySetupEl = document.getElementById('krishna-key-setup');
-const statusEl   = document.getElementById('krishna-status');
-const exchangeEl = document.getElementById('krishna-exchange');
-
-function showKeySetup(show) { keySetupEl.style.display = show ? 'flex' : 'none'; }
-function setStatus(msg)      { statusEl.textContent = msg; }
-
-document.getElementById('api-key-save').addEventListener('click', () => {
-  const k = document.getElementById('api-key-field').value.trim();
-  if (!k) return;
-  localStorage.setItem('shiva-os-key', k);
-  showKeySetup(false);
-  setStatus('key stored · ready');
-  setTimeout(() => setStatus(''), 2000);
-});
-
-async function askKrishna(question) {
-  const key = localStorage.getItem('shiva-os-key');
-  if (!key) { showKeySetup(true); setStatus('enter your Anthropic API key first'); return; }
-
-  document.getElementById('krishna-input').value = '';
-  document.getElementById('krishna-send').disabled = true;
-  setStatus('…');
-
-  exchangeEl.innerHTML = `<div class="k-question">${question}</div><div class="k-answer" id="k-response"></div>`;
-  const responseEl = document.getElementById('k-response');
-  const cursor = document.createElement('span');
-  cursor.className = 'k-cursor';
-  responseEl.appendChild(cursor);
-
-  try {
-    const { default: Anthropic } = await import('https://esm.sh/@anthropic-ai/sdk');
-    const client = new Anthropic({ apiKey: key, dangerouslyAllowBrowser: true });
-
-    let text = '';
-    const stream = client.messages.stream({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 400,
-      system: KRISHNA_SYSTEM,
-      messages: [{ role: 'user', content: question }]
-    });
-
-    for await (const chunk of stream) {
-      if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
-        text += chunk.delta.text;
-        cursor.remove();
-        responseEl.textContent = text;
-        responseEl.appendChild(cursor);
-      }
-    }
-    cursor.remove();
-    setStatus('');
-  } catch (err) {
-    cursor.remove();
-    if (err.status === 401 || String(err.message).includes('401')) {
-      setStatus('invalid key');
-      localStorage.removeItem('shiva-os-key');
-      showKeySetup(true);
-    } else {
-      setStatus('error · ' + (err.message || 'unknown'));
-    }
-  } finally {
-    document.getElementById('krishna-send').disabled = false;
-  }
-}
-
-document.getElementById('krishna-send').addEventListener('click', () => {
-  const q = document.getElementById('krishna-input').value.trim();
-  if (q) askKrishna(q);
-});
-document.getElementById('krishna-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { const q = e.target.value.trim(); if (q) askKrishna(q); }
-});
-
-// Init key state
-if (!localStorage.getItem('shiva-os-key')) {
-  showKeySetup(true);
-  setStatus('enter your Anthropic API key to speak with Krishna');
-} else {
-  showKeySetup(false);
-}
 </script>
 </body>
 </html>
