@@ -44,7 +44,10 @@ Plans:
   2. A transaction dated "2026-02-22T05:00:00Z" is categorized under Feb 22 (not Feb 21) when viewed in Eastern time
   3. Fetching transaction history a second time returns cached data from IndexedDB without making a network call, and cache expires after TTL
   4. Switching the date filter (1W, 1M, YTD, 3M, 1Y, custom) updates the visible data range on any view that uses the shared filter component
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 02-01-PLAN.md — Core utilities: currency arithmetic (toCents/formatCurrency) and timezone-safe date handling, plus IndexedDB cache with 1-hour TTL
+- [ ] 02-02-PLAN.md — Date filter bar component, skeleton shimmer CSS, and integration into lakshmi.html and kubera.html
 
 ### Phase 3: Teller Enrollment and Account Routing
 **Goal**: Rahul can connect any bank, card, or investment account through the Teller Connect widget, immediately label it personal or business, and have that label persist so all downstream views scope data correctly
