@@ -1,0 +1,10 @@
+# Cloudflare Worker local secrets
+worker/.dev.vars
+
+# Environment files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db

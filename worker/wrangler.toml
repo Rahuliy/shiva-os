@@ -1,0 +1,13 @@
+name = "shiva-os-proxy"
+main = "src/index.js"
+compatibility_date = "2025-11-01"
+workers_dev = true
+
+# Secrets set via: npx wrangler secret put <KEY>
+# Available in code as: env.EBAY_APP_ID, env.EBAY_CERT_ID, env.EBAY_CLIENT_SECRET
+
+# Phase 1: No mTLS binding (Teller sandbox)
+# Production: Uncomment after cert upload
+# [[mtls_certificates]]
+# binding = "TELLER_CERT"
+# certificate_id = "<from: npx wrangler mtls-certificate upload --cert cert.pem --key key.pem>"
