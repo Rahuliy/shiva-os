@@ -923,6 +923,17 @@ body::after {
 </div>
 
 <script>
+// ── Proxy Configuration ──────────────────────────────────
+const WORKER_URL = localStorage.getItem('shiva-worker-url') || '';
+
+function workerFetch(path, options = {}) {
+  if (!WORKER_URL) {
+    console.warn('Worker URL not configured. Set localStorage key "shiva-worker-url" to your Cloudflare Worker URL.');
+    return Promise.resolve(new Response(JSON.stringify({ error: 'Worker URL not configured', code: 0 }), { status: 0 }));
+  }
+  return fetch(`${WORKER_URL}${path}`, options);
+}
+
 // ── Clock ──
 function tick() {
   const now = new Date();
