@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 ## Current Position
 
 Phase: 2 of 7 (Data Layer Foundations)
-Plan: 1 of 3 in current phase
-Status: Plan 02-01 complete — artha-utils.js and artha-cache.js created
-Last activity: 2026-02-25 — Plan 02-01 executed (currency/date utilities + IndexedDB cache layer)
+Plan: 2 of 3 in current phase
+Status: Plan 02-02 at checkpoint — date-filter.js + skeleton CSS created, awaiting browser verification (Task 2)
+Last activity: 2026-02-25 — Plan 02-02 executing (date filter bar, skeleton CSS, ES module wiring for lakshmi + kubera)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 25%
 
 ## Performance Metrics
 
@@ -55,6 +55,10 @@ Recent decisions affecting current work:
 - [02-01]: normalizeToLocalDate appends T00:00:00 to 10-char date strings — spec parses "2026-02-22" as UTC midnight, not local midnight
 - [02-01]: IndexedDB singleton via _db promise variable in artha-cache.js — avoids anti-pattern of opening new connection per cache operation
 - [02-01]: Cache failures are non-fatal — all DB operations wrapped in try/catch, errors treated as cache misses (app works without caching)
+- [02-02]: date-filter.js does NOT import artha-utils.js — caller passes getDateRange via callback; keeps component decoupled
+- [02-02]: Default preset is 1Y on first load — full-year view most useful for financial context
+- [02-02]: Custom range falls back to DEFAULT_PRESET on init if no dates stored — prevents silent empty state
+- [02-02]: CSS injected by the module itself (style#date-filter-styles) — no separate stylesheet needed
 
 ### Pending Todos
 
@@ -70,5 +74,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed 02-01-PLAN.md — artha-utils.js and artha-cache.js created at project root. Data layer foundation ready for Lakshmi Dashboard.
+Stopped at: Checkpoint 02-02 Task 2 — date-filter.js created (c978210), both HTML pages updated with filter bar + skeleton CSS. Awaiting human browser verification.
 Resume file: None
