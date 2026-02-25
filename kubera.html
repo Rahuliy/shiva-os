@@ -917,13 +917,16 @@ body::after {
 // ── ES Module imports ─────────────────────────────────────────────────
 import { initDateFilter }                    from './date-filter.js';
 import { getDateRange }                      from './artha-utils.js';
-import { cacheGet, cachePut, cacheInvalidateAll } from './artha-cache.js';
+import { cacheInvalidateAll }                from './artha-cache.js';
+import { isWorkerConfigured }                from './artha-fetch.js';
+import { loadTellerConnect, openTellerConnect, getEnrollments, getAccountsForLabel } from './artha-connect.js';
+import { getAllAccounts, getAllBalances, getAllTransactions } from './artha-data.js';
 
 // ── Module-scoped current date range ─────────────────────────────────
 let currentDateRange = null;
 
 // ── Init date filter bar ──────────────────────────────────────────────
-initDateFilter('date-filter-mount', (preset, customRange) => {
+initDateFilter('date-filter-mount', async (preset, customRange) => {
   let start, end;
   if (preset === 'custom' && customRange) {
     start = customRange.start;
@@ -934,8 +937,8 @@ initDateFilter('date-filter-mount', (preset, customRange) => {
     end   = range.end;
   }
   currentDateRange = { preset, start, end };
-  console.log('Date range:', preset, start, end);
-  // Phase 3+ will hook into currentDateRange here to load scoped data
+  console.log('[Kubera] Date range:', preset, start, end);
+  await loadPipelineData();
 });
 
 // ── Cache refresh button ──────────────────────────────────────────────
@@ -943,20 +946,72 @@ document.getElementById('cache-refresh-btn').addEventListener('click', async () 
   await cacheInvalidateAll();
   location.reload();
 });
+
+// ── Data pipeline (business-filtered) ─────────────────────────────────
+async function loadPipelineData() {
+  const enrollments = getEnrollments();
+  if (!enrollments.length) {
+    console.log('[Kubera] No enrollments found. Use window.arthaConnect() to link a bank.');
+    return;
+  }
+  if (!isWorkerConfigured()) {
+    console.warn('[Kubera] Worker proxy not configured. Set localStorage "shiva-worker-url".');
+    return;
+  }
+
+  console.log(`[Kubera] Loading data for ${enrollments.length} enrollment(s)...`);
+
+  const acctResult = await getAllAccounts(enrollments);
+  if (!acctResult.ok) {
+    console.error('[Kubera] Accounts fetch failed:', acctResult.error);
+    return;
+  }
+
+  // Filter to business-labeled accounts only
+  const bizAccounts = getAccountsForLabel('business', acctResult.data);
+  console.log('[Kubera] Business accounts:', bizAccounts);
+
+  if (!bizAccounts.length) {
+    console.log('[Kubera] No business-labeled accounts. Label accounts via artha-connect.setAccountLabel().');
+    console.log('[Kubera] Showing all accounts as fallback.');
+  }
+
+  const activeAccounts = bizAccounts.length ? bizAccounts : acctResult.data;
+
+  const [balResult, txResult] = await Promise.all([
+    getAllBalances(activeAccounts, enrollments),
+    getAllTransactions(activeAccounts, enrollments, {
+      startDate: currentDateRange?.start,
+      endDate: currentDateRange?.end,
+    }),
+  ]);
+
+  if (balResult.ok) console.log('[Kubera] Balances:', Object.fromEntries(balResult.data));
+  else console.warn('[Kubera] Balance errors:', balResult.errors);
+
+  if (txResult.ok) console.log('[Kubera] Transactions:', txResult.data);
+  else console.warn('[Kubera] Transaction errors:', txResult.errors);
+
+  if (balResult.errors) console.warn('[Kubera] Partial balance errors:', balResult.errors);
+  if (txResult.errors) console.warn('[Kubera] Partial transaction errors:', txResult.errors);
+}
+
+// ── Console helper for enrollment ─────────────────────────────────────
+window.arthaConnect = () => {
+  openTellerConnect({
+    onSuccess: () => {
+      console.log('[Kubera] Enrollment complete — reloading data...');
+      loadPipelineData();
+    },
+  });
+};
+
+// ── Auto-load on page init ────────────────────────────────────────────
+loadTellerConnect().catch(() => {});
+loadPipelineData();
 </script>
 
 <script>
-// ── Proxy Configuration ──────────────────────────────────
-const WORKER_URL = localStorage.getItem('shiva-worker-url') || '';
-
-function workerFetch(path, options = {}) {
-  if (!WORKER_URL) {
-    console.warn('Worker URL not configured. Set localStorage key "shiva-worker-url" to your Cloudflare Worker URL.');
-    return Promise.resolve(new Response(JSON.stringify({ error: 'Worker URL not configured', code: 0 }), { status: 0 }));
-  }
-  return fetch(`${WORKER_URL}${path}`, options);
-}
-
 // ── Clock ──
 function tick() {
   const now = new Date();

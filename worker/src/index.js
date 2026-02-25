@@ -62,7 +62,8 @@ async function fetchWithRetry(upstreamRequest) {
       const res = attempt === 0
         ? await fetch(upstreamRequest)
         : await fetch(upstreamRequest.clone());
-      if (res.ok) return res;
+      // Return any HTTP response (including 4xx) — only retry on network errors
+      return res;
     } catch (_) {
       // Network error — fall through to retry or return null
     }
@@ -99,23 +100,24 @@ async function handleTeller(request, env, url) {
   const tellerPath = url.pathname.replace('/api/teller', '');
   const tellerUrl = `https://api.teller.io${tellerPath}${url.search}`;
 
-  // Do NOT forward Origin — Teller may reject non-standard origins
-  const upstreamReq = new Request(tellerUrl, {
-    method: request.method,
-    headers: {
-      'Authorization': request.headers.get('Authorization') || '',
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    // Use mTLS binding — env.TELLER_CERT.fetch() presents the client certificate
+    const upstream = await env.TELLER_CERT.fetch(tellerUrl, {
+      method: request.method,
+      headers: {
+        'Authorization': request.headers.get('Authorization') || '',
+        'Content-Type': 'application/json',
+      },
+    });
 
-  const upstream = await fetchWithRetry(upstreamReq);
-  if (!upstream) return errorResponse(request, 'Teller upstream unavailable', 502);
-
-  const body = await upstream.text();
-  return new Response(body, {
-    status: upstream.status,
-    headers: corsHeaders(request),
-  });
+    const body = await upstream.text();
+    return new Response(body, {
+      status: upstream.status,
+      headers: corsHeaders(request),
+    });
+  } catch (e) {
+    return errorResponse(request, `Teller upstream error: ${e.message}`, 502);
+  }
 }
 
 // ── eBay Handler ──────────────────────────────────────────────────────────────
