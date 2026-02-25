@@ -212,6 +212,19 @@ body::after {
   text-transform: lowercase;
 }
 .theme-btn:hover { color: var(--gold-dim); border-color: var(--gold-dim); }
+.cache-refresh-btn {
+  background: none;
+  border: 1px solid var(--border-0);
+  border-radius: 1px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 1px 7px;
+  line-height: 1;
+  transition: color 0.15s, border-color 0.15s, transform 0.2s;
+}
+.cache-refresh-btn:hover { color: var(--gold-dim); border-color: var(--gold-dim); transform: rotate(180deg); }
 .live-dot {
   width: 5px; height: 5px;
   background: var(--gold); border-radius: 50%;
@@ -571,6 +584,23 @@ body::after {
   color: var(--text-3); text-transform: uppercase;
 }
 
+/* ─── SKELETON SHIMMER ───────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-2) 0%, var(--border-1) 50%, var(--bg-2) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 2px;
+}
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton-card  { height: 80px;  width: 100%; }
+.skeleton-row   { height: 18px;  width: 100%; margin-bottom: 10px; }
+.skeleton-row.short { width: 60%; }
+.skeleton-chart { height: 180px; width: 100%; }
+.skeleton-num   { height: 32px;  width: 120px; }
+
 /* ─── ANIMATIONS ─────────────────────────────────────────────────────── */
 @keyframes riseIn  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @keyframes fromTop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
@@ -613,11 +643,15 @@ body::after {
     </nav>
   </div>
   <div class="topbar-right">
+    <button class="cache-refresh-btn" id="cache-refresh-btn" aria-label="Refresh data cache" title="Clear cache and reload">⟳</button>
     <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">◐ day</button>
     <div class="live-dot"></div>
     <div id="clock">—</div>
   </div>
 </div>
+
+<!-- DATE FILTER MOUNT -->
+<div id="date-filter-mount" class="above"></div>
 
 <div class="shell above">
 
@@ -922,6 +956,38 @@ body::after {
   <div class="footer-ver">Shiva OS · Lakshmi · v2.0</div>
 </div>
 
+<script type="module">
+// ── ES Module imports ─────────────────────────────────────────────────
+import { initDateFilter }                    from './date-filter.js';
+import { getDateRange }                      from './artha-utils.js';
+import { cacheGet, cachePut, cacheInvalidateAll } from './artha-cache.js';
+
+// ── Module-scoped current date range ─────────────────────────────────
+let currentDateRange = null;
+
+// ── Init date filter bar ──────────────────────────────────────────────
+initDateFilter('date-filter-mount', (preset, customRange) => {
+  let start, end;
+  if (preset === 'custom' && customRange) {
+    start = customRange.start;
+    end   = customRange.end;
+  } else {
+    const range = getDateRange(preset);
+    start = range.start;
+    end   = range.end;
+  }
+  currentDateRange = { preset, start, end };
+  console.log('Date range:', preset, start, end);
+  // Phase 3+ will hook into currentDateRange here to load scoped data
+});
+
+// ── Cache refresh button ──────────────────────────────────────────────
+document.getElementById('cache-refresh-btn').addEventListener('click', async () => {
+  await cacheInvalidateAll();
+  location.reload();
+});
+</script>
+
 <script>
 // ── Proxy Configuration ──────────────────────────────────
 const WORKER_URL = localStorage.getItem('shiva-worker-url') || '';
@@ -961,6 +1027,20 @@ btn.addEventListener('click', () => {
   localStorage.setItem('shiva-theme', goLight ? 'light' : 'dark');
   setTimeout(() => html.classList.remove('theme-transitioning'), 450);
 });
+
+// ── Skeleton helpers ──────────────────────────────────────────────────
+function showSkeleton(containerId) {
+  const sk = document.getElementById(containerId + '-skeleton');
+  const ct = document.getElementById(containerId + '-content');
+  if (sk) sk.style.display = 'block';
+  if (ct) ct.style.display = 'none';
+}
+function hideSkeleton(containerId) {
+  const sk = document.getElementById(containerId + '-skeleton');
+  const ct = document.getElementById(containerId + '-content');
+  if (sk) sk.style.display = 'none';
+  if (ct) ct.style.display = 'block';
+}
 </script>
 </body>
 </html>
