@@ -12,7 +12,7 @@ The Artha Dashboard builds out two financial deity modules — Lakshmi (personal
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Proxy Infrastructure** - Deploy Cloudflare Worker that proxies Teller (mTLS) and eBay (CORS) API calls from the browser
+- [x] **Phase 1: Proxy Infrastructure** - Deploy Cloudflare Worker that proxies Teller (mTLS) and eBay (CORS) API calls from the browser (completed 2026-02-25)
 - [ ] **Phase 2: Data Layer Foundations** - Establish shared cache, currency utilities, date normalization, and fetch architecture used by all views
 - [ ] **Phase 3: Teller Enrollment and Account Routing** - Connect bank/card/investment accounts via Teller Connect and label each as personal or business
 - [ ] **Phase 4: Lakshmi Core Views** - Dashboard, Accounts, Cashflow, and Transactions views with live Teller data and Chart.js renders
@@ -109,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Proxy Infrastructure | 0/1 | Planned | - |
+| 1. Proxy Infrastructure | 1/1 | Complete   | 2026-02-25 |
 | 2. Data Layer Foundations | 0/TBD | Not started | - |
 | 3. Teller Enrollment and Account Routing | 0/TBD | Not started | - |
 | 4. Lakshmi Core Views | 0/TBD | Not started | - |

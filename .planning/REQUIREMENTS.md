@@ -7,8 +7,8 @@
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Cloudflare Worker proxy handles Teller mTLS certificate presentation for all API calls
-- [ ] **INFRA-02**: Cloudflare Worker proxy handles eBay API calls (CORS + credential security)
+- [x] **INFRA-01**: Cloudflare Worker proxy handles Teller mTLS certificate presentation for all API calls
+- [x] **INFRA-02**: Cloudflare Worker proxy handles eBay API calls (CORS + credential security)
 - [ ] **INFRA-03**: User can connect bank/card/investment accounts via Teller Connect widget
 - [ ] **INFRA-04**: User can authenticate eBay seller account via OAuth flow through proxy
 - [ ] **INFRA-05**: User is prompted to label each connected account as personal or business
@@ -131,8 +131,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Pending |
-| INFRA-02 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
+| INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 3 | Pending |
 | INFRA-04 | Phase 3 | Pending |
 | INFRA-05 | Phase 3 | Pending |
