@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** Real-time financial visibility across every account, card, and investment — personal and business separated cleanly.
-**Current focus:** Phase 1 — Proxy Infrastructure
+**Current focus:** Phase 2 — Data Layer Foundations
 
 ## Current Position
 
-Phase: 1 of 7 (Proxy Infrastructure)
-Plan: 1 of 1 in current phase
-Status: Plan 01-01 complete — ready for Phase 2 planning
-Last activity: 2026-02-25 — Plan 01-01 executed (Worker proxy scaffold + localStorage wiring)
+Phase: 2 of 7 (Data Layer Foundations)
+Plan: 1 of 3 in current phase
+Status: Plan 02-01 complete — artha-utils.js and artha-cache.js created
+Last activity: 2026-02-25 — Plan 02-01 executed (currency/date utilities + IndexedDB cache layer)
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -28,10 +28,11 @@ Progress: [█░░░░░░░░░] 10%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-proxy-infrastructure | 1 | 2 min | 2 min |
+| 02-data-layer-foundations | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min)
-- Trend: —
+- Last 5 plans: 01-01 (2 min), 02-01 (2 min)
+- Trend: Stable
 
 *Updated after each plan completion*
 
@@ -49,6 +50,11 @@ Recent decisions affecting current work:
 - [01-01]: eBay route returns structured 503 stub with full OAuth flow in comments — activates when EBAY_APP_ID secret is set via wrangler
 - [01-01]: WORKER_URL read exclusively from localStorage('shiva-worker-url') — no hardcoded defaults, empty string fallback
 - [01-01]: workerFetch() helper returns synthetic Response on missing URL (graceful fallback, no thrown errors)
+- [02-01]: toCents uses Math.round (not Math.floor) — 10.10*100 = 1009.9999... in IEEE 754, Math.round corrects to 1010
+- [02-01]: USD_FORMATTER constructed once at module level — Intl.NumberFormat instantiation is expensive, must not be inside formatCurrency()
+- [02-01]: normalizeToLocalDate appends T00:00:00 to 10-char date strings — spec parses "2026-02-22" as UTC midnight, not local midnight
+- [02-01]: IndexedDB singleton via _db promise variable in artha-cache.js — avoids anti-pattern of opening new connection per cache operation
+- [02-01]: Cache failures are non-fatal — all DB operations wrapped in try/catch, errors treated as cache misses (app works without caching)
 
 ### Pending Todos
 
@@ -64,5 +70,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed 01-01-PLAN.md — Worker proxy scaffold and localStorage wiring complete. Worker ready for `npx wrangler deploy`.
+Stopped at: Completed 02-01-PLAN.md — artha-utils.js and artha-cache.js created at project root. Data layer foundation ready for Lakshmi Dashboard.
 Resume file: None

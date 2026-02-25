@@ -46,7 +46,7 @@ Plans:
   4. Switching the date filter (1W, 1M, YTD, 3M, 1Y, custom) updates the visible data range on any view that uses the shared filter component
 **Plans**: 2 plans
 Plans:
-- [ ] 02-01-PLAN.md — Core utilities: currency arithmetic (toCents/formatCurrency) and timezone-safe date handling, plus IndexedDB cache with 1-hour TTL
+- [x] 02-01-PLAN.md — Core utilities: currency arithmetic (toCents/formatCurrency) and timezone-safe date handling, plus IndexedDB cache with 1-hour TTL (completed 2026-02-25)
 - [ ] 02-02-PLAN.md — Date filter bar component, skeleton shimmer CSS, and integration into lakshmi.html and kubera.html
 
 ### Phase 3: Teller Enrollment and Account Routing
@@ -113,7 +113,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Proxy Infrastructure | 1/1 | Complete   | 2026-02-25 |
-| 2. Data Layer Foundations | 0/TBD | Not started | - |
+| 2. Data Layer Foundations | 1/2 | In progress | - |
 | 3. Teller Enrollment and Account Routing | 0/TBD | Not started | - |
 | 4. Lakshmi Core Views | 0/TBD | Not started | - |
 | 5. Lakshmi Investments View | 0/TBD | Not started | - |

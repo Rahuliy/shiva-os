@@ -14,8 +14,8 @@
 - [ ] **INFRA-05**: User is prompted to label each connected account as personal or business
 - [ ] **INFRA-06**: Access tokens stored securely in localStorage with silent refresh handling
 - [ ] **INFRA-07**: Connection alert popup when a bank/card link expires or needs re-authentication
-- [ ] **INFRA-08**: IndexedDB cache layer for transaction history with TTL-based invalidation
-- [ ] **INFRA-09**: Currency utilities using cent-based integers to prevent floating point errors
+- [x] **INFRA-08**: IndexedDB cache layer for transaction history with TTL-based invalidation
+- [x] **INFRA-09**: Currency utilities using cent-based integers to prevent floating point errors
 - [ ] **INFRA-10**: Date filtering system (1W, 1M, YTD, 3M, 1Y, custom) shared across all views
 
 ### Lakshmi — Dashboard View
